@@ -23,18 +23,6 @@ const navItems = [
     iconActive: 'mdi-clock',
     icon: 'mdi-clock-outline',
   },
-  // {
-  //   path: 'personal-notes',
-  //   title: 'ノート',
-  //   iconActive: 'mdi-book-edit',
-  //   icon: 'mdi-book-edit-outline',
-  // },
-  // {
-  //   path: 'chat',
-  //   title: 'チャット',
-  //   iconActive: 'mdi-chat',
-  //   icon: 'mdi-chat-outline',
-  // },
   {
     path: 'info',
     title: 'ユーザー情報',

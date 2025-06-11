@@ -2,10 +2,6 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useDisplay } from 'vuetify'
-import { useUserStore } from '@/store'
-import { storeToRefs } from 'pinia'
-
-const { user } = storeToRefs(useUserStore())
 
 const route = useRoute()
 const router = useRouter()
@@ -18,14 +14,6 @@ const options = computed(() => [
       router.push({ path: `/${route.params.campname}/schedule`, query: { action: 'newevent' } })
     },
   },
-  ...(user.value?.is_staff
-    ? [
-        {
-          name: '管理者ツール',
-          func: () => router.push(`/${route.params.campname}/admin`),
-        },
-      ]
-    : []),
   // { name: '別の合宿を表示', func: () => router.push(`/camps`) },
 ])
 </script>

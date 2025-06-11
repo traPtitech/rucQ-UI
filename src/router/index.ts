@@ -26,16 +26,6 @@ const router = createRouter({
           component: () => import('@/views/ScheduleView.vue'),
         },
         {
-          path: 'personal-notes',
-          name: 'ノート',
-          component: () => import('@/views/PersonalNotesView.vue'),
-        },
-        {
-          path: 'chat',
-          name: 'チャット',
-          component: () => import('@/views/ChatView.vue'),
-        },
-        {
           path: 'info',
           name: 'ユーザー情報',
           component: () => import('@/views/UserInformationView.vue'),
@@ -44,51 +34,6 @@ const router = createRouter({
           path: 'info/users',
           name: '部屋情報',
           component: () => import('@/views/UserRoomInformationView.vue'),
-        },
-        {
-          path: 'admin',
-          children: [
-            {
-              path: '',
-              name: '管理者ツール',
-              component: () => import('@/views/admin/AdminSettings.vue'),
-            },
-            {
-              path: 'guidebook',
-              name: 'GuidebookEdit',
-              component: () => import('@/views/admin/AdminGuidebookEdit.vue'),
-            },
-            {
-              path: 'users',
-              name: 'UserInformationView',
-              component: () => import('@/views/admin/AdminInformationView.vue'),
-            },
-            {
-              path: 'users/detail/:id',
-              name: 'DetailPage',
-              component: () => import('@/views/admin/AdminInformationDetail.vue'),
-            },
-            {
-              path: 'users/info',
-              name: 'UserInfo',
-              component: () => import('@/views/admin/AdminUserView.vue'),
-            },
-            {
-              path: 'payments',
-              name: 'AdminPayments',
-              component: () => import('@/views/admin/AdminPaymentsView.vue'),
-            },
-            {
-              path: 'rooms',
-              name: 'AdminRooms',
-              component: () => import('@/views/admin/AdminRooms.vue'),
-            },
-            {
-              path: 'payments/register',
-              name: 'AdminPaymentRegister',
-              component: () => import('@/views/admin/AdminPayments.vue'),
-            },
-          ],
         },
         {
           path: '/:path(.*)*',
