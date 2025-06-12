@@ -144,7 +144,7 @@ onMounted(async () => {
       <div v-else style="display: flex; width: 100%; height: 100%">
         <EventEditorSettings
           :event="event"
-          style="width: 400px; height: 100%; padding: 20px; flex-shrink: 0"
+          style="width: 400px; height: 100%; padding: 20px"
           v-model:name="name"
           v-model:location="location"
           v-model:startTime="startTime"

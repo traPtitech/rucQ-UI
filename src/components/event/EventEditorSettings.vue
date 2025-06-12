@@ -87,7 +87,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-100 h-100">
+  <div class="h-100">
     <v-text-field
       v-model="name"
       :rules="[(v) => !!v || 'タイトルは必須です']"
