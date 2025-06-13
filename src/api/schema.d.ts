@@ -719,8 +719,7 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
-    Camp: {
-      readonly id: number
+    CampRequest: {
       displayId: string
       name: string
       description: string
@@ -728,12 +727,24 @@ export interface components {
       isRegistrationOpen: boolean
       isPaymentOpen: boolean
     }
-    Event:
-      | components['schemas']['DurationEvent']
-      | components['schemas']['OfficialEvent']
-      | components['schemas']['MomentEvent']
-    DurationEvent: {
-      readonly id: number
+    CampResponse: {
+      id: number
+      displayId: string
+      name: string
+      description: string
+      isDraft: boolean
+      isRegistrationOpen: boolean
+      isPaymentOpen: boolean
+    }
+    EventRequest:
+      | components['schemas']['DurationEventRequest']
+      | components['schemas']['OfficialEventRequest']
+      | components['schemas']['MomentEventRequest']
+    EventResponse:
+      | components['schemas']['DurationEventResponse']
+      | components['schemas']['OfficialEventResponse']
+      | components['schemas']['MomentEventResponse']
+    DurationEventRequest: {
       /** @enum {string} */
       type: 'duration'
       name: string
@@ -747,8 +758,22 @@ export interface components {
       /** @enum {string} */
       displayColor: 'orange' | 'green' | 'red' | 'blue' | 'purple' | 'pink'
     }
-    OfficialEvent: {
-      readonly id: number
+    DurationEventResponse: {
+      id: number
+      /** @enum {string} */
+      type: 'duration'
+      name: string
+      description: string
+      location: string
+      /** Format: date-time */
+      timeStart: string
+      /** Format: date-time */
+      timeEnd: string
+      organizerId: string
+      /** @enum {string} */
+      displayColor: 'orange' | 'green' | 'red' | 'blue' | 'purple' | 'pink'
+    }
+    OfficialEventRequest: {
       /** @enum {string} */
       type: 'official'
       name: string
@@ -759,8 +784,19 @@ export interface components {
       /** Format: date-time */
       timeEnd: string
     }
-    MomentEvent: {
-      readonly id: number
+    OfficialEventResponse: {
+      id: number
+      /** @enum {string} */
+      type: 'official'
+      name: string
+      description: string
+      location: string
+      /** Format: date-time */
+      timeStart: string
+      /** Format: date-time */
+      timeEnd: string
+    }
+    MomentEventRequest: {
       /** @enum {string} */
       type: 'moment'
       name: string
@@ -769,35 +805,58 @@ export interface components {
       /** Format: date-time */
       time: string
     }
-    User: {
-      readonly id: string
+    MomentEventResponse: {
+      id: number
+      /** @enum {string} */
+      type: 'moment'
+      name: string
+      description: string
+      location: string
+      /** Format: date-time */
+      time: string
+    }
+    UserRequest: {
       isStaff: boolean
     }
-    Dashboard: {
-      readonly id: string
-      payment?: components['schemas']['Payment']
-      room?: components['schemas']['Room']
+    UserResponse: {
+      id: string
+      isStaff: boolean
     }
-    Message: {
+    DashboardResponse: {
+      id: string
+      payment?: components['schemas']['PaymentResponse']
+      room?: components['schemas']['RoomResponse']
+    }
+    MessageRequest: {
       content: string
       /** Format: date-time */
       sendAt: string
     }
-    QuestionGroup: {
-      readonly id: number
+    QuestionGroupRequest: {
       name: string
       description: string | null
       /** Format: date-time */
       due: string
-      readonly questions: components['schemas']['Question'][]
     }
-    Question:
-      | components['schemas']['FreeTextQuestion']
-      | components['schemas']['FreeNumberQuestion']
-      | components['schemas']['SingleChoiceQuestion']
-      | components['schemas']['MultipleChoiceQuestion']
-    FreeTextQuestion: {
-      readonly id: number
+    QuestionGroupResponse: {
+      id: number
+      name: string
+      description: string | null
+      /** Format: date-time */
+      due: string
+      questions: components['schemas']['QuestionResponse'][]
+    }
+    QuestionRequest:
+      | components['schemas']['FreeTextQuestionRequest']
+      | components['schemas']['FreeNumberQuestionRequest']
+      | components['schemas']['SingleChoiceQuestionRequest']
+      | components['schemas']['MultipleChoiceQuestionRequest']
+    QuestionResponse:
+      | components['schemas']['FreeTextQuestionResponse']
+      | components['schemas']['FreeNumberQuestionResponse']
+      | components['schemas']['SingleChoiceQuestionResponse']
+      | components['schemas']['MultipleChoiceQuestionResponse']
+    FreeTextQuestionRequest: {
       questionGroupId: number
       title: string
       description: string | null
@@ -806,8 +865,17 @@ export interface components {
       isPublic: boolean
       isOpen: boolean
     }
-    FreeNumberQuestion: {
-      readonly id: number
+    FreeTextQuestionResponse: {
+      id: number
+      questionGroupId: number
+      title: string
+      description: string | null
+      /** @enum {string} */
+      type: 'free_text'
+      isPublic: boolean
+      isOpen: boolean
+    }
+    FreeNumberQuestionRequest: {
       questionGroupId: number
       title: string
       description: string | null
@@ -816,8 +884,17 @@ export interface components {
       isPublic: boolean
       isOpen: boolean
     }
-    SingleChoiceQuestion: {
-      readonly id: number
+    FreeNumberQuestionResponse: {
+      id: number
+      questionGroupId: number
+      title: string
+      description: string | null
+      /** @enum {string} */
+      type: 'free_number'
+      isPublic: boolean
+      isOpen: boolean
+    }
+    SingleChoiceQuestionRequest: {
       questionGroupId: number
       title: string
       description: string | null
@@ -825,10 +902,19 @@ export interface components {
       type: 'single'
       isPublic: boolean
       isOpen: boolean
-      readonly options: components['schemas']['Option'][]
     }
-    MultipleChoiceQuestion: {
-      readonly id: number
+    SingleChoiceQuestionResponse: {
+      id: number
+      questionGroupId: number
+      title: string
+      description: string | null
+      /** @enum {string} */
+      type: 'single'
+      isPublic: boolean
+      isOpen: boolean
+      options: components['schemas']['OptionResponse'][]
+    }
+    MultipleChoiceQuestionRequest: {
       questionGroupId: number
       title: string
       description: string | null
@@ -836,77 +922,146 @@ export interface components {
       type: 'multiple'
       isPublic: boolean
       isOpen: boolean
-      readonly options: components['schemas']['Option'][]
     }
-    Option: {
-      readonly id: number
+    MultipleChoiceQuestionResponse: {
+      id: number
+      questionGroupId: number
+      title: string
+      description: string | null
+      /** @enum {string} */
+      type: 'multiple'
+      isPublic: boolean
+      isOpen: boolean
+      options: components['schemas']['OptionResponse'][]
+    }
+    OptionRequest: {
       questionId: number
       content: string
     }
-    Answer:
-      | components['schemas']['FreeTextAnswer']
-      | components['schemas']['FreeNumberAnswer']
-      | components['schemas']['SingleChoiceAnswer']
-      | components['schemas']['MultipleChoiceAnswer']
-    FreeTextAnswer: {
-      readonly id: number
+    OptionResponse: {
+      id: number
       questionId: number
-      readonly userId: string
       content: string
     }
-    FreeNumberAnswer: {
-      readonly id: number
+    AnswerRequest:
+      | components['schemas']['FreeTextAnswerRequest']
+      | components['schemas']['FreeNumberAnswerRequest']
+      | components['schemas']['SingleChoiceAnswerRequest']
+      | components['schemas']['MultipleChoiceAnswerRequest']
+    AnswerResponse:
+      | components['schemas']['FreeTextAnswerResponse']
+      | components['schemas']['FreeNumberAnswerResponse']
+      | components['schemas']['SingleChoiceAnswerResponse']
+      | components['schemas']['MultipleChoiceAnswerResponse']
+    FreeTextAnswerRequest: {
+      /** @enum {string} */
+      type: 'free_text'
       questionId: number
-      readonly userId: string
+      content: string
+    }
+    FreeTextAnswerResponse: {
+      id: number
+      /** @enum {string} */
+      type: 'free_text'
+      questionId: number
+      userId: string
+      content: string
+    }
+    FreeNumberAnswerRequest: {
+      /** @enum {string} */
+      type: 'free_number'
+      questionId: number
       content: number
     }
-    SingleChoiceAnswer: {
-      readonly id: number
+    FreeNumberAnswerResponse: {
+      id: number
+      /** @enum {string} */
+      type: 'free_number'
       questionId: number
-      readonly userId: string
-      content: components['schemas']['Option']
+      userId: string
+      content: number
     }
-    MultipleChoiceAnswer: {
-      readonly id: number
+    SingleChoiceAnswerRequest: {
+      /** @enum {string} */
+      type: 'single'
       questionId: number
-      readonly userId: string
-      content: components['schemas']['Option'][]
+      content: number
     }
-    Payment: {
-      readonly id: number
-      readonly userId: string
+    SingleChoiceAnswerResponse: {
+      id: number
+      /** @enum {string} */
+      type: 'single'
+      questionId: number
+      userId: string
+      content: components['schemas']['OptionResponse']
+    }
+    MultipleChoiceAnswerRequest: {
+      /** @enum {string} */
+      type: 'multiple'
+      questionId: number
+      content: number[]
+    }
+    MultipleChoiceAnswerResponse: {
+      id: number
+      /** @enum {string} */
+      type: 'multiple'
+      questionId: number
+      userId: string
+      content: components['schemas']['OptionResponse'][]
+    }
+    PaymentRequest: {
+      userId: string
       campId: number
       amount: number
       amountPaid: number
     }
-    RoomGroup: {
-      readonly id: number
-      name: string
-      readonly rooms: components['schemas']['Room'][]
+    PaymentResponse: {
+      id: number
+      userId: string
+      campId: number
+      amount: number
+      amountPaid: number
     }
-    Room: {
+    RoomGroupRequest: {
+      name: string
+    }
+    RoomGroupResponse: {
       id: number
       name: string
-      members: components['schemas']['User'][]
+      rooms: components['schemas']['RoomResponse'][]
     }
-    PostRoomRequest: {
+    RoomRequest: {
       name: string
       roomGroupId: number
       memberIds: string[]
     }
-    Image: {
-      readonly id: number
+    RoomResponse: {
+      id: number
+      name: string
+      members: components['schemas']['UserResponse'][]
     }
-    RollCall: {
-      readonly id: number
+    ImageResponse: {
+      id: number
+    }
+    RollCallRequest: {
       name: string
       description: string
       options: string[]
       subjects: string[]
     }
-    RollCallReaction: {
-      readonly id: number
-      readonly userId: string
+    RollCallResponse: {
+      id: number
+      name: string
+      description: string
+      options: string[]
+      subjects: string[]
+    }
+    RollCallReactionRequest: {
+      content: string
+    }
+    RollCallReactionResponse: {
+      id: number
+      userId: string
       content: string
     }
   }
@@ -1030,7 +1185,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Camp'][]
+          'application/json': components['schemas']['CampResponse'][]
         }
       }
       500: components['responses']['InternalServerError']
@@ -1048,7 +1203,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['Camp']
+        'application/json': components['schemas']['CampRequest']
       }
     }
     responses: {
@@ -1058,7 +1213,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Camp']
+          'application/json': components['schemas']['CampResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -1126,7 +1281,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['Camp']
+        'application/json': components['schemas']['CampRequest']
       }
     }
     responses: {
@@ -1136,7 +1291,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Camp']
+          'application/json': components['schemas']['CampResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -1184,7 +1339,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['User'][]
+          'application/json': components['schemas']['UserResponse'][]
         }
       }
       500: components['responses']['InternalServerError']
@@ -1208,7 +1363,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Event'][]
+          'application/json': components['schemas']['EventResponse'][]
         }
       }
       500: components['responses']['InternalServerError']
@@ -1229,7 +1384,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['Event']
+        'application/json': components['schemas']['EventRequest']
       }
     }
     responses: {
@@ -1239,7 +1394,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Event']
+          'application/json': components['schemas']['EventResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -1261,7 +1416,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['Event']
+        'application/json': components['schemas']['EventRequest']
       }
     }
     responses: {
@@ -1271,7 +1426,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Event']
+          'application/json': components['schemas']['EventResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -1320,7 +1475,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['User']
+          'application/json': components['schemas']['UserResponse']
         }
       }
       500: components['responses']['InternalServerError']
@@ -1347,7 +1502,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Dashboard']
+          'application/json': components['schemas']['DashboardResponse']
         }
       }
       404: components['responses']['NotFound']
@@ -1369,7 +1524,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['User'][]
+          'application/json': components['schemas']['UserResponse'][]
         }
       }
       500: components['responses']['InternalServerError']
@@ -1396,7 +1551,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['User']
+          'application/json': components['schemas']['UserResponse']
         }
       }
       403: components['responses']['Forbidden']
@@ -1419,7 +1574,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['User']
+        'application/json': components['schemas']['UserRequest']
       }
     }
     responses: {
@@ -1429,7 +1584,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['User']
+          'application/json': components['schemas']['UserResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -1453,7 +1608,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['Message']
+        'application/json': components['schemas']['MessageRequest']
       }
     }
     responses: {
@@ -1482,7 +1637,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['QuestionGroup'][]
+          'application/json': components['schemas']['QuestionGroupResponse'][]
         }
       }
       500: components['responses']['InternalServerError']
@@ -1503,7 +1658,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['QuestionGroup']
+        'application/json': components['schemas']['QuestionGroupRequest']
       }
     }
     responses: {
@@ -1513,7 +1668,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['QuestionGroup']
+          'application/json': components['schemas']['QuestionGroupResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -1536,7 +1691,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['QuestionGroup']
+        'application/json': components['schemas']['QuestionGroupRequest']
       }
     }
     responses: {
@@ -1546,7 +1701,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['QuestionGroup']
+          'application/json': components['schemas']['QuestionGroupResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -1589,7 +1744,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['Question']
+        'application/json': components['schemas']['QuestionRequest']
       }
     }
     responses: {
@@ -1599,7 +1754,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Question']
+          'application/json': components['schemas']['QuestionResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -1622,7 +1777,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['Question']
+        'application/json': components['schemas']['QuestionRequest']
       }
     }
     responses: {
@@ -1632,7 +1787,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Question']
+          'application/json': components['schemas']['QuestionResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -1675,7 +1830,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['Option']
+        'application/json': components['schemas']['OptionRequest']
       }
     }
     responses: {
@@ -1685,7 +1840,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Option']
+          'application/json': components['schemas']['OptionResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -1708,7 +1863,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['Option']
+        'application/json': components['schemas']['OptionRequest']
       }
     }
     responses: {
@@ -1718,7 +1873,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Option']
+          'application/json': components['schemas']['OptionResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -1773,7 +1928,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Answer'][]
+          'application/json': components['schemas']['AnswerResponse'][]
         }
       }
       403: components['responses']['Forbidden']
@@ -1798,7 +1953,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Answer'][]
+          'application/json': components['schemas']['AnswerResponse'][]
         }
       }
       404: components['responses']['NotFound']
@@ -1826,7 +1981,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Answer'][]
+          'application/json': components['schemas']['AnswerResponse'][]
         }
       }
       404: components['responses']['NotFound']
@@ -1845,7 +2000,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['Answer']
+        'application/json': components['schemas']['AnswerRequest']
       }
     }
     responses: {
@@ -1855,7 +2010,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Answer']
+          'application/json': components['schemas']['AnswerResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -1878,7 +2033,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['Answer']
+        'application/json': components['schemas']['AnswerRequest']
       }
     }
     responses: {
@@ -1888,7 +2043,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Answer']
+          'application/json': components['schemas']['AnswerResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -1912,7 +2067,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['Answer']
+        'application/json': components['schemas']['AnswerRequest']
       }
     }
     responses: {
@@ -1922,7 +2077,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Answer']
+          'application/json': components['schemas']['AnswerResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -1952,7 +2107,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Payment'][]
+          'application/json': components['schemas']['PaymentResponse'][]
         }
       }
       403: components['responses']['Forbidden']
@@ -1974,7 +2129,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['Payment']
+        'application/json': components['schemas']['PaymentRequest']
       }
     }
     responses: {
@@ -1984,7 +2139,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Payment']
+          'application/json': components['schemas']['PaymentResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -2008,7 +2163,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['Payment']
+        'application/json': components['schemas']['PaymentRequest']
       }
     }
     responses: {
@@ -2018,7 +2173,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Payment']
+          'application/json': components['schemas']['PaymentResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -2045,7 +2200,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['RoomGroup'][]
+          'application/json': components['schemas']['RoomGroupResponse'][]
         }
       }
       500: components['responses']['InternalServerError']
@@ -2066,7 +2221,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['RoomGroup']
+        'application/json': components['schemas']['RoomGroupRequest']
       }
     }
     responses: {
@@ -2076,7 +2231,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['RoomGroup']
+          'application/json': components['schemas']['RoomGroupResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -2099,7 +2254,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['RoomGroup']
+        'application/json': components['schemas']['RoomGroupRequest']
       }
     }
     responses: {
@@ -2109,7 +2264,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['RoomGroup']
+          'application/json': components['schemas']['RoomGroupResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -2152,7 +2307,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['PostRoomRequest']
+        'application/json': components['schemas']['RoomRequest']
       }
     }
     responses: {
@@ -2162,7 +2317,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Room']
+          'application/json': components['schemas']['RoomResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -2186,7 +2341,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['PostRoomRequest']
+        'application/json': components['schemas']['RoomRequest']
       }
     }
     responses: {
@@ -2196,7 +2351,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Room']
+          'application/json': components['schemas']['RoomResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -2245,7 +2400,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Image'][]
+          'application/json': components['schemas']['ImageResponse'][]
         }
       }
       500: components['responses']['InternalServerError']
@@ -2278,7 +2433,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Image'][]
+          'application/json': components['schemas']['ImageResponse'][]
         }
       }
       400: components['responses']['BadRequest']
@@ -2339,7 +2494,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Image']
+          'application/json': components['schemas']['ImageResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -2388,7 +2543,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['RollCall'][]
+          'application/json': components['schemas']['RollCallResponse'][]
         }
       }
       500: components['responses']['InternalServerError']
@@ -2409,7 +2564,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['RollCall']
+        'application/json': components['schemas']['RollCallRequest']
       }
     }
     responses: {
@@ -2419,7 +2574,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['RollCall']
+          'application/json': components['schemas']['RollCallResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -2445,7 +2600,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['RollCallReaction'][]
+          'application/json': components['schemas']['RollCallReactionResponse'][]
         }
       }
       404: components['responses']['NotFound']
@@ -2467,7 +2622,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['RollCallReaction']
+        'application/json': components['schemas']['RollCallReactionRequest']
       }
     }
     responses: {
@@ -2477,7 +2632,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['RollCallReaction']
+          'application/json': components['schemas']['RollCallReactionResponse']
         }
       }
       400: components['responses']['BadRequest']
@@ -2503,7 +2658,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'text/event-stream': components['schemas']['RollCallReaction']
+          'text/event-stream': components['schemas']['RollCallReactionResponse']
         }
       }
       404: components['responses']['NotFound']
@@ -2525,7 +2680,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['RollCallReaction']
+        'application/json': components['schemas']['RollCallReactionRequest']
       }
     }
     responses: {
@@ -2535,7 +2690,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['RollCallReaction']
+          'application/json': components['schemas']['RollCallReactionResponse']
         }
       }
       400: components['responses']['BadRequest']
