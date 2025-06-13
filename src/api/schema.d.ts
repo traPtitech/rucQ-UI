@@ -4,1778 +4,2566 @@
  */
 
 export interface paths {
-    "/api/camps": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 合宿の一覧を取得 */
-        get: operations["getCamps"];
-        put?: never;
-        /** 合宿を作成 */
-        post: operations["postCamp"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/camps/default": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** デフォルトの合宿を取得 */
-        get: operations["getDefaultCamp"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/camps/{camp_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 合宿の詳細を取得 */
-        get: operations["getCamp"];
-        /** 合宿を更新 */
-        put: operations["putCamp"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/events": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** イベントの一覧を取得 */
-        get: operations["getEvents"];
-        put?: never;
-        /** イベントを作成 */
-        post: operations["postEvent"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/events/{event_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** イベントの詳細を取得 */
-        get: operations["getEvent"];
-        /** イベントを更新 */
-        put: operations["putEvent"];
-        post?: never;
-        /** イベントを削除 */
-        delete: operations["deleteEvent"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/events/{event_id}/register": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** イベントに参加 */
-        post: operations["registerEvent"];
-        /** イベントへの参加をキャンセル */
-        delete: operations["unregisterEvent"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/events/{event_id}/participants": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** イベントの参加者一覧を取得 */
-        get: operations["getParticipants"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 自分の情報を取得 */
-        get: operations["getMe"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/question_groups": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 質問グループの一覧を取得 */
-        get: operations["getQuestionGroups"];
-        put?: never;
-        /** 質問グループを作成 */
-        post: operations["postQuestionGroup"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/question_groups/{question_group_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 質問グループの詳細を取得 */
-        get: operations["getQuestionGroup"];
-        /** 質問グループを更新 */
-        put: operations["putQuestionGroup"];
-        post?: never;
-        /** 質問グループを削除 */
-        delete: operations["deleteQuestionGroup"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/questions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 質問の一覧を取得 */
-        get: operations["getQuestions"];
-        put?: never;
-        /** 質問を作成 */
-        post: operations["postQuestion"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/questions/{question_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 質問の詳細を取得 */
-        get: operations["getQuestion"];
-        /** 質問を更新 */
-        put: operations["putQuestion"];
-        post?: never;
-        /** 質問を削除 */
-        delete: operations["deleteQuestion"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/options": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** 選択肢を作成 */
-        post: operations["postOption"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/options/{option_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** 選択肢を更新 */
-        put: operations["putOption"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/me/answers/{question_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 自分の回答を取得 */
-        get: operations["getMyAnswer"];
-        /** 回答を更新 */
-        put: operations["putAnswer"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/users/{traq_id}/answers/{question_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** ユーザーの回答を取得 */
-        get: operations["getUserAnswer"];
-        /** 回答を更新 */
-        put: operations["putUserAnswer"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/me/budgets": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 自分の予算を取得 */
-        get: operations["getMyBudget"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/users/{traq_id}/budgets": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** ユーザーの予算を取得 */
-        get: operations["getUserBudget"];
-        /** ユーザーの予算を更新 */
-        put: operations["putUserBudget"];
-        /** ユーザーの予算を設定 */
-        post: operations["postUserBudget"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/budgets": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 支払い情報の一覧を取得 */
-        get: operations["getBudgets"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/rooms": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 部屋の一覧を取得 */
-        get: operations["getRooms"];
-        put?: never;
-        /** 部屋を作成 */
-        post: operations["postRoom"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/rooms/{room_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** 部屋を更新 */
-        put: operations["putRoom"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/staffs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 合宿係の一覧を取得 */
-        get: operations["getStaffs"];
-        put?: never;
-        /** 合宿係を追加 */
-        post: operations["postStaff"];
-        /** 合宿係を削除 */
-        delete: operations["deleteStaff"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/dm": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** DMを送信 */
-        post: operations["postDirectMessage"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-}
-export type webhooks = Record<string, never>;
-export interface components {
-    schemas: {
-        Camp: {
-            id: number;
-            display_id: string;
-            name: string;
-            is_draft: boolean;
-            description: string;
-        };
-        PostCampRequest: {
-            display_id: string;
-            name: string;
-            is_draft: boolean;
-            description: string;
-        };
-        Event: {
-            id: number;
-            name: string;
-            description: string;
-            location: string;
-            /** Format: date-time */
-            time_start: string;
-            /** Format: date-time */
-            time_end: string;
-            camp_id: number;
-            organizer_traq_id: string;
-            by_staff: boolean;
-            display_color: string;
-            participants: components["schemas"]["User"][];
-        };
-        PostEventRequest: {
-            name: string;
-            description: string;
-            location: string;
-            /** Format: date-time */
-            time_start: string;
-            /** Format: date-time */
-            time_end: string;
-            camp_id: number;
-            create_as_staff: boolean;
-            display_color: string;
-        };
-        User: {
-            traq_id: string;
-            is_staff: boolean;
-        };
-        QuestionGroup: {
-            id: number;
-            name: string;
-            description: string | null;
-            /** Format: date-time */
-            due: string;
-            questions: components["schemas"]["Question"][];
-            camp_id: number;
-        };
-        PostQuestionGroupRequest: {
-            name: string;
-            description: string | null;
-            /** Format: date-time */
-            due: string;
-            camp_id: number;
-        };
-        Question: {
-            id: number;
-            question_group_id: number;
-            title: string;
-            description: string | null;
-            /** @enum {string} */
-            type: "single" | "multiple" | "free_text" | "free_number";
-            is_public: boolean;
-            is_open: boolean;
-            options?: components["schemas"]["Option"][] | null;
-        };
-        PostQuestionRequest: {
-            question_group_id: number;
-            title: string;
-            description: string;
-            /** @enum {string} */
-            type: "single" | "multiple" | "free_text" | "free_number";
-            is_public: boolean;
-            is_open: boolean;
-        };
-        Option: {
-            id: number;
-            question_id: number;
-            content: string;
-        };
-        PostOptionRequest: {
-            question_id: number;
-            content: string;
-        };
-        Answer: {
-            id: number;
-            question_id: number;
-            user_traq_id: string;
-            content?: (string | string[]) | null;
-        };
-        PutAnswerRequest: {
-            content?: (string | string[]) | null;
-        };
-        Budget: {
-            id: number;
-            user_traq_id: string;
-            camp_id: number;
-            amount?: number | null;
-            amount_paid: number;
-        };
-        PostBudgetRequest: {
-            camp_id: number;
-            amount?: number | null;
-            amount_paid: number;
-        };
-        Room: {
-            id: number;
-            name: string;
-            camp_id: number;
-            members: components["schemas"]["User"][];
-        };
-        PostRoomRequest: {
-            name: string;
-            camp_id: number;
-            members: string[];
-        };
-        PostStaffRequest: {
-            traq_id: string;
-        };
-        PostDMRequest: {
-            target_user: string;
-            content: string;
-            /** Format: date-time */
-            sendtime?: string;
-        };
-    };
-    responses: {
-        /** @description No Content */
-        NoContent: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content?: never;
-        };
-        /** @description Bad Request */
-        BadRequest: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": {
-                    message?: string;
-                };
-            };
-        };
-        /** @description Forbidden */
-        Forbidden: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": {
-                    message?: string;
-                };
-            };
-        };
-        /** @description Not Found */
-        NotFound: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": {
-                    message?: string;
-                };
-            };
-        };
-        /** @description Conflict */
-        Conflict: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": {
-                    message?: string;
-                };
-            };
-        };
-        /** @description Internal Server Error */
-        InternalServerError: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": {
-                    /** @example Internal server error */
-                    message?: string;
-                };
-            };
-        };
-    };
+  '/api/camps': {
     parameters: {
-        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-        "X-Forwarded-User": string;
-        /** @description traQ ID */
-        TraqId: string;
-        /** @description 合宿ID */
-        CampId: number;
-        /** @description 合宿ID */
-        CampIdQuery: number;
-        /** @description イベントID */
-        EventId: number;
-        /** @description 質問グループのID */
-        QuestionGroupId: number;
-        /** @description 質問ID */
-        QuestionId: number;
-        /** @description 選択肢ID */
-        OptionId: number;
-        /** @description 回答ID */
-        AnswerId: number;
-        /** @description 部屋ID */
-        RoomId: number;
-        /** @description 合宿係のtraQ ID */
-        StaffId: string;
-    };
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** 合宿の一覧を取得 */
+    get: operations['getCamps']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/camps': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** 合宿を作成（管理者用） */
+    post: operations['adminPostCamp']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/camps/{campId}/register': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** 合宿に参加登録 */
+    post: operations['postCampRegister']
+    /** 合宿の参加登録を解除 */
+    delete: operations['deleteCampRegister']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/camps/{campId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** 合宿を更新（管理者用） */
+    put: operations['adminPutCamp']
+    post?: never
+    /** 合宿を削除（管理者用） */
+    delete: operations['adminDeleteCamp']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/camps/{campId}/participants': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** 合宿の参加者一覧を取得 */
+    get: operations['getCampParticipants']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/camps/{campId}/events': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** イベントの一覧を取得 */
+    get: operations['getEvents']
+    put?: never
+    /** イベントを作成 */
+    post: operations['postEvent']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/events/{eventId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** イベントを更新 */
+    put: operations['putEvent']
+    post?: never
+    /** イベントを削除 */
+    delete: operations['deleteEvent']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/me': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** 自分の情報を取得 */
+    get: operations['getMe']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/camps/{campId}/me': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** 自分の合宿参加情報を取得 */
+    get: operations['getMyCamp']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/staffs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** 合宿係の一覧を取得 */
+    get: operations['getStaffs']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/users/{userId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** ユーザー情報を取得（管理者用） */
+    get: operations['adminGetUser']
+    /** ユーザーの情報を更新（主に合宿係の権限管理用） */
+    put: operations['adminPutUser']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/users/{userId}/messages': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** ユーザーにDMを送信（管理者用） */
+    post: operations['adminPostMessage']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/camps/{campId}/question-groups': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** 質問グループの一覧を取得 */
+    get: operations['getQuestionGroups']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/camps/{campId}/question-groups': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** 質問グループを作成（管理者用） */
+    post: operations['adminPostQuestionGroup']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/question-groups/{questionGroupId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** 質問グループを更新（管理者用） */
+    put: operations['adminPutQuestionGroup']
+    post?: never
+    /** 質問グループを削除（管理者用） */
+    delete: operations['adminDeleteQuestionGroup']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/questions': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** 質問を作成（管理者用） */
+    post: operations['adminPostQuestion']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/questions/{questionId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** 質問を更新（管理者用） */
+    put: operations['adminPutQuestion']
+    post?: never
+    /** 質問を削除（管理者用） */
+    delete: operations['adminDeleteQuestion']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/options': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** 選択肢を作成（管理者用） */
+    post: operations['adminPostOption']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/options/{optionId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** 選択肢を更新（管理者用） */
+    put: operations['adminPutOption']
+    post?: never
+    /** 選択肢を削除（管理者用） */
+    delete: operations['adminDeleteOption']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/questions/{questionId}/answers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** 質問の回答を取得（管理者用） */
+    get: operations['adminGetAnswers']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/questions/{questionId}/answers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** 質問の回答一覧を取得 */
+    get: operations['getAnswers']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/me/question-groups/{questionGroupId}/answers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** ある質問グループに対する自分の回答を取得 */
+    get: operations['getMyAnswers']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/answers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** 質問に回答する */
+    post: operations['postAnswer']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/answers/{answerId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** 自分の回答を更新 */
+    put: operations['putAnswer']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/answers/{answerId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** 管理者が回答を更新 */
+    put: operations['adminPutAnswer']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/camps/{campId}/payments': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** 支払い情報の一覧を取得（管理者用） */
+    get: operations['adminGetPayments']
+    put?: never
+    /** 支払い情報を作成（管理者用） */
+    post: operations['adminPostPayment']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/payments/{paymentId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** 支払い情報を更新（管理者用） */
+    put: operations['adminPutPayment']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/camps/{campId}/room-groups': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** 部屋グループの一覧を取得 */
+    get: operations['getRoomGroups']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/camps/{campId}/room-groups': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** 部屋グループを作成（管理者用） */
+    post: operations['adminPostRoomGroup']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/room-groups/{roomGroupId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** 部屋グループを更新（管理者用） */
+    put: operations['adminPutRoomGroup']
+    post?: never
+    /** 部屋グループを削除（管理者用） */
+    delete: operations['adminDeleteRoomGroup']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/rooms': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** 部屋を作成（管理者用） */
+    post: operations['adminPostRoom']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/rooms/{roomId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** 部屋を更新（管理者用） */
+    put: operations['adminPutRoom']
+    post?: never
+    /** 部屋を削除（管理者用） */
+    delete: operations['adminDeleteRoom']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/camps/{campId}/images': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** 画像の一覧を取得 */
+    get: operations['getImages']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/camps/{campId}/images': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** 画像をアップロード（管理者用） */
+    post: operations['adminPostImage']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/images/{imageId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** 画像を取得 */
+    get: operations['getImage']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/images/{imageId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** 画像を更新（管理者用） */
+    put: operations['adminPutImage']
+    post?: never
+    /** 画像を削除（管理者用） */
+    delete: operations['adminDeleteImage']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/camps/{campId}/roll-calls': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** 点呼の一覧を取得 */
+    get: operations['getRollCalls']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/camps/{campId}/roll-calls': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** 点呼を作成（管理者用） */
+    post: operations['adminPostRollCall']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/roll-calls/{rollCallId}/reactions': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** 点呼のリアクション一覧を取得 */
+    get: operations['getRollCallReactions']
+    put?: never
+    /** 点呼にリアクションを追加 */
+    post: operations['postRollCallReaction']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/roll-calls/{rollCallId}/reactions/stream': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** 新たに作成されたリアクションをストリームで取得 */
+    get: operations['streamRollCallReactions']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/reactions/{reactionId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** リアクションを更新 */
+    put: operations['putReaction']
+    post?: never
+    /** リアクションを削除 */
+    delete: operations['deleteReaction']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
-export type $defs = Record<string, never>;
+export type webhooks = Record<string, never>
+export interface components {
+  schemas: {
+    Camp: {
+      readonly id: number
+      displayId: string
+      name: string
+      description: string
+      isDraft: boolean
+      isRegistrationOpen: boolean
+      isPaymentOpen: boolean
+    }
+    Event:
+      | components['schemas']['DurationEvent']
+      | components['schemas']['OfficialEvent']
+      | components['schemas']['MomentEvent']
+    DurationEvent: {
+      readonly id: number
+      /** @enum {string} */
+      type: 'duration'
+      name: string
+      description: string
+      location: string
+      /** Format: date-time */
+      timeStart: string
+      /** Format: date-time */
+      timeEnd: string
+      organizerId: string
+      /** @enum {string} */
+      displayColor: 'orange' | 'green' | 'red' | 'blue' | 'purple' | 'pink'
+    }
+    OfficialEvent: {
+      readonly id: number
+      /** @enum {string} */
+      type: 'official'
+      name: string
+      description: string
+      location: string
+      /** Format: date-time */
+      timeStart: string
+      /** Format: date-time */
+      timeEnd: string
+    }
+    MomentEvent: {
+      readonly id: number
+      /** @enum {string} */
+      type: 'moment'
+      name: string
+      description: string
+      location: string
+      /** Format: date-time */
+      time: string
+    }
+    User: {
+      readonly id: string
+      isStaff: boolean
+    }
+    Dashboard: {
+      readonly id: string
+      payment?: components['schemas']['Payment']
+      room?: components['schemas']['Room']
+    }
+    Message: {
+      content: string
+      /** Format: date-time */
+      sendAt: string
+    }
+    QuestionGroup: {
+      readonly id: number
+      name: string
+      description: string | null
+      /** Format: date-time */
+      due: string
+      readonly questions: components['schemas']['Question'][]
+    }
+    Question:
+      | components['schemas']['FreeTextQuestion']
+      | components['schemas']['FreeNumberQuestion']
+      | components['schemas']['SingleChoiceQuestion']
+      | components['schemas']['MultipleChoiceQuestion']
+    FreeTextQuestion: {
+      readonly id: number
+      questionGroupId: number
+      title: string
+      description: string | null
+      /** @enum {string} */
+      type: 'free_text'
+      isPublic: boolean
+      isOpen: boolean
+    }
+    FreeNumberQuestion: {
+      readonly id: number
+      questionGroupId: number
+      title: string
+      description: string | null
+      /** @enum {string} */
+      type: 'free_number'
+      isPublic: boolean
+      isOpen: boolean
+    }
+    SingleChoiceQuestion: {
+      readonly id: number
+      questionGroupId: number
+      title: string
+      description: string | null
+      /** @enum {string} */
+      type: 'single'
+      isPublic: boolean
+      isOpen: boolean
+      readonly options: components['schemas']['Option'][]
+    }
+    MultipleChoiceQuestion: {
+      readonly id: number
+      questionGroupId: number
+      title: string
+      description: string | null
+      /** @enum {string} */
+      type: 'multiple'
+      isPublic: boolean
+      isOpen: boolean
+      readonly options: components['schemas']['Option'][]
+    }
+    Option: {
+      readonly id: number
+      questionId: number
+      content: string
+    }
+    Answer:
+      | components['schemas']['FreeTextAnswer']
+      | components['schemas']['FreeNumberAnswer']
+      | components['schemas']['SingleChoiceAnswer']
+      | components['schemas']['MultipleChoiceAnswer']
+    FreeTextAnswer: {
+      readonly id: number
+      questionId: number
+      readonly userId: string
+      content: string
+    }
+    FreeNumberAnswer: {
+      readonly id: number
+      questionId: number
+      readonly userId: string
+      content: number
+    }
+    SingleChoiceAnswer: {
+      readonly id: number
+      questionId: number
+      readonly userId: string
+      content: components['schemas']['Option']
+    }
+    MultipleChoiceAnswer: {
+      readonly id: number
+      questionId: number
+      readonly userId: string
+      content: components['schemas']['Option'][]
+    }
+    Payment: {
+      readonly id: number
+      readonly userId: string
+      campId: number
+      amount: number
+      amountPaid: number
+    }
+    RoomGroup: {
+      readonly id: number
+      name: string
+      readonly rooms: components['schemas']['Room'][]
+    }
+    Room: {
+      id: number
+      name: string
+      members: components['schemas']['User'][]
+    }
+    PostRoomRequest: {
+      name: string
+      roomGroupId: number
+      memberIds: string[]
+    }
+    Image: {
+      readonly id: number
+    }
+    RollCall: {
+      readonly id: number
+      name: string
+      description: string
+      options: string[]
+      subjects: string[]
+    }
+    RollCallReaction: {
+      readonly id: number
+      readonly userId: string
+      content: string
+    }
+  }
+  responses: {
+    /** @description No Content */
+    NoContent: {
+      headers: {
+        [name: string]: unknown
+      }
+      content?: never
+    }
+    /** @description Bad Request */
+    BadRequest: {
+      headers: {
+        [name: string]: unknown
+      }
+      content: {
+        'application/json': {
+          message?: string
+        }
+      }
+    }
+    /** @description Forbidden */
+    Forbidden: {
+      headers: {
+        [name: string]: unknown
+      }
+      content: {
+        'application/json': {
+          message?: string
+        }
+      }
+    }
+    /** @description Not Found */
+    NotFound: {
+      headers: {
+        [name: string]: unknown
+      }
+      content: {
+        'application/json': {
+          message?: string
+        }
+      }
+    }
+    /** @description Conflict */
+    Conflict: {
+      headers: {
+        [name: string]: unknown
+      }
+      content: {
+        'application/json': {
+          message?: string
+        }
+      }
+    }
+    /** @description Internal Server Error */
+    InternalServerError: {
+      headers: {
+        [name: string]: unknown
+      }
+      content: {
+        'application/json': {
+          /** @example Internal server error */
+          message?: string
+        }
+      }
+    }
+  }
+  parameters: {
+    /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+    'X-Forwarded-User': string
+    /** @description User ID */
+    UserId: string
+    /** @description User ID */
+    UserIdInQuery: string
+    /** @description 合宿ID */
+    CampId: number
+    /** @description 合宿ID */
+    CampIdInQuery: number
+    /** @description イベントID */
+    EventId: number
+    /** @description 質問グループのID */
+    QuestionGroupId: number
+    /** @description 質問ID */
+    QuestionId: number
+    /** @description 選択肢ID */
+    OptionId: number
+    /** @description 回答ID */
+    AnswerId: number
+    /** @description 支払いID */
+    PaymentId: number
+    /** @description 部屋グループID */
+    RoomGroupId: number
+    /** @description 部屋ID */
+    RoomId: number
+    /** @description 画像ID */
+    ImageId: number
+    /** @description 点呼ID */
+    RollCallId: number
+    /** @description リアクションID */
+    ReactionId: number
+  }
+  requestBodies: never
+  headers: never
+  pathItems: never
+}
+export type $defs = Record<string, never>
 export interface operations {
-    getCamps: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Camp"][];
-                };
-            };
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    postCamp: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostCampRequest"];
-            };
-        };
-        responses: {
-            /** @description Created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PostCampRequest"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            409: components["responses"]["Conflict"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getDefaultCamp: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Camp"];
-                };
-            };
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getCamp: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description 合宿ID */
-                camp_id: components["parameters"]["CampId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Camp"];
-                };
-            };
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    putCamp: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description 合宿ID */
-                camp_id: components["parameters"]["CampId"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostCampRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Camp"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getEvents: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Event"][];
-                };
-            };
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    postEvent: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostEventRequest"];
-            };
-        };
-        responses: {
-            /** @description Created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Event"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getEvent: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description イベントID */
-                event_id: components["parameters"]["EventId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Event"];
-                };
-            };
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    putEvent: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description イベントID */
-                event_id: components["parameters"]["EventId"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostEventRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Event"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    deleteEvent: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description イベントID */
-                event_id: components["parameters"]["EventId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            204: components["responses"]["NoContent"];
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    registerEvent: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description イベントID */
-                event_id: components["parameters"]["EventId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            204: components["responses"]["NoContent"];
-            404: components["responses"]["NotFound"];
-            409: components["responses"]["Conflict"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    unregisterEvent: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description イベントID */
-                event_id: components["parameters"]["EventId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            204: components["responses"]["NoContent"];
-            404: components["responses"]["NotFound"];
-            409: components["responses"]["Conflict"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getParticipants: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description イベントID */
-                event_id: components["parameters"]["EventId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["User"][];
-                };
-            };
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getMe: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["User"];
-                };
-            };
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getQuestionGroups: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["QuestionGroup"][];
-                };
-            };
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    postQuestionGroup: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostQuestionGroupRequest"];
-            };
-        };
-        responses: {
-            /** @description Created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["QuestionGroup"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getQuestionGroup: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description 質問グループのID */
-                question_group_id: components["parameters"]["QuestionGroupId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["QuestionGroup"];
-                };
-            };
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    putQuestionGroup: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description 質問グループのID */
-                question_group_id: components["parameters"]["QuestionGroupId"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostQuestionGroupRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["QuestionGroup"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    deleteQuestionGroup: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description 質問グループのID */
-                question_group_id: components["parameters"]["QuestionGroupId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            204: components["responses"]["NoContent"];
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getQuestions: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Question"][];
-                };
-            };
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    postQuestion: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostQuestionRequest"];
-            };
-        };
-        responses: {
-            /** @description Created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Question"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getQuestion: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description 質問ID */
-                question_id: components["parameters"]["QuestionId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Question"];
-                };
-            };
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    putQuestion: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description 質問ID */
-                question_id: components["parameters"]["QuestionId"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostQuestionRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Question"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    deleteQuestion: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description 質問ID */
-                question_id: components["parameters"]["QuestionId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            204: components["responses"]["NoContent"];
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    postOption: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostOptionRequest"];
-            };
-        };
-        responses: {
-            /** @description Created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Option"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    putOption: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description 選択肢ID */
-                option_id: components["parameters"]["OptionId"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostOptionRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Option"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getMyAnswer: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description 質問ID */
-                question_id: components["parameters"]["QuestionId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Answer"];
-                };
-            };
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    putAnswer: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description 質問ID */
-                question_id: components["parameters"]["QuestionId"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PutAnswerRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Answer"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getUserAnswer: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description traQ ID */
-                traq_id: components["parameters"]["TraqId"];
-                /** @description 質問ID */
-                question_id: components["parameters"]["QuestionId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Answer"];
-                };
-            };
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    putUserAnswer: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description traQ ID */
-                traq_id: components["parameters"]["TraqId"];
-                /** @description 質問ID */
-                question_id: components["parameters"]["QuestionId"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PutAnswerRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Answer"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getMyBudget: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Budget"];
-                };
-            };
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getUserBudget: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description traQ ID */
-                traq_id: components["parameters"]["TraqId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Budget"];
-                };
-            };
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    putUserBudget: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description traQ ID */
-                traq_id: components["parameters"]["TraqId"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostBudgetRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Budget"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    postUserBudget: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description traQ ID */
-                traq_id: components["parameters"]["TraqId"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostBudgetRequest"];
-            };
-        };
-        responses: {
-            /** @description Created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Budget"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getBudgets: {
-        parameters: {
-            query?: {
-                /** @description 合宿ID */
-                camp_id?: components["parameters"]["CampIdQuery"];
-            };
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Budget"][];
-                };
-            };
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getRooms: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Room"][];
-                };
-            };
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    postRoom: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostRoomRequest"];
-            };
-        };
-        responses: {
-            /** @description Created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Room"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            409: components["responses"]["Conflict"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    putRoom: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path: {
-                /** @description 部屋ID */
-                room_id: components["parameters"]["RoomId"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostRoomRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Room"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getStaffs: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["User"][];
-                };
-            };
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    postStaff: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostStaffRequest"];
-            };
-        };
-        responses: {
-            204: components["responses"]["NoContent"];
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    deleteStaff: {
-        parameters: {
-            query: {
-                /** @description 合宿係のtraQ ID */
-                staff_id: components["parameters"]["StaffId"];
-            };
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            204: components["responses"]["NoContent"];
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    postDirectMessage: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-                "X-Forwarded-User"?: components["parameters"]["X-Forwarded-User"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PostDMRequest"];
-            };
-        };
-        responses: {
-            204: components["responses"]["NoContent"];
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            500: components["responses"]["InternalServerError"];
-        };
-    };
+  getCamps: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Camp'][]
+        }
+      }
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPostCamp: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Camp']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Camp']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      409: components['responses']['Conflict']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  postCampRegister: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      204: components['responses']['NoContent']
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  deleteCampRegister: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      204: components['responses']['NoContent']
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPutCamp: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Camp']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Camp']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminDeleteCamp: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      204: components['responses']['NoContent']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  getCampParticipants: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['User'][]
+        }
+      }
+      500: components['responses']['InternalServerError']
+    }
+  }
+  getEvents: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Event'][]
+        }
+      }
+      500: components['responses']['InternalServerError']
+    }
+  }
+  postEvent: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Event']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Event']
+        }
+      }
+      400: components['responses']['BadRequest']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  putEvent: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description イベントID */
+        eventId: components['parameters']['EventId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Event']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Event']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  deleteEvent: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description イベントID */
+        eventId: components['parameters']['EventId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      204: components['responses']['NoContent']
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  getMe: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['User']
+        }
+      }
+      500: components['responses']['InternalServerError']
+    }
+  }
+  getMyCamp: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Dashboard']
+        }
+      }
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  getStaffs: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['User'][]
+        }
+      }
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminGetUser: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description User ID */
+        userId: components['parameters']['UserId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['User']
+        }
+      }
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPutUser: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description User ID */
+        userId: components['parameters']['UserId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['User']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['User']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPostMessage: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description User ID */
+        userId: components['parameters']['UserId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Message']
+      }
+    }
+    responses: {
+      204: components['responses']['NoContent']
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  getQuestionGroups: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['QuestionGroup'][]
+        }
+      }
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPostQuestionGroup: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['QuestionGroup']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['QuestionGroup']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPutQuestionGroup: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 質問グループのID */
+        questionGroupId: components['parameters']['QuestionGroupId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['QuestionGroup']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['QuestionGroup']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminDeleteQuestionGroup: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 質問グループのID */
+        questionGroupId: components['parameters']['QuestionGroupId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      204: components['responses']['NoContent']
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPostQuestion: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Question']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Question']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPutQuestion: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 質問ID */
+        questionId: components['parameters']['QuestionId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Question']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Question']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminDeleteQuestion: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 質問ID */
+        questionId: components['parameters']['QuestionId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      204: components['responses']['NoContent']
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPostOption: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Option']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Option']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPutOption: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 選択肢ID */
+        optionId: components['parameters']['OptionId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Option']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Option']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminDeleteOption: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 選択肢ID */
+        optionId: components['parameters']['OptionId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      204: components['responses']['NoContent']
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminGetAnswers: {
+    parameters: {
+      query?: {
+        /** @description User ID */
+        userId?: components['parameters']['UserIdInQuery']
+      }
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 質問ID */
+        questionId: components['parameters']['QuestionId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Answer'][]
+        }
+      }
+      403: components['responses']['Forbidden']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  getAnswers: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description 質問ID */
+        questionId: components['parameters']['QuestionId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Answer'][]
+        }
+      }
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  getMyAnswers: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 質問グループのID */
+        questionGroupId: components['parameters']['QuestionGroupId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Answer'][]
+        }
+      }
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  postAnswer: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Answer']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Answer']
+        }
+      }
+      400: components['responses']['BadRequest']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  putAnswer: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 回答ID */
+        answerId: components['parameters']['AnswerId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Answer']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Answer']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPutAnswer: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 回答ID */
+        answerId: components['parameters']['AnswerId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Answer']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Answer']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminGetPayments: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Payment'][]
+        }
+      }
+      403: components['responses']['Forbidden']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPostPayment: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Payment']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Payment']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPutPayment: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 支払いID */
+        paymentId: components['parameters']['PaymentId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Payment']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Payment']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  getRoomGroups: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RoomGroup'][]
+        }
+      }
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPostRoomGroup: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RoomGroup']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RoomGroup']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPutRoomGroup: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 部屋グループID */
+        roomGroupId: components['parameters']['RoomGroupId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RoomGroup']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RoomGroup']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminDeleteRoomGroup: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 部屋グループID */
+        roomGroupId: components['parameters']['RoomGroupId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      204: components['responses']['NoContent']
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPostRoom: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PostRoomRequest']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Room']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      409: components['responses']['Conflict']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPutRoom: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 部屋ID */
+        roomId: components['parameters']['RoomId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PostRoomRequest']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Room']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminDeleteRoom: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 部屋ID */
+        roomId: components['parameters']['RoomId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      204: components['responses']['NoContent']
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  getImages: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Image'][]
+        }
+      }
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPostImage: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'multipart/form-data': {
+          file?: string[]
+        }
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Image'][]
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  getImage: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description 画像ID */
+        imageId: components['parameters']['ImageId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'image/*': string
+        }
+      }
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPutImage: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 画像ID */
+        imageId: components['parameters']['ImageId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'multipart/form-data': {
+          /** Format: binary */
+          file?: string
+        }
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Image']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminDeleteImage: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 画像ID */
+        imageId: components['parameters']['ImageId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      204: components['responses']['NoContent']
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  getRollCalls: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RollCall'][]
+        }
+      }
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPostRollCall: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RollCall']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RollCall']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  getRollCallReactions: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description 点呼ID */
+        rollCallId: components['parameters']['RollCallId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RollCallReaction'][]
+        }
+      }
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  postRollCallReaction: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 点呼ID */
+        rollCallId: components['parameters']['RollCallId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RollCallReaction']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RollCallReaction']
+        }
+      }
+      400: components['responses']['BadRequest']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  streamRollCallReactions: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description 点呼ID */
+        rollCallId: components['parameters']['RollCallId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'text/event-stream': components['schemas']['RollCallReaction']
+        }
+      }
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  putReaction: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description リアクションID */
+        reactionId: components['parameters']['ReactionId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RollCallReaction']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RollCallReaction']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  deleteReaction: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description リアクションID */
+        reactionId: components['parameters']['ReactionId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      204: components['responses']['NoContent']
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
 }
