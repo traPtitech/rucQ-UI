@@ -77,4 +77,9 @@ const initApp = async () => {
   app.mount('#app')
 }
 
+if (import.meta.env.DEV) {
+  const { worker } = await import('./mocks/browser')
+  await worker.start()
+}
+
 initApp()

@@ -22,6 +22,7 @@
     "marked-highlight": "^2.2.1",
     "msw": "^2.10.2",
     "openapi-fetch": "^0.13.8",
+    "openapi-msw": "^1.2.0",
     "pinia": "^2.3.0",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
@@ -49,5 +50,10 @@
     "vite-plugin-pwa": "^0.21.1",
     "vite-plugin-vue-devtools": "^7.6.8",
     "vue-tsc": "^2.1.10"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
