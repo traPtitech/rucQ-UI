@@ -19,10 +19,10 @@
   --color-blue-pale: #9dd8ff;
   --color-navy: #2444a4;
   --color-navy-pale: #afc3ff;
-  --color-purple: #7210C8;
-  --color-purple-pale: #DEB9FF;
-  --color-pink: #EE4DBE;
-  --color-pink-pale: #FFB6E9;
+  --color-purple: #7210c8;
+  --color-purple-pale: #deb9ff;
+  --color-pink: #ee4dbe;
+  --color-pink-pale: #ffb6e9;
 
   --color-theme: var(--color-orange);
   --color-theme-pale: var(--color-orange-pale);
