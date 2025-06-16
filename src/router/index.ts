@@ -14,13 +14,13 @@ const router = createRouter({
         {
           path: '',
           name: '合宿のしおり',
-          component: () => import('@/views/GuidebookView.vue'),
+          component: () => import('@/views/WorkInProgressView.vue'),
           meta: { showLayout: true },
         },
         {
           path: 'schedule',
           name: 'スケジュール',
-          component: () => import('@/views/ScheduleView.vue'),
+          component: () => import('@/views/WorkInProgressView.vue'),
           meta: { showLayout: true },
         },
         {
@@ -32,7 +32,7 @@ const router = createRouter({
         {
           path: 'info/users',
           name: '部屋情報',
-          component: () => import('@/views/UserRoomInformationView.vue'),
+          component: () => import('@/views/WorkInProgressView.vue'),
           meta: { showLayout: true },
         },
         {
