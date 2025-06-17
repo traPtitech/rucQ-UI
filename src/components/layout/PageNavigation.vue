@@ -11,6 +11,11 @@ const router = useRouter()
 const route = useRoute()
 
 const currentPath = computed(() => route.path)
+const fullPath = (path: string) => `/${route.params.campname}/${path}`
+const isActive = (itemPath: string) => currentPath.value === fullPath(itemPath)
+
+// 選択されたアイテムの配列を管理
+const selectedItems = computed(() => [currentPath.value])
 
 const navItems = [
   {
@@ -34,61 +39,62 @@ const navItems = [
   {
     path: 'info',
     title: 'ユーザー情報',
-    iconActive: 'mdi-information',
-    icon: 'mdi-information-outline',
+    iconActive: null,
+    icon: null,
   },
 ]
-
-const fullPath = (path: string) => `/${route.params.campname}/${path}`
 </script>
 
 <template>
   <v-bottom-navigation v-if="xs" color="primary" v-model="currentPath" mandatory grow>
     <v-btn
-      v-for="(item, i) in navItems"
+      v-for="item in navItems"
       :value="fullPath(item.path)"
-      :key="i"
+      :key="item.path"
       @click="router.push(fullPath(item.path))"
     >
-      <v-icon v-if="item.path !== 'info'" size="24">{{
-        currentPath === fullPath(item.path) ? item.iconActive : item.icon
-      }}</v-icon>
-      <UserIcon v-else :size="24"></UserIcon>
+      <v-icon
+        v-if="item.icon"
+        size="24"
+        :icon="isActive(item.path) ? item.iconActive : item.icon"
+      />
+      <user-icon v-else :size="24" />
     </v-btn>
   </v-bottom-navigation>
   <v-navigation-drawer
+    v-else
     floating
-    width="230"
+    width="270"
     color="primary"
     permanent
-    v-else
-    style="z-index: 1; overflow: hidden"
+    :class="$style.drawer"
     app
   >
-  <background-pattern logo-color="#FF8200" bg-color="#FF7300" />
-    <img src="/logo/logo.svg" alt="rucQ Icon" :class="$style.logo" />
-    <v-list dense mandatory v-model="currentPath">
+    <background-pattern style="z-index: -1" logo-color="#FF8200" bg-color="#FF7300" />
+    <img src="/logo/logo-white.svg" alt="rucQ Icon" :class="$style.logo" />
+    <v-list dense v-model:selected="selectedItems" mandatory>
       <v-list-item
-        v-for="(item, i) in navItems"
+        v-for="item in navItems"
         :value="fullPath(item.path)"
-        :key="i"
+        :key="item.path"
         @click="router.push(fullPath(item.path))"
+        color="white"
       >
-        <div :class="[
-          $style.headerTab,
-          { [$style.active]: currentPath === fullPath(item.path) }
-        ]">
+        <div :class="$style.headerTab">
           <v-icon
+            v-if="item.icon"
             class="mr-3"
-            :style="{ color: currentPath === fullPath(item.path) ? '#000' : 'inherit' }"
-          >{{
-            currentPath === fullPath(item.path) ? item.iconActive : item.icon
-          }}</v-icon>
+            :icon="isActive(item.path) ? item.iconActive : item.icon"
+          />
+          <UserIcon
+            v-else
+            :size="22"
+            class="mr-3"
+            :style="{ outline: `${isActive(item.path) ? 2 : 1}px solid white` }"
+          ></UserIcon>
           <span
-            :class="[
-              [$style.headerTitle],
-              { [$style.headerTitleActive]: currentPath === fullPath(item.path) },
-            ]"
+            :class="$style.headerTitle"
+            :style="{ fontWeight: isActive(item.path) ? 'bold' : 'normal' }"
           >
             {{ item.title }}
           </span>
@@ -101,30 +107,26 @@ const fullPath = (path: string) => `/${route.params.campname}/${path}`
 <style module>
 .headerTab {
   display: flex;
-  align-items: center; /* 垂直方向の中央揃え */
-  gap: 10px; /* アイコンと文字の間隔 */
+  align-items: center;
+  gap: 10px;
   margin-left: 30px;
 }
 
-.headerTab.active {
-  color: #000000; /* 黒文字 */
-}
-
 .headerTitle {
-  font-size: 17px; /* テキストサイズを調整 */
-  font-weight: normal; /* デフォルトは通常の太さ */
-}
-
-.headerTitleActive {
-  font-weight: bold; /* 選択中の文字を太くする */
-  color: #000000; /* 黒文字 */
+  font-size: 17px;
+  font-weight: normal;
 }
 
 .logo {
   margin: auto;
   display: flex;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 45px;
+  margin-bottom: 30px;
   width: 50%;
+}
+
+.drawer {
+  z-index: 1;
+  overflow: hidden;
 }
 </style>
