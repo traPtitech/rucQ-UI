@@ -69,11 +69,10 @@ app.use(pinia)
 app.use(router)
 app.use(vuetify)
 
-import { useUserStore, useCampStore } from './store'
+import { useUserStore } from './store'
 
 const initApp = async () => {
   useUserStore().initUser()
-  useCampStore().initCamp()
   app.mount('#app')
 }
 

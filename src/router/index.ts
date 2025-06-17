@@ -5,12 +5,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      component: () => import('@/views/RootView.vue'),
-    },
-    {
-      path: '/camps',
-      name: '合宿一覧',
-      component: () => import('@/views/CampSelectView.vue'),
+      component: () => import('@/views/RegistrationView.vue'),
+      meta: { showLayout: false },
     },
     {
       path: '/:campname',
@@ -18,27 +14,32 @@ const router = createRouter({
         {
           path: '',
           name: '合宿のしおり',
-          component: () => import('@/views/GuidebookView.vue'),
+          component: () => import('@/views/WorkInProgressView.vue'),
+          meta: { showLayout: true },
         },
         {
           path: 'schedule',
           name: 'スケジュール',
-          component: () => import('@/views/ScheduleView.vue'),
+          component: () => import('@/views/WorkInProgressView.vue'),
+          meta: { showLayout: true },
         },
         {
           path: 'info',
           name: 'ユーザー情報',
-          component: () => import('@/views/UserInformationView.vue'),
+          component: () => import('@/views/UserInfoView.vue'),
+          meta: { showLayout: true },
         },
         {
-          path: 'info/users',
+          path: 'rooms',
           name: '部屋情報',
-          component: () => import('@/views/UserRoomInformationView.vue'),
+          component: () => import('@/views/WorkInProgressView.vue'),
+          meta: { showLayout: true },
         },
         {
           path: '/:path(.*)*',
           name: 'NotFoundView',
           component: () => import('@/views/NotFoundView.vue'),
+          meta: { showLayout: false },
         },
       ],
     },
