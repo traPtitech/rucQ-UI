@@ -24,6 +24,12 @@ const navItems = [
     icon: 'mdi-clock-outline',
   },
   {
+    path: 'rooms',
+    title: '部屋情報',
+    iconActive: 'mdi-view-grid',
+    icon: 'mdi-view-grid-outline',
+  },
+  {
     path: 'info',
     title: 'ユーザー情報',
     iconActive: 'mdi-information',

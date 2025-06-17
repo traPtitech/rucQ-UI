@@ -5,7 +5,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      component: () => import('@/views/RootView.vue'),
+      component: () => import('@/views/RegistrationView.vue'),
       meta: { showLayout: false },
     },
     {
@@ -26,11 +26,11 @@ const router = createRouter({
         {
           path: 'info',
           name: 'ユーザー情報',
-          component: () => import('@/views/UserInformationView.vue'),
+          component: () => import('@/views/UserInfoView.vue'),
           meta: { showLayout: true },
         },
         {
-          path: 'info/users',
+          path: 'rooms',
           name: '部屋情報',
           component: () => import('@/views/WorkInProgressView.vue'),
           meta: { showLayout: true },
