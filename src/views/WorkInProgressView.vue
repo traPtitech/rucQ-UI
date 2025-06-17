@@ -1,3 +1,6 @@
+<script setup lang="ts">
+</script>
+
 <template>
   <div :class="$style.container">
     <v-icon icon="mdi-hammer-wrench" size="100px"></v-icon>
@@ -7,6 +10,8 @@
 
 <style module>
 .container {
+  position: relative;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;

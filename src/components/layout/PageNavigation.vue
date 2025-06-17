@@ -4,6 +4,8 @@ import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useDisplay } from 'vuetify'
 
+import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
+
 const { xs } = useDisplay()
 const router = useRouter()
 const route = useRoute()
@@ -55,12 +57,15 @@ const fullPath = (path: string) => `/${route.params.campname}/${path}`
     </v-btn>
   </v-bottom-navigation>
   <v-navigation-drawer
+    floating
     width="230"
+    color="primary"
     permanent
     v-else
-    style="z-index: 1; border-right: 1.5px solid var(--color-line) !important"
+    style="z-index: 1; overflow: hidden"
     app
   >
+  <background-pattern logo-color="#FF8200" bg-color="#FF7300" />
     <img src="/logo/logo.svg" alt="rucQ Icon" :class="$style.logo" />
     <v-list dense mandatory v-model="currentPath">
       <v-list-item
@@ -69,8 +74,14 @@ const fullPath = (path: string) => `/${route.params.campname}/${path}`
         :key="i"
         @click="router.push(fullPath(item.path))"
       >
-        <div :class="$style.headerTab">
-          <v-icon class="mr-3">{{
+        <div :class="[
+          $style.headerTab,
+          { [$style.active]: currentPath === fullPath(item.path) }
+        ]">
+          <v-icon
+            class="mr-3"
+            :style="{ color: currentPath === fullPath(item.path) ? '#000' : 'inherit' }"
+          >{{
             currentPath === fullPath(item.path) ? item.iconActive : item.icon
           }}</v-icon>
           <span
@@ -95,6 +106,10 @@ const fullPath = (path: string) => `/${route.params.campname}/${path}`
   margin-left: 30px;
 }
 
+.headerTab.active {
+  color: #000000; /* 黒文字 */
+}
+
 .headerTitle {
   font-size: 17px; /* テキストサイズを調整 */
   font-weight: normal; /* デフォルトは通常の太さ */
@@ -102,6 +117,7 @@ const fullPath = (path: string) => `/${route.params.campname}/${path}`
 
 .headerTitleActive {
   font-weight: bold; /* 選択中の文字を太くする */
+  color: #000000; /* 黒文字 */
 }
 
 .logo {
