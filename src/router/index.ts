@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { apiClient } from '@/api/apiClient'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,13 +36,13 @@ const router = createRouter({
           component: () => import('@/views/WorkInProgressView.vue'),
           meta: { showLayout: true },
         },
-        {
-          path: '/:path(.*)*',
-          name: 'NotFoundView',
-          component: () => import('@/views/NotFoundView.vue'),
-          meta: { showLayout: false },
-        },
       ],
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFoundView',
+      component: () => import('@/views/NotFoundView.vue'),
+      meta: { showLayout: false },
     },
   ],
 })
