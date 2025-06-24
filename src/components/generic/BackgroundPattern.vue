@@ -1,22 +1,10 @@
 <script setup lang="ts">
-import { defineProps, watchEffect, withDefaults } from 'vue'
+import { defineProps } from 'vue'
 
-const props = withDefaults(
-  defineProps<{
-    logoColor: string
-    bgColor: string
-    isGlobal?: boolean
-  }>(),
-  {
-    isGlobal: false,
-  },
-)
-
-watchEffect(() => {
-  if (props.isGlobal) {
-    document.body.style.backgroundColor = props.bgColor
-  }
-})
+const props = defineProps<{
+  logoColor: string
+  bgColor: string
+}>()
 </script>
 
 <template>

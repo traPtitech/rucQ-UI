@@ -7,13 +7,17 @@ import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
 
 const route = useRoute()
 const showLayout = computed(() => route.meta?.showLayout)
+import { watchEffect } from 'vue'
+
+watchEffect(() => {
+  document.body.style.backgroundColor = showLayout.value ? '#F6F6F6' : '#FF7300'
+})
 </script>
 
 <template>
   <background-pattern
     :logo-color="showLayout ? '#FFFFFF' : '#FF8200'"
     :bg-color="showLayout ? '#F6F6F6' : '#FF7300'"
-    :is-global="true"
   />
   <v-app>
     <header-button v-if="showLayout" />
