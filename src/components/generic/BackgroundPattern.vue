@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
-defineProps<{
-  logoColor: string;
-  bgColor: string;
-}>();
+import { defineProps } from 'vue'
+
+const props = defineProps<{
+  logoColor: string
+  bgColor: string
+}>()
 </script>
 
 <template>
-  <div :class="$style.background" :style="{backgroundColor: bgColor}">
+  <div :class="$style.background" :style="{ backgroundColor: props.bgColor }">
     <div :class="$style.center">
-      <div :class="$style.pattern" :style="{backgroundColor: logoColor}"></div>
+      <div :class="$style.pattern" :style="{ backgroundColor: props.logoColor }"></div>
     </div>
   </div>
-
-
 </template>
 
 <style module>
@@ -41,11 +40,13 @@ defineProps<{
   height: 8000px;
   width: 8000px;
   transform: rotate(-30deg);
-  mask-image:
-    url('/logo/logo-bg.svg'),
-    url('/logo/logo-bg.svg');
-  mask-size: 800px 600px, 800px 600px;
-  mask-position: 0 0, 400px 300px;
+  mask-image: url('/logo/logo-bg.svg'), url('/logo/logo-bg.svg');
+  mask-size:
+    800px 600px,
+    800px 600px;
+  mask-position:
+    0 0,
+    400px 300px;
   mask-repeat: repeat;
 }
 </style>

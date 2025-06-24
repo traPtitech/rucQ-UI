@@ -7,6 +7,11 @@ import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
 
 const route = useRoute()
 const showLayout = computed(() => route.meta?.showLayout)
+import { watchEffect } from 'vue'
+
+watchEffect(() => {
+  document.body.style.backgroundColor = showLayout.value ? '#F6F6F6' : '#FF7300'
+})
 </script>
 
 <template>
