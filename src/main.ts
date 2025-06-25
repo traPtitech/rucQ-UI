@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import router from './router'
 import { createPinia } from 'pinia'
 import { createVuetify } from 'vuetify'
+import MasonryWall from '@yeger/vue-masonry-wall'
 import App from './App.vue'
 
 import './assets/main.css'
@@ -68,6 +69,7 @@ const vuetify = createVuetify({
 app.use(pinia)
 app.use(router)
 app.use(vuetify)
+app.use(MasonryWall)
 
 import { useUserStore } from './store'
 
