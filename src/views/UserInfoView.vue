@@ -1,62 +1,79 @@
 <script setup lang="ts">
-// データを配列として定義
-const cardItems = [
-  {
-    id: 'Apple',
-    title: 'Apple',
-    content: 'Apple is a fruit that is often red or green. It is crunchy and sweet.',
-    level: 2,
-  },
-  {
-    id: 'Banana',
-    title: 'Banana',
-    content: '',
-    level: 3,
-  },
-  {
-    id: 'Orange',
-    title: 'Orange',
-    content: 'Orange is a citrus fruit that is orange in color.',
-    level: 1,
-  },
-  {
-    id: 'Strawberry',
-    title: 'Strawberry',
-    content:
-      'Strawberry is a red fruit with small seeds on its surface. It is sweet and often used in desserts.',
-    level: 2,
-  },
-]
+import MasonryWall from '@yeger/vue-masonry-wall'
+import PaymentInfo from '@/components/information/PaymentInfo.vue'
+import RoomInfo from '@/components/information/RoomInfo.vue'
+import { apiClient } from '@/api/apiClient'
+import { onMounted, ref } from 'vue'
+import { useCampStore } from '@/store'
+import { storeToRefs } from 'pinia'
+import type { components } from '@/api/schema'
+
+type QuestionGroup = components['schemas']['QuestionGroupResponse']
+type Dashboard = components['schemas']['DashboardResponse']
+
+const { camp } = storeToRefs(useCampStore())
+
+const getQuestionGroups = async () => {
+  if (!camp.value) throw new Error('Camp is not selected')
+  const { data, error } = await apiClient.GET('/api/camps/{campId}/question-groups', {
+    params: { path: { campId: camp.value.id } },
+  })
+  if (error || !data) throw error
+  return data
+}
+
+const getDashboard = async () => {
+  if (!camp.value) throw new Error('Camp is not selected')
+  const { data, error } = await apiClient.GET('/api/camps/{campId}/me', {
+    params: { path: { campId: camp.value.id } },
+  })
+  if (error || !data) throw error
+  return data
+}
+
+const questionGroups = ref<QuestionGroup[]>([])
+const dashboard = ref<Dashboard>()
+
+onMounted(async () => {
+  questionGroups.value = await getQuestionGroups()
+  dashboard.value = await getDashboard()
+})
 </script>
 
 <template>
-  <div :class="$style.container">
-    <masonry-wall :items="cardItems" :column-width="240" :gap="16">
-      <template #default="{ item }">
-        <div :class="$style.card">
-          <component :is="`h${item.level}`">{{ item.title }}</component>
-          <p v-if="item.content">{{ item.content }}</p>
-        </div>
+  <div :class="$style.container" v-if="questionGroups">
+    <room-info v-if="dashboard?.room" :room="dashboard?.room" />
+    <payment-info v-else :payment="dashboard?.payment" />
+    <div :class="$style.heading">合宿オプション</div>
+    <masonry-wall :items="questionGroups" :column-width="300" :gap="32">
+      <template #default="{ item: questionGroup }">
+        <v-card color="themePale">
+          <template v-slot:title>
+            <span class="font-weight-bold text-theme mr-auto">{{ questionGroup.name }}</span>
+          </template>
+          <v-card-text class="bg-white pt-4">{{ questionGroup.description }}</v-card-text>
+        </v-card>
       </template>
     </masonry-wall>
   </div>
 </template>
 
 <style module>
+.heading {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
 .container {
   height: 100%;
   width: 100%;
   margin: auto;
-  max-width: 1200px;
+  max-width: 800px;
   box-sizing: border-box;
   position: relative;
   padding: 16px;
-}
-
-.card {
-  background: white;
-  padding: 12px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 </style>
