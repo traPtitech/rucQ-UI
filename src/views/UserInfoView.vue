@@ -45,13 +45,24 @@ onMounted(async () => {
     <room-info v-if="dashboard?.room" :room="dashboard?.room" />
     <payment-info v-else :payment="dashboard?.payment" />
     <div :class="$style.heading">合宿オプション</div>
-    <masonry-wall :items="questionGroups" :column-width="300" :gap="32">
+    <masonry-wall :items="questionGroups" :column-width="300" :gap="16">
       <template #default="{ item: questionGroup }">
-        <v-card color="themePale">
+        <v-card color="themePale" elevation="0" :class="$style.card">
           <template v-slot:title>
-            <span class="font-weight-bold text-theme mr-auto">{{ questionGroup.name }}</span>
+            <div :class="$style.title">
+              <span class="font-weight-bold text-theme">{{ questionGroup.name }}</span>
+              <v-btn
+                density="comfortable"
+                elevation="0"
+                icon="mdi-square-edit-outline"
+                baseColor="transparent"
+                class="text-theme"
+              ></v-btn>
+            </div>
           </template>
-          <v-card-text class="bg-white pt-4">{{ questionGroup.description }}</v-card-text>
+          <v-card-text class="bg-white pt-4">
+            <div>{{ questionGroup.description }}</div>
+          </v-card-text>
         </v-card>
       </template>
     </masonry-wall>
@@ -75,5 +86,23 @@ onMounted(async () => {
   box-sizing: border-box;
   position: relative;
   padding: 16px;
+}
+
+.card {
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1) !important;
+  margin: 0 8px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 18px;
+  letter-spacing: 2px;
+  width: 100%;
+}
+
+.card :global(.v-card-item) {
+  padding: 4px 6px 4px 12px !important;
 }
 </style>
