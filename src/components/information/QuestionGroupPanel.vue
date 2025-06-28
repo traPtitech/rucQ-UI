@@ -5,21 +5,21 @@ import { apiClient } from '@/api/apiClient'
 import { useCampStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { ref, computed, onMounted, reactive } from 'vue'
+import QuestionField from '@/components/information/QuestionField.vue'
 
 const { camp } = storeToRefs(useCampStore())
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
+type Question = components['schemas']['QuestionResponse']
 
-const props = defineProps<{
-  questionGroup: QuestionGroup
-}>()
+const props = defineProps<{ questionGroup: QuestionGroup }>()
 
 const inEditMode = ref(false) // 編集モードであるか
 const isAnswered = ref(false) // すでに一度回答を送信したことがあるか
 
 // Vuetify の v-select に対応した形式で回答を保存する
 // { questionId: answerId（あれば）, 答えそのもの | optionId | optionId[] }
-const answers = reactive<Record<number, { id?: number; value?: number | string | number[] }>>({})
+const answersMap = reactive<Record<number, { id?: number; value?: number | string | number[] }>>({})
 
 const getMyAnswers = async () => {
   if (!camp.value) throw new Error('Camp is not selected')
@@ -30,22 +30,28 @@ const getMyAnswers = async () => {
   return data
 }
 
-// getMyAnswers の結果をリアクティブ変数 answers に格納する。事あるごとに呼ばれる
-const refreshAnswers = async () => {
+// getMyAnswers の結果をリアクティブ変数 answersMap に格納する
+const refreshAnswersMap = async () => {
+  for (const question of props.questionGroup.questions) {
+    answersMap[question.id] = {
+      value: question.type === 'multiple' ? [] : undefined,
+    } // 初期化
+  }
+
   for (const answer of await getMyAnswers()) {
     isAnswered.value = true // すでに回答済み
     switch (answer.type) {
       case 'free_text':
-        answers[answer.questionId] = { id: answer.id, value: answer.content as string }
+        answersMap[answer.questionId] = { id: answer.id, value: answer.content as string }
         break
       case 'free_number':
-        answers[answer.questionId] = { id: answer.id, value: answer.content as number }
+        answersMap[answer.questionId] = { id: answer.id, value: answer.content as number }
         break
       case 'single':
-        answers[answer.questionId] = { id: answer.id, value: answer.content.id }
+        answersMap[answer.questionId] = { id: answer.id, value: answer.content.id }
         break
       case 'multiple':
-        answers[answer.questionId] = {
+        answersMap[answer.questionId] = {
           id: answer.id,
           value: answer.content.map((option) => option.id),
         }
@@ -55,9 +61,6 @@ const refreshAnswers = async () => {
 
   if (!isAnswered.value) {
     inEditMode.value = true // まだ回答が存在しない場合、デフォルトで編集モードにする
-    for (const question of props.questionGroup.questions) {
-      answers[question.id] = { value: undefined }
-    }
   }
 }
 
@@ -65,7 +68,7 @@ const refreshAnswers = async () => {
 const allChecked = computed(() => {
   let result = true
   for (const question of props.questionGroup.questions) {
-    const answer = answers[question.id]
+    const answer = answersMap[question.id]
     if (!answer || answer.value === undefined || answer.value === null) {
       result = false
       break
@@ -74,152 +77,74 @@ const allChecked = computed(() => {
   return result
 })
 
-onMounted(refreshAnswers)
-
 // 非編集モードで回答を表示するための questionId: answerText のマップ
-const answerTexts = computed(() => {
-  const answerTexts = ref<Record<number, string>>({})
+const answerTextsMap = computed(() => {
+  const map = ref<Record<number, string>>({})
   for (const question of props.questionGroup.questions) {
-    const answer = answers[question.id] ?? { value: '' } // デフォルトで空文字
+    const answer = answersMap[question.id] ?? { value: '' } // デフォルトで空文字
     switch (question.type) {
       case 'free_text':
-        answerTexts.value[question.id] = answer.value as string
+        map.value[question.id] = answer.value as string
         break
       case 'free_number':
-        answerTexts.value[question.id] = String(answer.value)
+        map.value[question.id] = String(answer.value)
         break
       case 'single':
-        answerTexts.value[question.id] =
+        map.value[question.id] =
           question.options.find((option) => option.id === answer.value)?.content ?? ''
         break
       case 'multiple':
-        answerTexts.value[question.id] = question.options
+        map.value[question.id] = question.options
           .filter((option) => (answer.value as number[]).includes(option.id))
           .map((option) => option.content)
           .join(', ')
         break
     }
   }
-  return answerTexts
+  return map
 })
 
-const postAnswers = async () => {
-  if (!camp.value) throw new Error('Camp is not selected')
-  for (const question of props.questionGroup.questions) {
-    switch (question.type) {
-      case 'free_text': {
-        const { error } = await apiClient.POST('/api/answers', {
-          body: {
-            type: question.type,
-            questionId: question.id,
-            content: answers[question.id].value as string,
-          },
-        })
-        if (error) throw error
-        break
-      }
-      case 'free_number': {
-        const { error } = await apiClient.POST('/api/answers', {
-          body: {
-            type: question.type,
-            questionId: question.id,
-            content: answers[question.id].value as number,
-          },
-        })
-        if (error) throw error
-        break
-      }
-      case 'single': {
-        const { error } = await apiClient.POST('/api/answers', {
-          body: {
-            type: question.type,
-            questionId: question.id,
-            content: answers[question.id].value as number,
-          },
-        })
-        if (error) throw error
-        break
-      }
-      case 'multiple': {
-        const { error } = await apiClient.POST('/api/answers', {
-          body: {
-            type: question.type,
-            questionId: question.id,
-            content: answers[question.id].value as number[],
-          },
-        })
-        if (error) throw error
-        break
-      }
-    }
-  }
-  inEditMode.value = false
-  if (!import.meta.env.DEV) {
-    await refreshAnswers() // モックレスポンスが不完全なので開発環境では実行しない
+onMounted(refreshAnswersMap)
+
+const getAnswerBody = (question: Question, value: unknown) => {
+  switch (question.type) {
+    case 'free_text':
+      return { questionId: question.id, type: question.type, content: value as string } as const
+    case 'free_number':
+      return { questionId: question.id, type: question.type, content: value as number } as const
+    case 'single':
+      return { questionId: question.id, type: question.type, content: value as number } as const
+    case 'multiple':
+      return { questionId: question.id, type: question.type, content: value as number[] } as const
   }
 }
 
-// 既存回答の更新用
-const putAnswers = async () => {
-  if (!camp.value) throw new Error('Camp is not selected')
-  for (const question of props.questionGroup.questions) {
-    const answer = answers[question.id]
-    if (!answer || !answer.id) continue // 回答がない場合はスキップ
-    switch (question.type) {
-      case 'free_text': {
-        const { error } = await apiClient.PUT('/api/answers/{answerId}', {
-          params: { path: { answerId: answer.id } },
-          body: {
-            type: question.type,
-            questionId: question.id,
-            content: answers[question.id].value as string,
-          },
-        })
-        if (error) throw error
-        break
-      }
-      case 'free_number': {
-        const { error } = await apiClient.PUT('/api/answers/{answerId}', {
-          params: { path: { answerId: answer.id } },
-          body: {
-            type: question.type,
-            questionId: question.id,
-            content: answers[question.id].value as number,
-          },
-        })
-        if (error) throw error
-        break
-      }
-      case 'single': {
-        const { error } = await apiClient.PUT('/api/answers/{answerId}', {
-          params: { path: { answerId: answer.id } },
-          body: {
-            type: question.type,
-            questionId: question.id,
-            content: answers[question.id].value as number,
-          },
-        })
-        if (error) throw error
-        break
-      }
-      case 'multiple': {
-        const { error } = await apiClient.PUT('/api/answers/{answerId}', {
-          params: { path: { answerId: answer.id } },
-          body: {
-            type: question.type,
-            questionId: question.id,
-            content: answers[question.id].value as number[],
-          },
-        })
-        if (error) throw error
-        break
-      }
-    }
-  }
+// 変更を破棄
+const discard = async () => {
   inEditMode.value = false
   if (!import.meta.env.DEV) {
-    await refreshAnswers()
+    await refreshAnswersMap()
   }
+}
+
+// 回答の更新
+const sendAnswers = async () => {
+  for (const question of props.questionGroup.questions) {
+    const answer = answersMap[question.id]
+    const body = getAnswerBody(question, answer.value)
+
+    if (answer.id === undefined) {
+      const { error } = await apiClient.POST('/api/answers', { body })
+      if (error) throw error
+    } else {
+      const { error } = await apiClient.PUT('/api/answers/{answerId}', {
+        params: { path: { answerId: answer.id } },
+        body,
+      })
+      if (error) throw error
+    }
+  }
+  await discard()
 }
 </script>
 
@@ -238,12 +163,7 @@ const putAnswers = async () => {
             icon="mdi-close"
             baseColor="transparent"
             class="text-white"
-            @click="
-              () => {
-                inEditMode = false
-                refreshAnswers()
-              }
-            "
+            @click="discard"
           ></v-btn>
           <div v-else :class="$style.deadline">
             {{ getDayString(new Date(questionGroup.due)) }}
@@ -264,50 +184,13 @@ const putAnswers = async () => {
     <v-card-text v-if="inEditMode" class="bg-white pt-4">
       <div>{{ questionGroup.description }}</div>
       <div :class="$style.editContent">
-        <div v-for="question in questionGroup.questions" :key="question.id">
-          <v-text-field
-            v-model="answers[question.id].value"
-            v-if="answers[question.id] && question.type === 'free_text'"
-            :label="question.title"
-            :messages="[question.description ?? '']"
-            :rules="[(v) => !!v || '必須項目です']"
-            variant="underlined"
-          ></v-text-field>
-          <!-- prettier-ignore -->
-          <v-number-input
-            v-model="(answers[question.id].value as number)"
-            v-if="answers[question.id] && question.type === 'free_number'"
-            :label="question.title"
-            :messages="[question.description ?? '']"
-            :rules="[(v) => !!v || '必須項目です']"
-            variant="underlined"
-            control-variant="hidden"
-          ></v-number-input>
-          <v-select
-            v-model="answers[question.id].value"
-            v-if="answers[question.id] && question.type === 'single'"
-            :label="question.title"
-            :messages="[question.description ?? '']"
-            :rules="[(v) => !!v || '必須項目です']"
-            variant="underlined"
-            :items="question.options"
-            :item-value="(option) => option.id"
-            :item-title="(option) => option.content"
-          ></v-select>
-          <!-- prettier-ignore -->
-          <v-select
-            v-model="(answers[question.id].value as number[])"
-            v-if="answers[question.id] &&question.type === 'multiple'"
-            :label="question.title"
-            :messages="[question.description ?? '']"
-            :rules="[(v) => !!v || '必須項目です']"
-            variant="underlined"
-            multiple
-            :items="question.options"
-            :item-value="(option) => option.id"
-            :item-title="(option) => option.content"
-          ></v-select>
-        </div>
+        <question-field
+          v-for="question in questionGroup.questions"
+          :key="question.id"
+          v-model:value="answersMap[question.id].value"
+          :question="question"
+          :class="$style.questionField"
+        ></question-field>
       </div>
       <v-btn
         elevation="0"
@@ -316,7 +199,7 @@ const putAnswers = async () => {
         variant="flat"
         color="theme"
         :class="[$style.save, 'font-weight-bold']"
-        @click="isAnswered ? putAnswers() : postAnswers()"
+        @click="sendAnswers"
         :disabled="!allChecked"
       >
         <span class="font-weight-medium">保存</span>
@@ -326,10 +209,10 @@ const putAnswers = async () => {
       <div :class="$style.showContent">
         <div v-for="question in questionGroup.questions" :key="question.id">
           <v-text-field
-            v-if="answers[question.id]"
+            v-if="answersMap[question.id]"
             :label="question.title"
             variant="underlined"
-            v-model="answerTexts.value[question.id]"
+            v-model="answerTextsMap.value[question.id]"
             disabled
             :class="$style.showAnswer"
           ></v-text-field>
