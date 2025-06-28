@@ -7,6 +7,7 @@ import { onMounted, ref } from 'vue'
 import { useCampStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import type { components } from '@/api/schema'
+import QuestionGroupPanel from '@/components/information/QuestionGroupPanel.vue'
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Dashboard = components['schemas']['DashboardResponse']
@@ -48,23 +49,7 @@ onMounted(async () => {
     <div :class="$style.questionGroups">
       <masonry-wall :items="questionGroups" :column-width="300" :gap="16">
         <template #default="{ item: questionGroup }">
-          <v-card color="themePale" elevation="0" :class="$style.card">
-            <template v-slot:title>
-              <div :class="$style.title">
-                <span class="font-weight-bold text-theme">{{ questionGroup.name }}</span>
-                <v-btn
-                  density="comfortable"
-                  elevation="0"
-                  icon="mdi-square-edit-outline"
-                  baseColor="transparent"
-                  class="text-theme"
-                ></v-btn>
-              </div>
-            </template>
-            <v-card-text class="bg-white pt-4">
-              <div>{{ questionGroup.description }}</div>
-            </v-card-text>
-          </v-card>
+          <question-group-panel :questionGroup="questionGroup" />
         </template>
       </masonry-wall>
     </div>
@@ -95,23 +80,5 @@ onMounted(async () => {
   box-sizing: border-box;
   position: relative;
   padding: 16px;
-}
-
-.card {
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1) !important;
-  margin: 0 8px;
-}
-
-.title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 18px;
-  letter-spacing: 2px;
-  width: 100%;
-}
-
-.card :global(.v-card-item) {
-  padding: 4px 6px 4px 12px !important;
 }
 </style>
