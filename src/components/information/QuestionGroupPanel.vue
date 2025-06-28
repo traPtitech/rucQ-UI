@@ -230,9 +230,25 @@ const putAnswers = async () => {
         <span :class="['font-weight-bold', `text-${inEditMode ? 'white' : 'theme'}`]">{{
           questionGroup.name
         }}</span>
-        <div v-if="inEditMode" :class="$style.deadline">
-          {{ getDayString(new Date(questionGroup.due)) }}
-          <v-icon icon="mdi-calendar-clock" :class="$style.timeIcon"></v-icon>
+        <div v-if="inEditMode">
+          <v-btn
+            v-if="isAnswered"
+            density="comfortable"
+            elevation="0"
+            icon="mdi-close"
+            baseColor="transparent"
+            class="text-white"
+            @click="
+              () => {
+                inEditMode = false
+                refreshAnswers()
+              }
+            "
+          ></v-btn>
+          <div v-else :class="$style.deadline">
+            {{ getDayString(new Date(questionGroup.due)) }}
+            <v-icon icon="mdi-calendar-clock" :class="$style.timeIcon"></v-icon>
+          </div>
         </div>
         <v-btn
           v-else

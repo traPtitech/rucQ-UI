@@ -142,11 +142,7 @@ export const questionsHandlers = [
             questionGroupId: 3,
             title: 'アレルギー',
             description: null,
-            type: 'multiple',
-            options: [
-              { id: 18, questionId: 11, content: 'ある' },
-              { id: 19, questionId: 11, content: 'ない' },
-            ],
+            type: 'free_text',
             isPublic: true,
             isOpen: false,
           },
