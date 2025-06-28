@@ -7,17 +7,23 @@ type Payment = components['schemas']['PaymentResponse']
 const props = defineProps<{ payment?: Payment }>()
 
 const isPaid = computed(() => props.payment?.amount === props.payment?.amountPaid)
+
+// 支払い金額をカンマによる 3 桁区切りで表示
+const sepAmount = computed(() => {
+  if (props.payment?.amount == null) return ''
+  return new Intl.NumberFormat('ja-JP').format(props.payment.amount)
+})
 </script>
 
 <template>
   <div v-if="props.payment" :class="$style.container">
     <div v-if="isPaid" :class="[$style.content, $style.paid]">
       <v-icon icon="mdi-check" size="36" class="mx-3" />
-      <span :class="$style.text">¥100 支払い済みです</span>
+      <span :class="$style.text">¥ {{ sepAmount }} 支払い済みです</span>
     </div>
     <div v-else :class="[$style.content, $style.notpaid]">
       <v-icon icon="mdi-alert-circle-outline" size="36" class="mx-3" />
-      <span :class="$style.text">¥100 の支払いが完了していません</span>
+      <span :class="$style.text">¥ {{ sepAmount }} の支払いが完了していません</span>
     </div>
   </div>
 </template>
