@@ -45,27 +45,29 @@ onMounted(async () => {
     <room-info v-if="dashboard?.room" :room="dashboard?.room" />
     <payment-info v-else :payment="dashboard?.payment" />
     <div :class="$style.heading">合宿オプション</div>
-    <masonry-wall :items="questionGroups" :column-width="300" :gap="16">
-      <template #default="{ item: questionGroup }">
-        <v-card color="themePale" elevation="0" :class="$style.card">
-          <template v-slot:title>
-            <div :class="$style.title">
-              <span class="font-weight-bold text-theme">{{ questionGroup.name }}</span>
-              <v-btn
-                density="comfortable"
-                elevation="0"
-                icon="mdi-square-edit-outline"
-                baseColor="transparent"
-                class="text-theme"
-              ></v-btn>
-            </div>
-          </template>
-          <v-card-text class="bg-white pt-4">
-            <div>{{ questionGroup.description }}</div>
-          </v-card-text>
-        </v-card>
-      </template>
-    </masonry-wall>
+    <div :class="$style.questionGroups">
+      <masonry-wall :items="questionGroups" :column-width="300" :gap="16">
+        <template #default="{ item: questionGroup }">
+          <v-card color="themePale" elevation="0" :class="$style.card">
+            <template v-slot:title>
+              <div :class="$style.title">
+                <span class="font-weight-bold text-theme">{{ questionGroup.name }}</span>
+                <v-btn
+                  density="comfortable"
+                  elevation="0"
+                  icon="mdi-square-edit-outline"
+                  baseColor="transparent"
+                  class="text-theme"
+                ></v-btn>
+              </div>
+            </template>
+            <v-card-text class="bg-white pt-4">
+              <div>{{ questionGroup.description }}</div>
+            </v-card-text>
+          </v-card>
+        </template>
+      </masonry-wall>
+    </div>
   </div>
 </template>
 
@@ -76,6 +78,13 @@ onMounted(async () => {
   margin-bottom: 20px;
   letter-spacing: 2px;
   text-align: center;
+}
+
+.questionGroups {
+  width: calc(100% + 24px);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .container {

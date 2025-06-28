@@ -32,7 +32,7 @@ const isPaid = computed(() => props.payment?.amount === props.payment?.amountPai
 }
 
 .content {
-  width: calc(100% - 16px);
+  width: 100%;
   height: 56px;
   display: flex;
   align-items: center;
