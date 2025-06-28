@@ -9,8 +9,6 @@ import { ref, computed, onMounted, reactive } from 'vue'
 const { camp } = storeToRefs(useCampStore())
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
-type Answer = components['schemas']['AnswerResponse']
-type Option = components['schemas']['OptionResponse']
 
 const props = defineProps<{
   questionGroup: QuestionGroup
@@ -21,7 +19,8 @@ const inEditMode = ref(false)
 const cardColor = computed(() => (inEditMode.value ? 'theme' : 'themePale'))
 const titleColor = computed(() => (inEditMode.value ? 'white' : 'theme'))
 
-const answers = reactive<Record<number, Answer>>({})
+// Vuetify の形式に対応させて { answerId: 答えそのもの or optionId or optionId[] }
+const answers = reactive<Record<number, number | string | number[]>>({})
 
 const getMyAnswers = async () => {
   if (!camp.value) throw new Error('Camp is not selected')
@@ -33,11 +32,22 @@ const getMyAnswers = async () => {
 }
 
 const refreshAnswers = async () => {
-  const answersData = await getMyAnswers()
-  Object.assign(
-    answers,
-    Object.fromEntries(answersData.map((answer) => [answer.questionId, answer])),
-  )
+  for (const answer of await getMyAnswers()) {
+    switch (answer.type) {
+      case 'free_text':
+        answers[answer.questionId] = answer.content as string
+        break
+      case 'free_number':
+        answers[answer.questionId] = answer.content as number
+        break
+      case 'single':
+        answers[answer.questionId] = answer.content.id
+        break
+      case 'multiple':
+        answers[answer.questionId] = answer.content.map((option) => option.id)
+        break
+    }
+  }
 }
 
 const answerTexts = computed(() => {
@@ -45,19 +55,23 @@ const answerTexts = computed(() => {
   for (const question of props.questionGroup.questions) {
     const answer = answers[question.id]
     if (!answer) continue
-    switch (answer.type) {
+    switch (question.type) {
       case 'free_text':
+        answerTexts.value[question.id] = answer as string
+        break
       case 'free_number':
-        answerTexts.value[question.id] = String(answer.content)
+        answerTexts.value[question.id] = String(answer)
         break
       case 'single':
-        answerTexts.value[question.id] = String(answer.content.content)
+        answerTexts.value[question.id] =
+          question.options.find((option) => option.id === answer)?.content ?? ''
         break
       case 'multiple':
-        answerTexts.value[question.id] = answer.content.map((option) => option.content).join(', ')
+        answerTexts.value[question.id] = question.options
+          .filter((option) => (answer as number[]).includes(option.id))
+          .map((option) => option.content)
+          .join(', ')
         break
-      default:
-        answerTexts.value[question.id] = ''
     }
   }
   return answerTexts
@@ -91,7 +105,7 @@ onMounted(refreshAnswers)
       <div :class="$style.editContent">
         <div v-for="question in questionGroup.questions" :key="question.id">
           <v-text-field
-            v-model="answers[question.id].content"
+            v-model="answers[question.id]"
             v-if="question.type === 'free_text'"
             :label="question.title"
             :messages="[question.description ?? '']"
@@ -100,7 +114,7 @@ onMounted(refreshAnswers)
           ></v-text-field>
           <!-- prettier-ignore -->
           <v-number-input
-            v-model="(answers[question.id].content as number)"
+            v-model="(answers[question.id] as number)"
             v-if="question.type === 'free_number'"
             :label="question.title"
             :messages="[question.description ?? '']"
@@ -109,19 +123,19 @@ onMounted(refreshAnswers)
             control-variant="hidden"
           ></v-number-input>
           <v-select
-            v-model="answers[question.id].content"
+            v-model="answers[question.id]"
             v-if="question.type === 'single'"
             :label="question.title"
             :messages="[question.description ?? '']"
             :rules="[(v) => !!v || '必須項目です']"
             variant="underlined"
             :items="question.options"
-            item-value="id"
-            item-title="content"
+            :item-value="(option) => option.id"
+            :item-title="(option) => option.content"
           ></v-select>
           <!-- prettier-ignore -->
           <v-select
-            v-model="(answers[question.id].content as readonly Option[])"
+            v-model="(answers[question.id] as number[])"
             v-if="question.type === 'multiple'"
             :label="question.title"
             :messages="[question.description ?? '']"
@@ -129,8 +143,8 @@ onMounted(refreshAnswers)
             variant="underlined"
             multiple
             :items="question.options"
-            item-value="id"
-            item-title="content"
+            :item-value="(option) => option.id"
+            :item-title="(option) => option.content"
           ></v-select>
         </div>
       </div>
