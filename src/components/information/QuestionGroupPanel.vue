@@ -17,12 +17,9 @@ const props = defineProps<{
 const inEditMode = ref(false) // 編集モードであるか
 const isAnswered = ref(false) // すでに一度回答を送信したことがあるか
 
-const cardColor = computed(() => (inEditMode.value ? 'theme' : 'themePale'))
-const titleColor = computed(() => (inEditMode.value ? 'white' : 'theme'))
-
 // Vuetify の v-select に対応した形式で回答を保存する
 // { questionId: answerId（あれば）, 答えそのもの | optionId | optionId[] }
-const answers = reactive<Record<number, { id?: number; value: number | string | number[] }>>({})
+const answers = reactive<Record<number, { id?: number; value?: number | string | number[] }>>({})
 
 const getMyAnswers = async () => {
   if (!camp.value) throw new Error('Camp is not selected')
@@ -33,6 +30,7 @@ const getMyAnswers = async () => {
   return data
 }
 
+// getMyAnswers の結果をリアクティブ変数 answers に格納する。事あるごとに呼ばれる
 const refreshAnswers = async () => {
   for (const answer of await getMyAnswers()) {
     isAnswered.value = true // すでに回答済み
@@ -54,13 +52,27 @@ const refreshAnswers = async () => {
         break
     }
   }
+
   if (!isAnswered.value) {
     inEditMode.value = true // まだ回答が存在しない場合、デフォルトで編集モードにする
     for (const question of props.questionGroup.questions) {
-      answers[question.id] = { value: '' }
+      answers[question.id] = { value: undefined }
     }
   }
 }
+
+// すべての質問に適切な回答が与えられているか
+const allChecked = computed(() => {
+  let result = true
+  for (const question of props.questionGroup.questions) {
+    const answer = answers[question.id]
+    if (!answer || answer.value === undefined || answer.value === null) {
+      result = false
+      break
+    }
+  }
+  return result
+})
 
 onMounted(refreshAnswers)
 
@@ -212,10 +224,12 @@ const putAnswers = async () => {
 </script>
 
 <template>
-  <v-card :color="cardColor" elevation="0" :class="$style.card">
+  <v-card :color="inEditMode ? 'theme' : 'themePale'" elevation="0" :class="$style.card">
     <template v-slot:title>
       <div :class="$style.title">
-        <span :class="['font-weight-bold', `text-${titleColor}`]">{{ questionGroup.name }}</span>
+        <span :class="['font-weight-bold', `text-${inEditMode ? 'white' : 'theme'}`]">{{
+          questionGroup.name
+        }}</span>
         <div v-if="inEditMode" :class="$style.deadline">
           {{ getDayString(new Date(questionGroup.due)) }}
           <v-icon icon="mdi-calendar-clock" :class="$style.timeIcon"></v-icon>
@@ -237,7 +251,7 @@ const putAnswers = async () => {
         <div v-for="question in questionGroup.questions" :key="question.id">
           <v-text-field
             v-model="answers[question.id].value"
-            v-if="question.type === 'free_text'"
+            v-if="answers[question.id] && question.type === 'free_text'"
             :label="question.title"
             :messages="[question.description ?? '']"
             :rules="[(v) => !!v || '必須項目です']"
@@ -246,7 +260,7 @@ const putAnswers = async () => {
           <!-- prettier-ignore -->
           <v-number-input
             v-model="(answers[question.id].value as number)"
-            v-if="question.type === 'free_number'"
+            v-if="answers[question.id] && question.type === 'free_number'"
             :label="question.title"
             :messages="[question.description ?? '']"
             :rules="[(v) => !!v || '必須項目です']"
@@ -255,7 +269,7 @@ const putAnswers = async () => {
           ></v-number-input>
           <v-select
             v-model="answers[question.id].value"
-            v-if="question.type === 'single'"
+            v-if="answers[question.id] && question.type === 'single'"
             :label="question.title"
             :messages="[question.description ?? '']"
             :rules="[(v) => !!v || '必須項目です']"
@@ -267,7 +281,7 @@ const putAnswers = async () => {
           <!-- prettier-ignore -->
           <v-select
             v-model="(answers[question.id].value as number[])"
-            v-if="question.type === 'multiple'"
+            v-if="answers[question.id] &&question.type === 'multiple'"
             :label="question.title"
             :messages="[question.description ?? '']"
             :rules="[(v) => !!v || '必須項目です']"
@@ -287,6 +301,7 @@ const putAnswers = async () => {
         color="theme"
         :class="[$style.save, 'font-weight-bold']"
         @click="isAnswered ? putAnswers() : postAnswers()"
+        :disabled="!allChecked"
       >
         <span class="font-weight-medium">保存</span>
       </v-btn>
@@ -295,6 +310,7 @@ const putAnswers = async () => {
       <div :class="$style.showContent">
         <div v-for="question in questionGroup.questions" :key="question.id">
           <v-text-field
+            v-if="answers[question.id]"
             :label="question.title"
             variant="underlined"
             v-model="answerTexts.value[question.id]"
@@ -311,6 +327,7 @@ const putAnswers = async () => {
 .card {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1) !important;
   margin: 0 8px;
+  transition: none !important;
 }
 
 .title {
