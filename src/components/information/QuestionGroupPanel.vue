@@ -10,6 +10,7 @@ const { camp } = storeToRefs(useCampStore())
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Answer = components['schemas']['AnswerResponse']
+type Option = components['schemas']['OptionResponse']
 
 const props = defineProps<{
   questionGroup: QuestionGroup
@@ -90,13 +91,16 @@ onMounted(refreshAnswers)
       <div :class="$style.editContent">
         <div v-for="question in questionGroup.questions" :key="question.id">
           <v-text-field
+            v-model="answers[question.id].content"
             v-if="question.type === 'free_text'"
             :label="question.title"
             :messages="[question.description ?? '']"
             :rules="[(v) => !!v || '必須項目です']"
             variant="underlined"
           ></v-text-field>
+          <!-- prettier-ignore -->
           <v-number-input
+            v-model="(answers[question.id].content as number)"
             v-if="question.type === 'free_number'"
             :label="question.title"
             :messages="[question.description ?? '']"
@@ -105,6 +109,7 @@ onMounted(refreshAnswers)
             control-variant="hidden"
           ></v-number-input>
           <v-select
+            v-model="answers[question.id].content"
             v-if="question.type === 'single'"
             :label="question.title"
             :messages="[question.description ?? '']"
@@ -114,7 +119,9 @@ onMounted(refreshAnswers)
             item-value="id"
             item-title="content"
           ></v-select>
+          <!-- prettier-ignore -->
           <v-select
+            v-model="(answers[question.id].content as readonly Option[])"
             v-if="question.type === 'multiple'"
             :label="question.title"
             :messages="[question.description ?? '']"
