@@ -224,4 +224,16 @@ export const questionsHandlers = [
       },
     ])
   }),
+  http.post('/api/answers', async () => {
+    // 送られた request には answer の id しか含まれておらず、
+    // そこから完全な Option を復元することが困難なので、とりあえず無関係なレスポンスを返す
+    const resp = {
+      id: 1,
+      type: 'free_text' as const,
+      questionId: 301,
+      userId: 'traP',
+      content: 'はろー',
+    }
+    return HttpResponse.json(resp, { status: 201 })
+  }),
 ]

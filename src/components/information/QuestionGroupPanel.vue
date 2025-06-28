@@ -50,6 +50,8 @@ const refreshAnswers = async () => {
   }
 }
 
+onMounted(refreshAnswers)
+
 const answerTexts = computed(() => {
   const answerTexts = ref<Record<number, string>>({})
   for (const question of props.questionGroup.questions) {
@@ -77,7 +79,62 @@ const answerTexts = computed(() => {
   return answerTexts
 })
 
-onMounted(refreshAnswers)
+const putAnswers = async () => {
+  if (!camp.value) throw new Error('Camp is not selected')
+  for (const question of props.questionGroup.questions) {
+    switch (question.type) {
+      case 'free_text': {
+        const { error } = await apiClient.POST('/api/answers', {
+          body: {
+            type: question.type,
+            questionId: question.id,
+            content: answers[question.id] as string,
+          },
+        })
+        if (error) throw error
+        break
+      }
+      case 'free_number': {
+        const { error } = await apiClient.POST('/api/answers', {
+          body: {
+            type: question.type,
+            questionId: question.id,
+            content: answers[question.id] as number,
+          },
+        })
+        if (error) throw error
+        break
+      }
+      case 'single': {
+        const { error } = await apiClient.POST('/api/answers', {
+          body: {
+            type: question.type,
+            questionId: question.id,
+            content: answers[question.id] as number,
+          },
+        })
+        if (error) throw error
+        break
+      }
+      case 'multiple': {
+        const { error } = await apiClient.POST('/api/answers', {
+          body: {
+            type: question.type,
+            questionId: question.id,
+            content: answers[question.id] as number[],
+          },
+        })
+        if (error) throw error
+        break
+      }
+    }
+  }
+  inEditMode.value = false
+
+  if (!import.meta.env.DEV) {
+    await refreshAnswers() // モックレスポンスが不完全なので開発環境では実行しない
+  }
+}
 </script>
 
 <template>
@@ -155,7 +212,7 @@ onMounted(refreshAnswers)
         variant="flat"
         color="theme"
         :class="[$style.save, 'font-weight-bold']"
-        @click="inEditMode = false"
+        @click="putAnswers"
       >
         <span class="font-weight-medium">保存</span>
       </v-btn>
