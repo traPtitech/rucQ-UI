@@ -19,7 +19,7 @@ const getQuestionGroups = async () => {
   const { data, error } = await apiClient.GET('/api/camps/{campId}/question-groups', {
     params: { path: { campId: camp.value.id } },
   })
-  if (error || !data) throw error
+  if (error || !data) throw error ?? new Error('Failed to fetch question groups')
   return data
 }
 
@@ -28,7 +28,7 @@ const getDashboard = async () => {
   const { data, error } = await apiClient.GET('/api/camps/{campId}/me', {
     params: { path: { campId: camp.value.id } },
   })
-  if (error || !data) throw error
+  if (error || !data) throw error ?? new Error('Failed to fetch dashboard')
   return data
 }
 

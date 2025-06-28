@@ -163,4 +163,78 @@ export const questionsHandlers = [
       },
     ])
   }),
+  http.get('/api/me/question-groups/{questionGroupId}/answers', async () => {
+    return HttpResponse.json([
+      {
+        id: 199,
+        type: 'single',
+        questionId: 1,
+        userId: 'traP',
+        content: { id: 1, questionId: 1, content: '乗る' },
+      },
+      {
+        id: 200,
+        type: 'single',
+        questionId: 2,
+        userId: 'traP',
+        content: { id: 4, questionId: 2, content: '乗らない' },
+      },
+      {
+        id: 201,
+        type: 'single',
+        questionId: 3,
+        userId: 'traP',
+        content: { id: 5, questionId: 3, content: 'する' },
+      },
+      {
+        id: 202,
+        type: 'single',
+        questionId: 4,
+        userId: 'traP',
+        content: { id: 7, questionId: 4, content: '借りる' },
+      },
+      {
+        id: 203,
+        type: 'single',
+        questionId: 5,
+        userId: 'traP',
+        content: { id: 10, questionId: 5, content: '借りない' },
+      },
+      {
+        id: 204,
+        type: 'single',
+        questionId: 6,
+        userId: 'traP',
+        content: { id: 12, questionId: 6, content: 'M' },
+      },
+      {
+        id: 205,
+        type: 'single',
+        questionId: 7,
+        userId: 'traP',
+        content: { id: 14, questionId: 7, content: '借りる' },
+      },
+      {
+        id: 206,
+        type: 'single',
+        questionId: 8,
+        userId: 'traP',
+        content: { id: 16, questionId: 8, content: '借りる' },
+      },
+      {
+        id: 207,
+        type: 'free_number',
+        questionId: 9,
+        userId: 'traP',
+        content: 170,
+      },
+      {
+        id: 208,
+        type: 'free_number',
+        questionId: 10,
+        userId: 'traP',
+        content: 26,
+      },
+    ])
+  }),
 ]
