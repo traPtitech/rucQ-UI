@@ -66,7 +66,7 @@ onMounted(async () => {
 }
 
 .questionGroups {
-  width: calc(100% + 24px);
+  width: calc(100% + 8px);
   position: relative;
   left: 50%;
   transform: translateX(-50%);
