@@ -13,25 +13,12 @@ export const questionsHandlers = [
           {
             id: 1,
             questionGroupId: 1,
-            title: '行きのバス',
+            title: '乗るものにチェック',
             description: null,
-            type: 'single',
+            type: 'multiple',
             options: [
-              { id: 1, questionId: 1, content: '乗る' },
-              { id: 2, questionId: 1, content: '乗らない' },
-            ],
-            isPublic: true,
-            isOpen: false,
-          },
-          {
-            id: 2,
-            questionGroupId: 1,
-            title: '帰りのバス',
-            description: null,
-            type: 'single',
-            options: [
-              { id: 3, questionId: 2, content: '乗る' },
-              { id: 4, questionId: 2, content: '乗らない' },
+              { id: 1, questionId: 1, content: '行き' },
+              { id: 2, questionId: 1, content: '帰り' },
             ],
             isPublic: true,
             isOpen: false,
@@ -167,18 +154,18 @@ export const questionsHandlers = [
     return HttpResponse.json([
       {
         id: 199,
-        type: 'single',
+        type: 'multiple',
         questionId: 1,
         userId: 'traP',
-        content: { id: 1, questionId: 1, content: '乗る' },
+        content: [{ id: 1, questionId: 1, content: '行き' }],
       },
-      {
-        id: 200,
-        type: 'single',
-        questionId: 2,
-        userId: 'traP',
-        content: { id: 4, questionId: 2, content: '乗らない' },
-      },
+      // {
+      //   id: 200,
+      //   type: 'single',
+      //   questionId: 2,
+      //   userId: 'traP',
+      //   content: { id: 4, questionId: 2, content: '乗らない' },
+      // },
       {
         id: 201,
         type: 'single',
