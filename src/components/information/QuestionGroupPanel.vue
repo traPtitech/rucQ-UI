@@ -5,7 +5,8 @@ import { apiClient } from '@/api/apiClient'
 import { useCampStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { ref, computed, onMounted, reactive } from 'vue'
-import QuestionField from '@/components/information/QuestionField.vue'
+import QuestionEditField from '@/components/information/QuestionEditField.vue'
+import QuestionShowField from '@/components/information/QuestionShowField.vue'
 
 const { camp } = storeToRefs(useCampStore())
 
@@ -16,6 +17,7 @@ const props = defineProps<{ questionGroup: QuestionGroup }>()
 
 const inEditMode = ref(false) // 編集モードであるか
 const isAnswered = ref(false) // すでに一度回答を送信したことがあるか
+const isReady = ref(false) // 質問のデータが読み込まれたか
 
 const getMyAnswers = async () => {
   if (!camp.value) throw new Error('Camp is not selected')
@@ -73,6 +75,8 @@ const refreshAnswersMap = async () => {
   if (!isAnswered.value) {
     inEditMode.value = true // まだ回答が一つも存在しない場合、デフォルトで編集モードにする
   }
+
+  isReady.value = true
 }
 
 // すべての質問に適切な回答が与えられているか
@@ -90,33 +94,6 @@ const allChecked = computed(() => {
 
 // isOpen が true の質問が 1 つ以上存在するか。もし false ならばそもそも編集モードに入れない
 const isEditable = computed(() => props.questionGroup.questions.some((question) => question.isOpen))
-
-// 非編集モードで回答を表示するための questionId: answerText のマップ
-const answerTextsMap = computed(() => {
-  const map = ref<Record<number, string>>({})
-  for (const question of props.questionGroup.questions) {
-    const answer = answersMap[question.id] ?? { value: '' } // デフォルトで空文字
-    switch (question.type) {
-      case 'free_text':
-        map.value[question.id] = answer.value as string
-        break
-      case 'free_number':
-        map.value[question.id] = String(answer.value)
-        break
-      case 'single':
-        map.value[question.id] =
-          question.options.find((option) => option.id === answer.value)?.content ?? ''
-        break
-      case 'multiple':
-        map.value[question.id] = question.options
-          .filter((option) => (answer.value as number[]).includes(option.id))
-          .map((option) => option.content)
-          .join(', ')
-        break
-    }
-  }
-  return map
-})
 
 // 編集を終了
 const quitEditMode = async () => {
@@ -233,20 +210,20 @@ onMounted(refreshAnswersMap)
       <div :class="$style.editContent">
         <div v-for="(unit, index) in questionUnits" :key="index">
           <div :class="$style.unitColumns" v-if="unit.size === 1">
-            <question-field
+            <question-edit-field
               v-for="question in unit.questions"
               :key="question.id"
-              v-model:value="answersMap[question.id].value"
+              :value="answersMap[question.id].value"
               :question="question"
-            ></question-field>
+            ></question-edit-field>
           </div>
-          <question-field
+          <question-edit-field
             v-else
             v-for="question in unit.questions"
             :key="question.id"
-            v-model:value="answersMap[question.id].value"
+            :value="answersMap[question.id].value"
             :question="question"
-          ></question-field>
+          ></question-edit-field>
         </div>
       </div>
       <v-btn
@@ -266,26 +243,22 @@ onMounted(refreshAnswersMap)
       <div :class="$style.showContent">
         <div v-for="(unit, index) in questionUnits" :key="index">
           <div :class="$style.unitColumns" v-if="unit.size === 1">
-            <v-text-field
+            <question-show-field
               v-for="question in unit.questions"
               :key="question.id"
-              :label="question.title"
-              variant="underlined"
-              v-model="answerTextsMap.value[question.id]"
-              disabled
-              :class="$style.showAnswer"
-            ></v-text-field>
+              :question="question"
+              :value="answersMap[question.id]?.value"
+              :is-ready="isReady"
+            />
           </div>
-          <v-text-field
+          <question-show-field
             v-else
             v-for="question in unit.questions"
             :key="question.id"
-            :label="question.title"
-            variant="underlined"
-            v-model="answerTextsMap.value[question.id]"
-            disabled
-            :class="$style.showAnswer"
-          ></v-text-field>
+            :question="question"
+            :value="answersMap[question.id]?.value"
+            :is-ready="isReady"
+          />
         </div>
       </div>
     </v-card-text>
@@ -347,10 +320,6 @@ onMounted(refreshAnswersMap)
   grid-template-columns: 1fr 1fr;
   column-gap: 16px;
   align-items: flex-start;
-}
-
-.showAnswer :global(.v-field) {
-  opacity: 1;
 }
 
 .disabledEdit {

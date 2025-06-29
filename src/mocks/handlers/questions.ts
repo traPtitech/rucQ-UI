@@ -6,27 +6,6 @@ export const questionsHandlers = [
     return HttpResponse.json([
       {
         id: 1,
-        name: 'バス',
-        description: 'バスに乗る？',
-        due: '2023-10-01T12:00:00Z',
-        questions: [
-          {
-            id: 1,
-            questionGroupId: 1,
-            title: '乗るものにチェック',
-            description: null,
-            type: 'multiple',
-            options: [
-              { id: 1, questionId: 1, content: '行き' },
-              { id: 2, questionId: 1, content: '帰り' },
-            ],
-            isPublic: true,
-            isOpen: false,
-          },
-        ],
-      },
-      {
-        id: 2,
         name: 'スキー',
         description:
           'スキー・スノボをする人のための質問です。借りるものを全て選んで保存してください。',
@@ -155,6 +134,27 @@ export const questionsHandlers = [
         ],
       },
       {
+        id: 2,
+        name: 'バス',
+        description: 'バスに乗る？',
+        due: '2023-10-01T12:00:00Z',
+        questions: [
+          {
+            id: 1,
+            questionGroupId: 1,
+            title: '乗るものにチェック',
+            description: null,
+            type: 'multiple',
+            options: [
+              { id: 1, questionId: 1, content: '行き' },
+              { id: 2, questionId: 1, content: '帰り' },
+            ],
+            isPublic: true,
+            isOpen: false,
+          },
+        ],
+      },
+      {
         id: 3,
         name: 'その他',
         description: 'その他の質問です。',
@@ -175,25 +175,6 @@ export const questionsHandlers = [
   }),
   http.get('/api/me/question-groups/{questionGroupId}/answers', async ({ params }) => {
     if (params.questionGroupId === '1') {
-      return HttpResponse.json([
-        {
-          id: 201,
-          type: 'multiple',
-          questionId: 1,
-          userId: 'traP',
-          content: [{ id: 1, questionId: 1, content: '行き' }],
-        },
-        // {
-        //   id: 202,
-        //   type: 'single',
-        //   questionId: 2,
-        //   userId: 'traP',
-        //   content: { id: 4, questionId: 2, content: '乗らない' },
-        // },
-      ])
-    }
-
-    if (params.questionGroupId === '2') {
       return HttpResponse.json([
         {
           id: 203,
@@ -265,6 +246,25 @@ export const questionsHandlers = [
           userId: 'traP',
           content: 26,
         },
+      ])
+    }
+
+    if (params.questionGroupId === '2') {
+      return HttpResponse.json([
+        {
+          id: 201,
+          type: 'multiple',
+          questionId: 1,
+          userId: 'traP',
+          content: [{ id: 1, questionId: 1, content: '行き' }],
+        },
+        // {
+        //   id: 202,
+        //   type: 'single',
+        //   questionId: 2,
+        //   userId: 'traP',
+        //   content: { id: 4, questionId: 2, content: '乗らない' },
+        // },
       ])
     }
 
