@@ -5,4 +5,7 @@ export const usersHandlers = [
   http.get('/api/me', async () => {
     return HttpResponse.json({ id: 'traP', isStaff: true })
   }),
+  http.get('/api/camps/{campId}/participants', async () => {
+    return HttpResponse.json([{ id: 'traP', isStaff: true }])
+  }),
 ]

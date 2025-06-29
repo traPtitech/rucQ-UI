@@ -26,7 +26,7 @@ const vuetify = createVuetify({
           darkGray: '#444444',
           gray: '#aaaaaa',
           lightGray: '#e0e0e0',
-          white: '#f6f6f6',
+          white: '#ffffff',
           exwhite: '#ffffff',
 
           ash: '#444444', // darkGray に同じ。イベントの色名はこっちを採用
@@ -48,11 +48,11 @@ const vuetify = createVuetify({
           pinkPale: '#FFB6E9',
 
           theme: '#ff7300',
-          themePale: '#ffe2b2',
+          themePale: '#FFE5C9',
 
           text: '#000000', // var(--color-black)
-          background: '#f6f6f6', // var(--color-background)
-          surface: '#f6f6f6',
+          background: '#ffffff', // var(--color-background)
+          surface: '#ffffff',
           primary: '#ff7300', // var(--color-orange)
           secondary: '#ffe2b2', // var(--color-orange-pale)
           error: '#ff4d00', // var(--color-red)
@@ -62,23 +62,18 @@ const vuetify = createVuetify({
   },
 })
 
-// 調べた限りでは、Vuetify のテーマ設定は基本的にこの createVuetify の中をいじって行うらしい
-// base.css の色定義が必要な場面も多いので、どうにか同期させられたら嬉しいんだけれdお
-
 app.use(pinia)
 app.use(router)
 app.use(vuetify)
-
-import { useUserStore } from './store'
-
-const initApp = async () => {
-  useUserStore().initUser()
-  app.mount('#app')
-}
 
 if (import.meta.env.DEV) {
   const { worker } = await import('./mocks/browser')
   await worker.start()
 }
 
-initApp()
+import { useUserStore, useCampStore } from './store'
+
+const me = await useUserStore().initUser()
+await useCampStore().initCamp(me)
+
+app.mount('#app')
