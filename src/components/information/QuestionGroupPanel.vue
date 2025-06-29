@@ -77,6 +77,11 @@ const allChecked = computed(() => {
   return result
 })
 
+// isOpen が true の質問が 1 つ以上存在するか
+const isAnswerable = computed(() => {
+  return props.questionGroup.questions.some((question) => question.isOpen)
+})
+
 // 非編集モードで回答を表示するための questionId: answerText のマップ
 const answerTextsMap = computed(() => {
   const map = ref<Record<number, string>>({})
@@ -176,8 +181,9 @@ const sendAnswers = async () => {
           elevation="0"
           icon="mdi-square-edit-outline"
           baseColor="transparent"
-          class="text-theme"
+          :class="isAnswerable ? ['text-theme'] : ['text-theme', $style.disabledEdit]"
           @click="inEditMode = true"
+          :disabled="!isAnswerable"
         ></v-btn>
       </div>
     </template>
@@ -209,7 +215,7 @@ const sendAnswers = async () => {
       <div :class="$style.showContent">
         <div v-for="question in questionGroup.questions" :key="question.id">
           <v-text-field
-            v-if="answersMap[question.id]"
+            v-if="answerTextsMap.value[question.id] !== undefined"
             :label="question.title"
             variant="underlined"
             v-model="answerTextsMap.value[question.id]"
@@ -284,5 +290,13 @@ const sendAnswers = async () => {
 
 .showAnswer :global(.v-field) {
   opacity: 1;
+}
+
+.disabledEdit {
+  opacity: 0.5 !important;
+}
+
+.disabledEdit :global(.v-btn__overlay) {
+  background-color: transparent !important;
 }
 </style>

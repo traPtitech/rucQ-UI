@@ -43,7 +43,7 @@ export const questionsHandlers = [
               { id: 6, questionId: 3, content: 'しない' },
             ],
             isPublic: true,
-            isOpen: false,
+            isOpen: true,
           },
           {
             id: 4,
@@ -56,7 +56,7 @@ export const questionsHandlers = [
               { id: 8, questionId: 4, content: '借りない' },
             ],
             isPublic: true,
-            isOpen: false,
+            isOpen: true,
           },
           {
             id: 5,
@@ -83,7 +83,7 @@ export const questionsHandlers = [
               { id: 13, questionId: 6, content: 'L' },
             ],
             isPublic: true,
-            isOpen: false,
+            isOpen: true,
           },
           {
             id: 7,
@@ -118,7 +118,7 @@ export const questionsHandlers = [
             description: null,
             type: 'free_number',
             isPublic: true,
-            isOpen: false,
+            isOpen: true,
           },
           {
             id: 10,
@@ -127,7 +127,7 @@ export const questionsHandlers = [
             description: null,
             type: 'free_number',
             isPublic: true,
-            isOpen: false,
+            isOpen: true,
           },
         ],
       },
@@ -144,7 +144,7 @@ export const questionsHandlers = [
             description: null,
             type: 'free_text',
             isPublic: true,
-            isOpen: false,
+            isOpen: true,
           },
         ],
       },

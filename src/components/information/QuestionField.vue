@@ -16,6 +16,7 @@ const value = defineModel<string | number | number[]>('value')
     v-bind="$attrs"
     :label="question.title"
     :messages="[question.description ?? '']"
+    :disabled="!question.isOpen"
     variant="underlined"
   ></v-text-field>
   <v-number-input
@@ -25,6 +26,7 @@ const value = defineModel<string | number | number[]>('value')
     :label="question.title"
     :messages="[question.description ?? '']"
     :rules="[(v) => !!v || '必須項目です']"
+    :disabled="!question.isOpen"
     variant="underlined"
     control-variant="hidden"
   ></v-number-input>
@@ -35,6 +37,7 @@ const value = defineModel<string | number | number[]>('value')
     :label="question.title"
     :messages="[question.description ?? '']"
     :rules="[(v) => !!v || '必須項目です']"
+    :disabled="!question.isOpen"
     variant="underlined"
     :items="question.options"
     :item-value="(option) => option.id"
@@ -47,6 +50,7 @@ const value = defineModel<string | number | number[]>('value')
     :label="question.title"
     :messages="[question.description ?? '']"
     :rules="[(v) => !!v || '必須項目です']"
+    :disabled="!question.isOpen"
     variant="underlined"
     multiple
     :items="question.options"
