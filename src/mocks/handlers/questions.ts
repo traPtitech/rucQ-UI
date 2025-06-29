@@ -114,8 +114,8 @@ export const questionsHandlers = [
           {
             id: 9,
             questionGroupId: 2,
-            title: '身長（cm）',
-            description: null,
+            title: '身長',
+            description: '単位はcm',
             type: 'free_number',
             isPublic: true,
             isOpen: true,
@@ -123,8 +123,8 @@ export const questionsHandlers = [
           {
             id: 10,
             questionGroupId: 2,
-            title: '足のサイズ（cm）',
-            description: null,
+            title: '足のサイズ',
+            description: '単位はcm',
             type: 'free_number',
             isPublic: true,
             isOpen: true,

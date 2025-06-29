@@ -17,10 +17,6 @@ const props = defineProps<{ questionGroup: QuestionGroup }>()
 const inEditMode = ref(false) // 編集モードであるか
 const isAnswered = ref(false) // すでに一度回答を送信したことがあるか
 
-// Vuetify の v-select に対応した形式で回答を保存する
-// { questionId: answerId（あれば）, 答えそのもの | optionId | optionId[] }
-const answersMap = reactive<Record<number, { id?: number; value?: number | string | number[] }>>({})
-
 const getMyAnswers = async () => {
   if (!camp.value) throw new Error('Camp is not selected')
   const { data, error } = await apiClient.GET('/api/me/question-groups/{questionGroupId}/answers', {
@@ -29,6 +25,10 @@ const getMyAnswers = async () => {
   if (error || !data) throw error ?? new Error('Failed to fetch answers')
   return data
 }
+
+// Vuetify の v-select に対応した形式で回答を保存する
+// { questionId: answerId（あれば）, 答えそのもの | optionId | optionId[] }
+const answersMap = reactive<Record<number, { id?: number; value?: number | string | number[] }>>({})
 
 // getMyAnswers の結果をリアクティブ変数 answersMap に格納する
 const refreshAnswersMap = async () => {
@@ -70,7 +70,7 @@ const allChecked = computed(() => {
   for (const question of props.questionGroup.questions) {
     const answer = answersMap[question.id]
     if (!answer || answer.value === undefined || answer.value === null) {
-      result = false
+      result = false // multiple の [], free_text の '' は回答済みとみなす
       break
     }
   }
@@ -78,9 +78,7 @@ const allChecked = computed(() => {
 })
 
 // isOpen が true の質問が 1 つ以上存在するか
-const isAnswerable = computed(() => {
-  return props.questionGroup.questions.some((question) => question.isOpen)
-})
+const isEditable = computed(() => props.questionGroup.questions.some((question) => question.isOpen))
 
 // 非編集モードで回答を表示するための questionId: answerText のマップ
 const answerTextsMap = computed(() => {
@@ -109,23 +107,8 @@ const answerTextsMap = computed(() => {
   return map
 })
 
-onMounted(refreshAnswersMap)
-
-const getAnswerBody = (question: Question, value: unknown) => {
-  switch (question.type) {
-    case 'free_text':
-      return { questionId: question.id, type: question.type, content: value as string } as const
-    case 'free_number':
-      return { questionId: question.id, type: question.type, content: value as number } as const
-    case 'single':
-      return { questionId: question.id, type: question.type, content: value as number } as const
-    case 'multiple':
-      return { questionId: question.id, type: question.type, content: value as number[] } as const
-  }
-}
-
-// 変更を破棄
-const discard = async () => {
+// 編集を終了
+const quitEditMode = async () => {
   inEditMode.value = false
   if (!import.meta.env.DEV) {
     await refreshAnswersMap()
@@ -134,6 +117,19 @@ const discard = async () => {
 
 // 回答の更新
 const sendAnswers = async () => {
+  const getAnswerBody = (question: Question, value: unknown) => {
+    switch (question.type) {
+      case 'free_text':
+        return { questionId: question.id, type: question.type, content: value as string } as const
+      case 'free_number':
+        return { questionId: question.id, type: question.type, content: value as number } as const
+      case 'single':
+        return { questionId: question.id, type: question.type, content: value as number } as const
+      case 'multiple':
+        return { questionId: question.id, type: question.type, content: value as number[] } as const
+    }
+  }
+
   for (const question of props.questionGroup.questions) {
     const answer = answersMap[question.id]
     const body = getAnswerBody(question, answer.value)
@@ -149,8 +145,11 @@ const sendAnswers = async () => {
       if (error) throw error
     }
   }
-  await discard()
+
+  await quitEditMode()
 }
+
+onMounted(refreshAnswersMap)
 </script>
 
 <template>
@@ -168,7 +167,7 @@ const sendAnswers = async () => {
             icon="mdi-close"
             baseColor="transparent"
             class="text-white"
-            @click="discard"
+            @click="quitEditMode"
           ></v-btn>
           <div v-else :class="$style.deadline">
             {{ getDayString(new Date(questionGroup.due)) }}
@@ -181,9 +180,9 @@ const sendAnswers = async () => {
           elevation="0"
           icon="mdi-square-edit-outline"
           baseColor="transparent"
-          :class="isAnswerable ? ['text-theme'] : ['text-theme', $style.disabledEdit]"
+          :class="isEditable ? ['text-theme'] : ['text-theme', $style.disabledEdit]"
           @click="inEditMode = true"
-          :disabled="!isAnswerable"
+          :disabled="!isEditable"
         ></v-btn>
       </div>
     </template>
