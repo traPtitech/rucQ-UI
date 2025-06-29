@@ -149,6 +149,38 @@ const sendAnswers = async () => {
   await quitEditMode()
 }
 
+// 質問を見やすく並べるための構造化
+const questionUnits = computed(() => {
+  const units: { size: 1 | 2; questions: Question[] }[] = []
+  for (const question of props.questionGroup.questions) {
+    if (question.type === 'free_text' || question.type === 'multiple') {
+      units.push({ size: 2, questions: [question] }) // 常に横幅いっぱいに表示
+    } else {
+      if (units.length === 0 || units[units.length - 1].size === 2) {
+        units.push({ size: 1, questions: [question] })
+      } else {
+        units[units.length - 1].questions.push(question)
+      }
+    }
+  }
+
+  // もし size 1 のグループの questions が奇数個ならば、最後の質問を size 2 のグループとして独立させる
+  for (let i = 0; i < units.length; i++) {
+    if (units[i].size === 1 && units[i].questions.length % 2 === 1) {
+      const question = units[i].questions.pop()
+      if (!question) continue // もし質問がなければスキップ
+      units.splice(i + 1, 0, { size: 2, questions: [question] })
+      if (units[i].questions.length === 0) {
+        units.splice(i, 1)
+      } else {
+        i++ // 新しく追加したグループを飛ばす
+      }
+    }
+  }
+
+  return units
+})
+
 onMounted(refreshAnswersMap)
 </script>
 
@@ -189,13 +221,25 @@ onMounted(refreshAnswersMap)
     <v-card-text v-if="inEditMode" class="bg-white pt-4">
       <div>{{ questionGroup.description }}</div>
       <div :class="$style.editContent">
-        <question-field
-          v-for="question in questionGroup.questions"
-          :key="question.id"
-          v-model:value="answersMap[question.id].value"
-          :question="question"
-          :class="$style.questionField"
-        ></question-field>
+        <div v-for="(unit, index) in questionUnits" :key="index">
+          <div :class="$style.unitColumns" v-if="unit.size === 1">
+            <question-field
+              v-for="question in unit.questions"
+              :key="question.id"
+              v-model:value="answersMap[question.id].value"
+              :question="question"
+              :class="$style.questionField"
+            ></question-field>
+          </div>
+          <question-field
+            v-else
+            v-for="question in unit.questions"
+            :key="question.id"
+            v-model:value="answersMap[question.id].value"
+            :question="question"
+            :class="$style.questionField"
+          ></question-field>
+        </div>
       </div>
       <v-btn
         elevation="0"
@@ -212,9 +256,22 @@ onMounted(refreshAnswersMap)
     </v-card-text>
     <v-card-text v-else class="bg-white pt-4">
       <div :class="$style.showContent">
-        <div v-for="question in questionGroup.questions" :key="question.id">
+        <div v-for="(unit, index) in questionUnits" :key="index">
+          <div :class="$style.unitColumns" v-if="unit.size === 1">
+            <v-text-field
+              v-for="question in unit.questions"
+              :key="question.id"
+              :label="question.title"
+              variant="underlined"
+              v-model="answerTextsMap.value[question.id]"
+              disabled
+              :class="$style.showAnswer"
+            ></v-text-field>
+          </div>
           <v-text-field
-            v-if="answerTextsMap.value[question.id] !== undefined"
+            v-else
+            v-for="question in unit.questions"
+            :key="question.id"
             :label="question.title"
             variant="underlined"
             v-model="answerTextsMap.value[question.id]"
@@ -268,23 +325,20 @@ onMounted(refreshAnswersMap)
 }
 
 .editContent {
-  width: 100%;
-  display: flex;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 16px;
-  align-items: flex-start;
   margin-top: 8px;
 }
 
 .showContent {
+  margin-bottom: -16px;
+}
+
+.unitColumns {
   width: 100%;
   display: flex;
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 16px;
   align-items: flex-start;
-  margin-bottom: -16px;
 }
 
 .showAnswer :global(.v-field) {
