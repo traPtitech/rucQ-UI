@@ -6,6 +6,9 @@ type Question = components['schemas']['QuestionResponse']
 
 defineProps<{ question: Question }>()
 const value = defineModel<string | number | number[]>('value')
+
+// 必須バリデーション関数（undefined/nullのみエラー）
+const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項目です' : true)
 </script>
 
 <!-- prettier-ignore -->
@@ -13,19 +16,18 @@ const value = defineModel<string | number | number[]>('value')
   <v-text-field
     v-model="(value as string)"
     v-if="question.type === 'free_text'"
-    v-bind="$attrs"
     :label="question.title"
     :messages="[question.description ?? '']"
+    :rules="[requiredRule]"
     :disabled="!question.isOpen"
     variant="underlined"
   ></v-text-field>
   <v-number-input
     v-model="(value as number)"
     v-if="question.type === 'free_number'"
-    v-bind="$attrs"
     :label="question.title"
     :messages="[question.description ?? '']"
-    :rules="[(v) => !!v || '必須項目です']"
+    :rules="[requiredRule]"
     :disabled="!question.isOpen"
     variant="underlined"
     control-variant="hidden"
@@ -33,10 +35,9 @@ const value = defineModel<string | number | number[]>('value')
   <v-select
     v-model="(value as number)"
     v-if="question.type === 'single'"
-    v-bind="$attrs"
     :label="question.title"
     :messages="[question.description ?? '']"
-    :rules="[(v) => !!v || '必須項目です']"
+    :rules="[requiredRule]"
     :disabled="!question.isOpen"
     variant="underlined"
     :items="question.options"
@@ -46,10 +47,9 @@ const value = defineModel<string | number | number[]>('value')
   <v-select
     v-model="(value as number[])"
     v-if="question.type === 'multiple'"
-    v-bind="$attrs"
     :label="question.title"
     :messages="[question.description ?? '']"
-    :rules="[(v) => !!v || '必須項目です']"
+    :rules="[requiredRule]"
     :disabled="!question.isOpen"
     variant="underlined"
     multiple

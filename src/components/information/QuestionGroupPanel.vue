@@ -33,9 +33,20 @@ const answersMap = reactive<Record<number, { id?: number; value?: number | strin
 // getMyAnswers の結果をリアクティブ変数 answersMap に格納する
 const refreshAnswersMap = async () => {
   for (const question of props.questionGroup.questions) {
-    answersMap[question.id] = {
-      value: question.type === 'multiple' ? [] : undefined,
-    } // 初期化
+    switch (question.type) {
+      case 'free_text':
+        answersMap[question.id] = { value: '' } // 空文字で初期化
+        break
+      case 'free_number':
+        answersMap[question.id] = { value: undefined } // undefined で初期化
+        break
+      case 'single':
+        answersMap[question.id] = { value: undefined } // 初期化
+        break
+      case 'multiple':
+        answersMap[question.id] = { value: [] } // 空配列で初期化
+        break
+    }
   }
 
   for (const answer of await getMyAnswers()) {
@@ -60,7 +71,7 @@ const refreshAnswersMap = async () => {
   }
 
   if (!isAnswered.value) {
-    inEditMode.value = true // まだ回答が存在しない場合、デフォルトで編集モードにする
+    inEditMode.value = true // まだ回答が一つも存在しない場合、デフォルトで編集モードにする
   }
 }
 
@@ -70,14 +81,14 @@ const allChecked = computed(() => {
   for (const question of props.questionGroup.questions) {
     const answer = answersMap[question.id]
     if (!answer || answer.value === undefined || answer.value === null) {
-      result = false // multiple の [], free_text の '' は回答済みとみなす
+      result = false // multiple の [], free_text の '' は falsy だが回答済みとみなす
       break
     }
   }
   return result
 })
 
-// isOpen が true の質問が 1 つ以上存在するか
+// isOpen が true の質問が 1 つ以上存在するか。もし false ならばそもそも編集モードに入れない
 const isEditable = computed(() => props.questionGroup.questions.some((question) => question.isOpen))
 
 // 非編集モードで回答を表示するための questionId: answerText のマップ
@@ -164,16 +175,15 @@ const questionUnits = computed(() => {
     }
   }
 
-  // もし size 1 のグループの questions が奇数個ならば、最後の質問を size 2 のグループとして独立させる
+  // size 1 の unit の質問が奇数個ならば、最後の質問を size 2 の unit として独立させて余白を埋める
   for (let i = 0; i < units.length; i++) {
     if (units[i].size === 1 && units[i].questions.length % 2 === 1) {
-      const question = units[i].questions.pop()
-      if (!question) continue // もし質問がなければスキップ
+      const question = units[i].questions.pop() as Question
       units.splice(i + 1, 0, { size: 2, questions: [question] })
       if (units[i].questions.length === 0) {
         units.splice(i, 1)
       } else {
-        i++ // 新しく追加したグループを飛ばす
+        i++
       }
     }
   }
@@ -228,7 +238,6 @@ onMounted(refreshAnswersMap)
               :key="question.id"
               v-model:value="answersMap[question.id].value"
               :question="question"
-              :class="$style.questionField"
             ></question-field>
           </div>
           <question-field
@@ -237,7 +246,6 @@ onMounted(refreshAnswersMap)
             :key="question.id"
             v-model:value="answersMap[question.id].value"
             :question="question"
-            :class="$style.questionField"
           ></question-field>
         </div>
       </div>
@@ -291,6 +299,11 @@ onMounted(refreshAnswersMap)
   transition: none !important;
 }
 
+.card :global(.v-card-item) {
+  height: 40px !important;
+  padding-right: 4px !important;
+}
+
 .title {
   display: flex;
   align-items: center;
@@ -309,11 +322,6 @@ onMounted(refreshAnswersMap)
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.card :global(.v-card-item) {
-  height: 40px !important;
-  padding-right: 4px !important;
 }
 
 .save {
