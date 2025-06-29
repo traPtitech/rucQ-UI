@@ -7,7 +7,7 @@ type Question = components['schemas']['QuestionResponse']
 defineProps<{ question: Question }>()
 const value = defineModel<string | number | number[]>('value')
 
-// 必須バリデーション関数（undefined/nullのみエラー）
+// 必須バリデーション関数（undefined / null のみエラー）
 const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項目です' : true)
 </script>
 
