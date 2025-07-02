@@ -213,7 +213,7 @@ onMounted(refreshAnswersMap)
             <question-edit-field
               v-for="question in unit.questions"
               :key="question.id"
-              :value="answersMap[question.id].value"
+              v-model:value="answersMap[question.id].value"
               :question="question"
             ></question-edit-field>
           </div>
@@ -221,7 +221,7 @@ onMounted(refreshAnswersMap)
             v-else
             v-for="question in unit.questions"
             :key="question.id"
-            :value="answersMap[question.id].value"
+            v-model:value="answersMap[question.id].value"
             :question="question"
           ></question-edit-field>
         </div>
