@@ -16,27 +16,6 @@ a,
   padding: 3px;
 }
 
-::-webkit-scrollbar {
-  width: 3px;
-}
-
-::-webkit-scrollbar-track {
-  background: none;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  border: 2px solid #86858a;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: #ccc;
-}
-
-@media (hover: hover) {
-}
-
 @media (min-width: 1024px) {
   #app {
     padding: 0;
