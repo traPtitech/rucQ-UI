@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps, computed } from 'vue'
+import { computed } from 'vue'
 import type { components } from '@/api/schema'
 
 type Payment = components['schemas']['PaymentResponse']

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { components } from '@/api/schema'
-import { defineModel, defineProps } from 'vue'
 
 type Question = components['schemas']['QuestionResponse']
 
