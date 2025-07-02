@@ -22,7 +22,7 @@ export const useUserStore = defineStore('user', () => {
 })
 
 export const useCampStore = defineStore('camp', () => {
-  const camp = ref<Camp>()
+  const displayCamp = ref<Camp>()
 
   const initCamp = async (me: User) => {
     const camps = await apiClient.GET('/api/camps')
@@ -44,9 +44,9 @@ export const useCampStore = defineStore('camp', () => {
       throw Error(`合宿情報を取得できません: ${participants.error}`)
     }
     if (participants.data.some((user) => user.id === me.id)) {
-      camp.value = latestCamp
+      displayCamp.value = latestCamp
     }
   }
 
-  return { initCamp, camp }
+  return { initCamp, displayCamp }
 })
