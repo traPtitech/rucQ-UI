@@ -27,7 +27,6 @@ const bgColor = computed(() => {
 </template>
 
 <style module>
-/* こっちも変更なし */
 .background {
   position: fixed;
   top: 0vh;
