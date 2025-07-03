@@ -61,12 +61,12 @@ const refreshAnswersMap = async () => {
         answersMap[answer.questionId] = { id: answer.id, value: answer.content as number }
         break
       case 'single':
-        answersMap[answer.questionId] = { id: answer.id, value: answer.content.id }
+        answersMap[answer.questionId] = { id: answer.id, value: answer.selectedOption.id }
         break
       case 'multiple':
         answersMap[answer.questionId] = {
           id: answer.id,
-          value: answer.content.map((option) => option.id),
+          value: answer.selectedOptions.map((option) => option.id),
         }
         break
     }
@@ -112,9 +112,13 @@ const sendAnswers = async () => {
       case 'free_number':
         return { questionId: question.id, type: question.type, content: value as number } as const
       case 'single':
-        return { questionId: question.id, type: question.type, content: value as number } as const
+        return { questionId: question.id, type: question.type, optionId: value as number } as const
       case 'multiple':
-        return { questionId: question.id, type: question.type, content: value as number[] } as const
+        return {
+          questionId: question.id,
+          type: question.type,
+          optionIds: value as number[],
+        } as const
     }
   }
 
