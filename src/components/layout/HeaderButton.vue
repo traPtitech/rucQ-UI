@@ -29,7 +29,7 @@ const options = computed(() => [
     >
     <v-menu>
       <template v-slot:activator="{ props: activatorProps }">
-        <v-btn icon="mdi-dots-horizontal" v-bind="activatorProps" color="primary"></v-btn>
+        <v-btn icon="mdi-dots-horizontal" v-bind="activatorProps" color="primary" disabled></v-btn>
       </template>
       <v-list>
         <v-list-item v-for="(option, i) in options" :key="i" @click="option.func">
@@ -38,7 +38,7 @@ const options = computed(() => [
       </v-list>
     </v-menu>
   </v-app-bar>
-  <div
+  <!-- <div
     v-if="!xs && route.name !== 'ノート'"
     style="position: fixed; top: 10px; right: 10px; z-index: 3"
   >
@@ -59,7 +59,7 @@ const options = computed(() => [
         </v-list-item>
       </v-list>
     </v-menu>
-  </div>
+  </div> -->
 </template>
 
 <style module>
