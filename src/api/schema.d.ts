@@ -815,7 +815,7 @@ export interface components {
     QuestionGroupRequest: {
       name: string
       description: string | null
-      /** Format: date-time */
+      /** Format: date */
       due: string
       questions: components['schemas']['QuestionRequest'][]
     }
@@ -823,7 +823,7 @@ export interface components {
       id: number
       name: string
       description: string | null
-      /** Format: date-time */
+      /** Format: date */
       due: string
       questions: components['schemas']['QuestionResponse'][]
     }
@@ -840,7 +840,6 @@ export interface components {
     FreeTextQuestionRequest: {
       /** @description 質問ID（編集時のみ、新規作成時は不要） */
       id?: number
-      questionGroupId: number
       title: string
       description: string | null
       /** @enum {string} */
@@ -850,7 +849,6 @@ export interface components {
     }
     FreeTextQuestionResponse: {
       id: number
-      questionGroupId: number
       title: string
       description: string | null
       /** @enum {string} */
@@ -861,7 +859,6 @@ export interface components {
     FreeNumberQuestionRequest: {
       /** @description 質問ID（編集時のみ、新規作成時は不要） */
       id?: number
-      questionGroupId: number
       title: string
       description: string | null
       /** @enum {string} */
@@ -871,7 +868,6 @@ export interface components {
     }
     FreeNumberQuestionResponse: {
       id: number
-      questionGroupId: number
       title: string
       description: string | null
       /** @enum {string} */
@@ -882,7 +878,6 @@ export interface components {
     SingleChoiceQuestionRequest: {
       /** @description 質問ID（編集時のみ、新規作成時は不要） */
       id?: number
-      questionGroupId: number
       title: string
       description: string | null
       /** @enum {string} */
@@ -893,7 +888,6 @@ export interface components {
     }
     SingleChoiceQuestionResponse: {
       id: number
-      questionGroupId: number
       title: string
       description: string | null
       /** @enum {string} */
@@ -905,7 +899,6 @@ export interface components {
     MultipleChoiceQuestionRequest: {
       /** @description 質問ID（編集時のみ、新規作成時は不要） */
       id?: number
-      questionGroupId: number
       title: string
       description: string | null
       /** @enum {string} */
@@ -916,7 +909,6 @@ export interface components {
     }
     MultipleChoiceQuestionResponse: {
       id: number
-      questionGroupId: number
       title: string
       description: string | null
       /** @enum {string} */
@@ -928,12 +920,10 @@ export interface components {
     OptionRequest: {
       /** @description 選択肢ID（編集時のみ、新規作成時は不要） */
       id?: number
-      questionId: number
       content: string
     }
     OptionResponse: {
       id: number
-      questionId: number
       content: string
     }
     AnswerRequest:
@@ -978,7 +968,7 @@ export interface components {
       /** @enum {string} */
       type: 'single'
       questionId: number
-      content: number
+      optionId: number
     }
     SingleChoiceAnswerResponse: {
       id: number
@@ -986,13 +976,13 @@ export interface components {
       type: 'single'
       questionId: number
       userId: string
-      content: components['schemas']['OptionResponse']
+      selectedOption: components['schemas']['OptionResponse']
     }
     MultipleChoiceAnswerRequest: {
       /** @enum {string} */
       type: 'multiple'
       questionId: number
-      content: number[]
+      optionIds: number[]
     }
     MultipleChoiceAnswerResponse: {
       id: number
@@ -1000,7 +990,7 @@ export interface components {
       type: 'multiple'
       questionId: number
       userId: string
-      content: components['schemas']['OptionResponse'][]
+      selectedOptions: components['schemas']['OptionResponse'][]
     }
     PaymentRequest: {
       userId: string
