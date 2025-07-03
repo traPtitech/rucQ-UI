@@ -1,17 +1,3 @@
-:root {
-  /* Core colors */
-  --color-background: #f6f6f6;
-  --color-surface: #ffffff;
-  --color-primary: #ff7300;
-  --color-primary-light: #FFE5C9;
-  --color-secondary: #444444;
-
-  /* Text colors */
-  --color-text: #000000;
-  --color-text-sub: #444444;
-  --color-line: #aaaaaa;
-}
-
 *,
 *::before,
 *::after {
@@ -23,8 +9,8 @@
 
 body {
   min-height: 100vh;
-  color: var(--color-text);
-  background: var(--color-background);
+  color: rgb(var(--v-theme-text));
+  background: rgb(var(--v-theme-background));
   line-height: 1.6;
   font-family: 'M PLUS 1p', sans-serif;
   font-size: 14px;

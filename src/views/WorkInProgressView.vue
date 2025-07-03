@@ -16,6 +16,6 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: var(--color-primary);
+  color: rgb(var(--v-theme-primary));
 }
 </style>

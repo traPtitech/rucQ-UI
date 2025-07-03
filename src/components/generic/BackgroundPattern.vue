@@ -6,11 +6,15 @@ const props = defineProps<{
 }>()
 
 const logoColor = computed(() => {
-  return props.variant === 'primary' ? '#FF8200' : 'var(--color-surface)'
+  return props.variant === 'primary'
+    ? 'rgb(var(--v-theme-patternOnPrimary))'
+    : 'rgb(var(--v-theme-surface))'
 })
 
 const bgColor = computed(() => {
-  return props.variant === 'primary' ? 'var(--color-primary)' : 'var(--color-background)'
+  return props.variant === 'primary'
+    ? 'rgb(var(--v-theme-primary))'
+    : 'rgb(var(--v-theme-background))'
 })
 </script>
 
@@ -23,6 +27,7 @@ const bgColor = computed(() => {
 </template>
 
 <style module>
+/* こっちも変更なし */
 .background {
   position: fixed;
   top: 0vh;

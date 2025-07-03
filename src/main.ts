@@ -21,16 +21,13 @@ const vuetify = createVuetify({
     themes: {
       light: {
         colors: {
-          // Core colors
           background: '#f6f6f6',
           surface: '#ffffff',
           primary: '#ff7300',
           secondary: '#444444',
           primaryLight: '#FFE5C9',
-
-          // Standard Vuetify colors
           text: '#000000',
-          error: '#ff4d00',
+          patternOnPrimary: '#FF8200',
         },
       },
     },
