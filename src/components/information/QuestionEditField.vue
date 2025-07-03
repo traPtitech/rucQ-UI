@@ -13,7 +13,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
 <!-- prettier-ignore -->
 <template>
   <v-text-field
-    :model-value="(value as string)"
+    v-model="(value as string)"
     v-if="question.type === 'free_text'"
     :label="question.title"
     :messages="[question.description ?? '']"
@@ -22,7 +22,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     variant="underlined"
   ></v-text-field>
   <v-number-input
-    :model-value="(value as number)"
+    v-model="(value as number)"
     v-if="question.type === 'free_number'"
     :label="question.title"
     :messages="[question.description ?? '']"
@@ -32,7 +32,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     control-variant="hidden"
   ></v-number-input>
   <v-select
-    :model-value="(value as number)"
+    v-model="(value as number)"
     v-if="question.type === 'single'"
     :label="question.title"
     :messages="[question.description ?? '']"
@@ -44,7 +44,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :item-title="(option) => option.content"
   ></v-select>
   <v-select
-    :model-value="(value as number[])"
+    v-model="(value as number[])"
     v-if="question.type === 'multiple'"
     :label="question.title"
     :messages="[question.description ?? '']"

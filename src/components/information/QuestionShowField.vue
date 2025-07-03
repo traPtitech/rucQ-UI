@@ -38,7 +38,7 @@ const displayValue = computed(() => {
       :key="props.question.id"
       :label="props.question.title"
       variant="underlined"
-      v-model="displayValue"
+      :model-value="displayValue"
       disabled
       :class="$style.showAnswer"
     ></v-text-field>
