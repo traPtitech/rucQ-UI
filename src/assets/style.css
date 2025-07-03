@@ -20,7 +20,7 @@ body {
 }
 
 button,
-router-link,
+a,
 input,
 textarea {
   background: none;
