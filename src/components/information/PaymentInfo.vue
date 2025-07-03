@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps, computed } from 'vue'
+import { computed } from 'vue'
 import type { components } from '@/api/schema'
 
 type Payment = components['schemas']['PaymentResponse']
@@ -26,6 +26,12 @@ const sepAmount = computed(() => {
       <span :class="$style.text">¥ {{ sepAmount }} の支払いが完了していません</span>
     </div>
   </div>
+  <div v-else :class="$style.container">
+    <div :class="[$style.content, $style.noinfo]">
+      <v-icon icon="mdi-information-outline" size="36" class="mx-3" />
+      <span :class="$style.text">支払いに関する登録情報はありません</span>
+    </div>
+  </div>
 </template>
 
 <style module>
@@ -47,13 +53,18 @@ const sepAmount = computed(() => {
 }
 
 .paid {
-  background-color: rgba(0, 111, 255, 0.2);
-  color: #006fff;
+  background-color: rgba(0, 206, 0, 0.2);
+  color: #008c00;
 }
 
 .notpaid {
-  background-color: rgba(255, 77, 0, 0.2);
+  background-color: rgba(255, 140, 91, 0.2);
   color: #ff4d00;
+}
+
+.noinfo {
+  background-color: transparent;
+  color: #000000;
 }
 
 .text {

@@ -8,7 +8,7 @@ import { ref, computed, onMounted, reactive } from 'vue'
 import QuestionEditField from '@/components/information/QuestionEditField.vue'
 import QuestionShowField from '@/components/information/QuestionShowField.vue'
 
-const { camp } = storeToRefs(useCampStore())
+const { displayCamp } = storeToRefs(useCampStore())
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Question = components['schemas']['QuestionResponse']
@@ -20,9 +20,9 @@ const isAnswered = ref(false) // すでに一度回答を送信したことが�
 const isReady = ref(false) // 質問のデータが読み込まれたか
 
 const getMyAnswers = async () => {
-  if (!camp.value) throw new Error('Camp is not selected')
+  if (!displayCamp.value) throw new Error('Camp is not selected')
   const { data, error } = await apiClient.GET('/api/me/question-groups/{questionGroupId}/answers', {
-    params: { path: { campId: camp.value.id, questionGroupId: props.questionGroup.id } },
+    params: { path: { campId: displayCamp.value.id, questionGroupId: props.questionGroup.id } },
   })
   if (error || !data) throw error ?? new Error('Failed to fetch answers')
   return data
@@ -213,7 +213,7 @@ onMounted(refreshAnswersMap)
             <question-edit-field
               v-for="question in unit.questions"
               :key="question.id"
-              :value="answersMap[question.id].value"
+              v-model:value="answersMap[question.id].value"
               :question="question"
             ></question-edit-field>
           </div>
@@ -221,7 +221,7 @@ onMounted(refreshAnswersMap)
             v-else
             v-for="question in unit.questions"
             :key="question.id"
-            :value="answersMap[question.id].value"
+            v-model:value="answersMap[question.id].value"
             :question="question"
           ></question-edit-field>
         </div>

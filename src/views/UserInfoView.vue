@@ -12,21 +12,21 @@ import QuestionGroupPanel from '@/components/information/QuestionGroupPanel.vue'
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Dashboard = components['schemas']['DashboardResponse']
 
-const { camp } = storeToRefs(useCampStore())
+const { displayCamp } = storeToRefs(useCampStore())
 
 const getQuestionGroups = async () => {
-  if (!camp.value) throw new Error('Camp is not selected')
+  if (!displayCamp.value) throw new Error('Camp is not selected')
   const { data, error } = await apiClient.GET('/api/camps/{campId}/question-groups', {
-    params: { path: { campId: camp.value.id } },
+    params: { path: { campId: displayCamp.value.id } },
   })
   if (error || !data) throw error ?? new Error('Failed to fetch question groups')
   return data
 }
 
 const getDashboard = async () => {
-  if (!camp.value) throw new Error('Camp is not selected')
+  if (!displayCamp.value) throw new Error('Camp is not selected')
   const { data, error } = await apiClient.GET('/api/camps/{campId}/me', {
-    params: { path: { campId: camp.value.id } },
+    params: { path: { campId: displayCamp.value.id } },
   })
   if (error || !data) throw error ?? new Error('Failed to fetch dashboard')
   return data

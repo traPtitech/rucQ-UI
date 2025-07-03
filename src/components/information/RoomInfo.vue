@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
 import type { components } from '@/api/schema'
 import UserIcon from '@/components/generic/UserIcon.vue'
 

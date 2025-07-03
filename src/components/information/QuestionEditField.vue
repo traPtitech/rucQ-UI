@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { components } from '@/api/schema'
-import { defineModel, defineProps } from 'vue'
 
 type Question = components['schemas']['QuestionResponse']
 
@@ -14,7 +13,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
 <!-- prettier-ignore -->
 <template>
   <v-text-field
-    v-model="(value as string)"
+    :model-value="(value as string)"
     v-if="question.type === 'free_text'"
     :label="question.title"
     :messages="[question.description ?? '']"
@@ -23,7 +22,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     variant="underlined"
   ></v-text-field>
   <v-number-input
-    v-model="(value as number)"
+    :model-value="(value as number)"
     v-if="question.type === 'free_number'"
     :label="question.title"
     :messages="[question.description ?? '']"
@@ -33,7 +32,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     control-variant="hidden"
   ></v-number-input>
   <v-select
-    v-model="(value as number)"
+    :model-value="(value as number)"
     v-if="question.type === 'single'"
     :label="question.title"
     :messages="[question.description ?? '']"
@@ -45,7 +44,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :item-title="(option) => option.content"
   ></v-select>
   <v-select
-    v-model="(value as number[])"
+    :model-value="(value as number[])"
     v-if="question.type === 'multiple'"
     :label="question.title"
     :messages="[question.description ?? '']"

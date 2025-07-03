@@ -152,7 +152,7 @@ export interface paths {
       cookie?: never
     }
     /** 自分の合宿参加情報を取得 */
-    get: operations['getMyCamp']
+    get: operations['getDashboard']
     put?: never
     post?: never
     delete?: never
@@ -239,7 +239,10 @@ export interface paths {
     }
     get?: never
     put?: never
-    /** 質問グループを作成（管理者用） */
+    /**
+     * 質問グループを作成（管理者用）
+     * @description 質問グループを作成します。グループに属する質問や、その選択肢も同時に作成できます。
+     */
     post: operations['adminPostQuestionGroup']
     delete?: never
     options?: never
@@ -255,28 +258,14 @@ export interface paths {
       cookie?: never
     }
     get?: never
-    /** 質問グループを更新（管理者用） */
+    /**
+     * 質問グループを更新（管理者用）
+     * @description 質問グループを更新します。グループに属する質問や、その選択肢も同時に更新できます。（質問と選択肢はIDが指定されている場合に更新され、IDがない場合は新規作成されます）
+     */
     put: operations['adminPutQuestionGroup']
     post?: never
     /** 質問グループを削除（管理者用） */
     delete: operations['adminDeleteQuestionGroup']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/admin/questions': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /** 質問を作成（管理者用） */
-    post: operations['adminPostQuestion']
-    delete?: never
     options?: never
     head?: never
     patch?: never
@@ -295,23 +284,6 @@ export interface paths {
     post?: never
     /** 質問を削除（管理者用） */
     delete: operations['adminDeleteQuestion']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/api/admin/options': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /** 選択肢を作成（管理者用） */
-    post: operations['adminPostOption']
-    delete?: never
     options?: never
     head?: never
     patch?: never
@@ -726,6 +698,10 @@ export interface components {
       isDraft: boolean
       isRegistrationOpen: boolean
       isPaymentOpen: boolean
+      /** Format: date */
+      dateStart: string
+      /** Format: date */
+      dateEnd: string
     }
     CampResponse: {
       id: number
@@ -735,6 +711,10 @@ export interface components {
       isDraft: boolean
       isRegistrationOpen: boolean
       isPaymentOpen: boolean
+      /** Format: date */
+      dateStart: string
+      /** Format: date */
+      dateEnd: string
     }
     EventRequest:
       | components['schemas']['DurationEventRequest']
@@ -837,6 +817,7 @@ export interface components {
       description: string | null
       /** Format: date-time */
       due: string
+      questions: components['schemas']['QuestionRequest'][]
     }
     QuestionGroupResponse: {
       id: number
@@ -857,6 +838,8 @@ export interface components {
       | components['schemas']['SingleChoiceQuestionResponse']
       | components['schemas']['MultipleChoiceQuestionResponse']
     FreeTextQuestionRequest: {
+      /** @description 質問ID（編集時のみ、新規作成時は不要） */
+      id?: number
       questionGroupId: number
       title: string
       description: string | null
@@ -876,6 +859,8 @@ export interface components {
       isOpen: boolean
     }
     FreeNumberQuestionRequest: {
+      /** @description 質問ID（編集時のみ、新規作成時は不要） */
+      id?: number
       questionGroupId: number
       title: string
       description: string | null
@@ -895,6 +880,8 @@ export interface components {
       isOpen: boolean
     }
     SingleChoiceQuestionRequest: {
+      /** @description 質問ID（編集時のみ、新規作成時は不要） */
+      id?: number
       questionGroupId: number
       title: string
       description: string | null
@@ -902,6 +889,7 @@ export interface components {
       type: 'single'
       isPublic: boolean
       isOpen: boolean
+      options: components['schemas']['OptionRequest'][]
     }
     SingleChoiceQuestionResponse: {
       id: number
@@ -915,6 +903,8 @@ export interface components {
       options: components['schemas']['OptionResponse'][]
     }
     MultipleChoiceQuestionRequest: {
+      /** @description 質問ID（編集時のみ、新規作成時は不要） */
+      id?: number
       questionGroupId: number
       title: string
       description: string | null
@@ -922,6 +912,7 @@ export interface components {
       type: 'multiple'
       isPublic: boolean
       isOpen: boolean
+      options: components['schemas']['OptionRequest'][]
     }
     MultipleChoiceQuestionResponse: {
       id: number
@@ -935,6 +926,8 @@ export interface components {
       options: components['schemas']['OptionResponse'][]
     }
     OptionRequest: {
+      /** @description 選択肢ID（編集時のみ、新規作成時は不要） */
+      id?: number
       questionId: number
       content: string
     }
@@ -1481,7 +1474,7 @@ export interface operations {
       500: components['responses']['InternalServerError']
     }
   }
-  getMyCamp: {
+  getDashboard: {
     parameters: {
       query?: never
       header?: {
@@ -1732,36 +1725,6 @@ export interface operations {
       500: components['responses']['InternalServerError']
     }
   }
-  adminPostQuestion: {
-    parameters: {
-      query?: never
-      header?: {
-        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
-      }
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['QuestionRequest']
-      }
-    }
-    responses: {
-      /** @description Created */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['QuestionResponse']
-        }
-      }
-      400: components['responses']['BadRequest']
-      403: components['responses']['Forbidden']
-      500: components['responses']['InternalServerError']
-    }
-  }
   adminPutQuestion: {
     parameters: {
       query?: never
@@ -1815,36 +1778,6 @@ export interface operations {
       400: components['responses']['BadRequest']
       403: components['responses']['Forbidden']
       404: components['responses']['NotFound']
-      500: components['responses']['InternalServerError']
-    }
-  }
-  adminPostOption: {
-    parameters: {
-      query?: never
-      header?: {
-        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
-      }
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['OptionRequest']
-      }
-    }
-    responses: {
-      /** @description Created */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['OptionResponse']
-        }
-      }
-      400: components['responses']['BadRequest']
-      403: components['responses']['Forbidden']
       500: components['responses']['InternalServerError']
     }
   }
