@@ -10,10 +10,7 @@ const showLayout = computed(() => route.meta?.showLayout)
 </script>
 
 <template>
-  <background-pattern
-    :logo-color="showLayout ? '#FFFFFF' : '#FF8200'"
-    :bg-color="showLayout ? '#F6F6F6' : '#FF7300'"
-  />
+  <background-pattern :variant="showLayout ? 'light' : 'primary'" />
   <v-app>
     <header-button v-if="showLayout" />
     <page-navigation v-if="showLayout" />

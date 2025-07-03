@@ -1,5 +1,4 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div :class="$style.container">
@@ -17,6 +16,6 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: var(--color-theme);
+  color: rgb(var(--v-theme-primary));
 }
 </style>

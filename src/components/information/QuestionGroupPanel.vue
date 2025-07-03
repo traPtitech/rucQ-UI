@@ -172,10 +172,10 @@ onMounted(refreshAnswersMap)
 </script>
 
 <template>
-  <v-card :color="inEditMode ? 'theme' : 'themePale'" elevation="0" :class="$style.card">
+  <v-card :color="inEditMode ? 'primary' : 'primaryLight'" elevation="0" :class="$style.card">
     <template v-slot:title>
       <div :class="$style.title">
-        <span :class="['font-weight-bold', `text-${inEditMode ? 'white' : 'theme'}`]">{{
+        <span :class="['font-weight-bold', `text-${inEditMode ? 'white' : 'primary'}`]">{{
           questionGroup.name
         }}</span>
         <div v-if="inEditMode">
@@ -199,7 +199,7 @@ onMounted(refreshAnswersMap)
           elevation="0"
           icon="mdi-square-edit-outline"
           baseColor="transparent"
-          :class="isEditable ? ['text-theme'] : ['text-theme', $style.disabledEdit]"
+          :class="isEditable ? ['text-primary'] : ['text-primary', $style.disabledEdit]"
           @click="inEditMode = true"
           :disabled="!isEditable"
         ></v-btn>
@@ -231,7 +231,7 @@ onMounted(refreshAnswersMap)
         append-icon="mdi-check"
         baseColor="transparent"
         variant="flat"
-        color="theme"
+        color="primary"
         :class="[$style.save, 'font-weight-bold']"
         @click="sendAnswers"
         :disabled="!allChecked"

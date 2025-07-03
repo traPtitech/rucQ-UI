@@ -70,7 +70,7 @@ const navItems = [
     :class="$style.drawer"
     app
   >
-    <background-pattern style="z-index: -1" logo-color="#FF8200" bg-color="#FF7300" />
+    <background-pattern style="z-index: -1" variant="primary" />
     <img src="/logo/logo-white.svg" alt="rucQ Icon" :class="$style.logo" />
     <v-list dense v-model:selected="selectedItems" mandatory>
       <v-list-item
