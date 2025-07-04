@@ -30,16 +30,16 @@ export const useCampStore = defineStore('camp', () => {
     if (camps.error || !camps.data) {
       throw Error(`合宿情報を取得できません: ${camps.error}`)
     }
+
+    // pastCamps[0] が最新の合宿
     pastCamps.value = camps.data
       .filter((camp) => !camp.isDraft)
-      .sort((a, b) => new Date(a.dateStart).getTime() - new Date(b.dateStart).getTime())
+      .sort((a, b) => new Date(b.dateStart).getTime() - new Date(a.dateStart).getTime())
 
-    const latestCamp = pastCamps.value[pastCamps.value.length - 1]
+    const latestCamp = pastCamps.value[0]
     if (!latestCamp) {
       throw Error(`合宿が見つかりません`)
     }
-
-    pastCamps.value.reverse()
 
     const participants = await apiClient.GET('/api/camps/{campId}/participants', {
       params: { path: { campId: latestCamp.id } },

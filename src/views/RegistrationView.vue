@@ -7,6 +7,7 @@ import { getDayStringNoPad } from '@/lib/date'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import { apiClient } from '@/api/apiClient'
 import { useRouter } from 'vue-router'
+import { onBeforeMount } from 'vue'
 import type { components } from '@/api/schema'
 
 type Camp = components['schemas']['CampResponse']
@@ -15,31 +16,36 @@ const router = useRouter()
 const { displayCamp, pastCamps } = storeToRefs(useCampStore())
 
 const register = async () => {
+  displayCamp.value = pastCamps.value[0]
   const { data, error } = await apiClient.POST('/api/camps/{campId}/register', {
-    params: { path: { campId: displayCamp.value!.id } },
+    params: { path: { campId: pastCamps.value[0].id } },
   })
   if (error || !data) throw error ?? new Error('Failed to register for camp')
-  await router.push(`/${displayCamp.value!.displayId}/info`)
+  await router.push(`/${pastCamps.value[0].displayId}/info`)
 }
 
-const showPastCamps = async (camp: Camp) => {
+const openPastCamps = async (camp: Camp) => {
   displayCamp.value = camp
-  await router.push(`/${displayCamp.value!.displayId}/info`)
+  await router.push(`/${camp.displayId}/info`)
 }
+
+onBeforeMount(async () => {
+  if (displayCamp.value) router.push(`/${displayCamp.value.displayId}/info`)
+})
 </script>
 
 <template>
-  <div :class="$style.container" v-if="displayCamp">
+  <div :class="$style.container" v-if="pastCamps.length > 0">
     <img :src="`/logo/logo-white.svg`" :class="$style.logo" />
     <v-expansion-panels>
       <v-expansion-panel :class="$style.panel">
         <v-expansion-panel-title>
-          <span :class="$style.title">{{ displayCamp.name }}</span>
+          <span :class="$style.title">{{ pastCamps[0].name }}</span>
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <div :class="$style.content">
             <div :class="$style.guidebook">
-              <markdown-preview v-model:text="displayCamp.description" />
+              <markdown-preview v-model:text="pastCamps[0].description" />
             </div>
             <v-btn
               elevation="0"
@@ -56,16 +62,16 @@ const showPastCamps = async (camp: Camp) => {
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
-    <div v-if="pastCamps.length > 0" :class="$style.archives">
+    <div v-if="pastCamps.length > 1" :class="$style.archives">
       <span :class="$style.head">その他の合宿</span>
       <div :class="$style.archiveList">
         <v-card
-          v-for="camp in pastCamps.filter((c) => c.id !== displayCamp!.id)"
+          v-for="camp in pastCamps.slice(1)"
           :key="camp.id"
           link
           elevation="0"
           :class="$style.archiveBtn"
-          @click="showPastCamps(camp)"
+          @click="openPastCamps(camp)"
         >
           <div>{{ camp.name }}</div>
           <div style="font-size: 12px">
