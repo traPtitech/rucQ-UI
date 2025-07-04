@@ -53,11 +53,11 @@ const bgColor = computed(() => {
   transform: rotate(-30deg);
   mask-image: url('/logo/logo-bg.svg'), url('/logo/logo-bg.svg');
   mask-size:
-    800px 600px,
-    800px 600px;
+    1400px 1050px,
+    1400px 1050px;
   mask-position:
     0 0,
-    400px 300px;
+    700px 525px;
   mask-repeat: repeat;
 }
 </style>
