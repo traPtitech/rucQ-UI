@@ -4,7 +4,7 @@ import { getDayString } from '@/lib/date'
 import { apiClient } from '@/api/apiClient'
 import { useCampStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { ref, computed, onMounted, reactive } from 'vue'
+import { ref, computed, onMounted, reactive, toRaw } from 'vue'
 import QuestionEditField from '@/components/information/QuestionEditField.vue'
 import QuestionShowField from '@/components/information/QuestionShowField.vue'
 
@@ -77,10 +77,8 @@ const refreshAnswersMap = async () => {
     }
   }
 
-  // originalMap に追加
-  Object.entries(answersMap).forEach(([questionId, answer]) => {
-    originalMap[Number(questionId)] = { id: answer.id, value: answer.value }
-  })
+  // originalMap にディープコピーを追加
+  Object.assign(originalMap, structuredClone(toRaw(answersMap)))
 
   if (!isAnswered.value) {
     inEditMode.value = true // まだ回答が一つも存在しない場合、デフォルトで編集モードにする
