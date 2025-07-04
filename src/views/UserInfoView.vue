@@ -34,17 +34,19 @@ const getDashboard = async () => {
 
 const questionGroups = ref<QuestionGroup[]>([])
 const dashboard = ref<Dashboard>()
+const isReady = ref(false)
 
 onMounted(async () => {
   questionGroups.value = await getQuestionGroups()
   dashboard.value = await getDashboard()
+  isReady.value = true
 })
 </script>
 
 <template>
   <div :class="$style.container" v-if="questionGroups">
     <room-info v-if="dashboard?.room" :room="dashboard?.room" />
-    <payment-info v-else :payment="dashboard?.payment" />
+    <payment-info v-else :is-ready="isReady" :payment="dashboard?.payment" />
     <div :class="$style.heading">合宿オプション</div>
     <div :class="$style.questionGroups">
       <masonry-wall :items="questionGroups" :column-width="300" :gap="16">

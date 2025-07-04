@@ -6,7 +6,8 @@ export const usersHandlers = [
     return HttpResponse.json({ id: 'traP', isStaff: true })
   }),
   http.get('/api/camps/{campId}/participants', async () => {
-    return HttpResponse.json([{ id: 'traP', isStaff: true }])
+    // return HttpResponse.json([{ id: 'traP', isStaff: true }])
+    return HttpResponse.json([])
   }),
   http.put('/api/admin/users/{userId}', async ({ params }) => {
     return HttpResponse.json({

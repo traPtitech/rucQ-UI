@@ -35,13 +35,14 @@ const vuetify = createVuetify({
 })
 
 app.use(pinia)
-app.use(router)
 app.use(vuetify)
 
 if (import.meta.env.DEV) {
   const { worker } = await import('./mocks/browser')
   await worker.start()
 }
+
+app.use(router)
 
 import { useUserStore, useCampStore } from './store'
 

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useCampStore } from '@/store'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +45,26 @@ const router = createRouter({
       ],
     },
   ],
+})
+
+// ナビゲーションガード
+router.beforeEach((to, from, next) => {
+  const { displayCamp } = useCampStore()
+  const isRegistered = !!displayCamp
+
+  if (isRegistered) {
+    if (to.path === '/') {
+      next(`/${displayCamp!.displayId}/info`)
+      return
+    }
+  } else {
+    if (to.path !== '/') {
+      next('/')
+      return
+    }
+  }
+
+  next()
 })
 
 export default router
