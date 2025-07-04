@@ -258,16 +258,16 @@ export const questionsHandlers = [
 
     return HttpResponse.json([])
   }),
-  http.post('/api/answers', async () => {
-    // 送られた request には answer の id しか含まれておらず、
-    // そこから完全な Option を復元することが困難なので、とりあえず無関係なレスポンスを返す
-    const resp = {
-      id: 1,
-      type: 'free_text' as const,
-      questionId: 301,
-      userId: 'traP',
-      content: 'はろー',
-    }
+  http.post('/api/question-groups/{questionGroupId}/answers', async () => {
+    const resp = [
+      {
+        id: 1,
+        type: 'free_text' as const,
+        questionId: 301,
+        userId: 'traP',
+        content: 'はろー',
+      },
+    ]
     return HttpResponse.json(resp, { status: 201 })
   }),
   http.put('/api/answers/{answerId}', async () => {
@@ -278,6 +278,6 @@ export const questionsHandlers = [
       userId: 'traP',
       content: 'はろー',
     }
-    return HttpResponse.json(resp, { status: 201 })
+    return HttpResponse.json(resp, { status: 200 })
   }),
 ]

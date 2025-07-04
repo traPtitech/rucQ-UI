@@ -829,7 +829,7 @@ export interface components {
     }
     QuestionRequestBase: {
       title: string
-      description?: string
+      description?: string | null
       isPublic: boolean
       isOpen: boolean
     }
