@@ -17,10 +17,16 @@ const { displayCamp, pastCamps } = storeToRefs(useCampStore())
 
 const register = async () => {
   displayCamp.value = pastCamps.value[0]
-  const { data, error } = await apiClient.POST('/api/camps/{campId}/register', {
+  const { error } = await apiClient.POST('/api/camps/{campId}/register', {
     params: { path: { campId: pastCamps.value[0].id } },
   })
-  if (error || !data) throw error ?? new Error('Failed to register for camp')
+  if (error) throw error
+
+  console.log(
+    await apiClient.GET('/api/camps/{campId}/participants', {
+      params: { path: { campId: pastCamps.value[0].id } },
+    }),
+  )
   await router.push(`/${pastCamps.value[0].displayId}/info`)
 }
 
@@ -45,7 +51,7 @@ onBeforeMount(async () => {
         <v-expansion-panel-text>
           <div :class="$style.content">
             <div :class="$style.guidebook">
-              <markdown-preview v-model:text="pastCamps[0].description" />
+              <markdown-preview v-model:text="pastCamps[0].guidebook" />
             </div>
             <v-btn
               elevation="0"
