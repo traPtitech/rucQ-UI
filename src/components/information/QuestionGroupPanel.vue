@@ -105,7 +105,7 @@ const quitEditMode = async () => {
 
 // 回答の更新
 const sendAnswers = async () => {
-  const getAnswerBody = (question: Question, value: unknown) => {
+  const getAnswerBody = (question: Question, value: string | number | number[]) => {
     switch (question.type) {
       case 'free_text':
         return { questionId: question.id, type: question.type, content: value as string } as const
@@ -122,20 +122,27 @@ const sendAnswers = async () => {
     }
   }
 
-  for (const question of props.questionGroup.questions) {
-    const answer = answersMap[question.id]
-    const body = getAnswerBody(question, answer.value)
-
-    if (answer.id === undefined) {
-      const { error } = await apiClient.POST('/api/answers', { body })
-      if (error) throw error
-    } else {
+  if (isAnswered.value) {
+    // すでに回答済みの場合、各回答を個別に PUT で送信
+    for (const question of props.questionGroup.questions) {
+      const answer = answersMap[question.id]
       const { error } = await apiClient.PUT('/api/answers/{answerId}', {
-        params: { path: { answerId: answer.id } },
-        body,
+        params: { path: { answerId: answer.id! } },
+        body: getAnswerBody(question, answer.value!),
       })
+
       if (error) throw error
     }
+  } else {
+    // 初回回答の場合、全回答を POST で送信
+    const { error } = await apiClient.POST('/api/question-groups/{questionGroupId}/answers', {
+      params: { path: { questionGroupId: props.questionGroup.id } },
+      body: props.questionGroup.questions.map((question: Question) =>
+        getAnswerBody(question, answersMap[question.id].value!),
+      ),
+    })
+
+    if (error) throw error
   }
 
   await quitEditMode()
