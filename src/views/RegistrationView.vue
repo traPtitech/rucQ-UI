@@ -3,7 +3,7 @@
 <script setup lang="ts">
 import { useCampStore } from '@/store'
 import { storeToRefs } from 'pinia'
-// import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
+import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 const { displayCamp } = storeToRefs(useCampStore())
 </script>
 
@@ -17,7 +17,9 @@ const { displayCamp } = storeToRefs(useCampStore())
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <div :class="$style.content">
-            <div>{{ displayCamp.description }}</div>
+            <div :class="$style.guidebook">
+              <markdown-preview v-model:text="displayCamp.description" />
+            </div>
             <v-btn
               elevation="0"
               prepend-icon="mdi-arrow-right"
@@ -48,6 +50,7 @@ const { displayCamp } = storeToRefs(useCampStore())
   align-items: center;
   justify-content: center;
   height: 100vh;
+  padding: 16px;
 }
 
 .panel {
@@ -57,10 +60,20 @@ const { displayCamp } = storeToRefs(useCampStore())
 }
 
 .content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+}
+
+.save {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.guidebook {
+  height: 480px;
+  overflow: auto;
+  padding-bottom: 40px;
 }
 
 .title {

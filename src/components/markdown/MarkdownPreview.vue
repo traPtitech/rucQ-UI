@@ -13,7 +13,6 @@ defineProps<{ pad?: number }>()
 const html = computed(() => {
   const tempHtml = marked.parse(text.value || '') as string
   return tempHtml.replace('<pre><code>', '<pre><code class="hljs">')
-  // <pre><code> のままでは表示がコードブロックの方式に従ってくれないので、末尾にクラス hljs を指定する
 })
 
 const marked = new Marked(
@@ -42,7 +41,6 @@ onMounted(async () => {
 
 <template>
   <div :class="$style.container">
-    <slot></slot>
     <div :class="$style.content">
       <div
         v-html="html"
@@ -54,15 +52,6 @@ onMounted(async () => {
 </template>
 
 <style module>
-.container {
-  color: var(--color-text);
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  z-index: 1;
-}
-
 .content {
   width: 100%;
   height: 100%;
@@ -97,7 +86,7 @@ onMounted(async () => {
 .preview :global(h4),
 .preview :global(h5),
 .preview :global(h6) {
-  margin: 4px 0;
+  margin: 12px 0 8px 0;
   font-weight: bold;
   letter-spacing: 0.05em;
 }
@@ -118,49 +107,46 @@ onMounted(async () => {
 .preview :global(code) {
   font-family: 'M PLUS Code Latin 60', 'M PLUS 1p';
   font-weight: 500;
-  font-size: 11pt;
+  font-size: 10pt;
 }
 
 .preview :global(pre code) {
-  margin: 0 4px 8px 4px !important;
+  margin: 0 0px 8px 0px !important;
   border-radius: 4px;
   max-height: 400px;
   overflow: scroll;
-  background-color: var(--color-dark-gray) !important;
+  background-color: #222222 !important;
 }
 
 .preview :global(p code) {
-  margin: 0 0px;
-  background-color: var(--color-theme-pale);
+  padding: 2px;
+  background-color: #f0f0f0;
   border-radius: 4px;
-  border: 2px solid var(--color-theme-pale);
 }
 
 .preview :global(ul),
 .preview :global(ol) {
   padding: 0px 0px 0px 20px;
-  margin-top: 8px;
-  margin-bottom: 8px;
 }
 
-.preview :global(li) {
+/* .preview :global(li) {
   margin-bottom: 8px;
-}
+} */
 
 .preview :global(blockquote) {
   border-radius: 0px;
-  color: var(--color-gray);
+  color: #888888;
   padding: 0px 0px 0px 10px;
-  border-left: 4px solid var(--color-gray);
-  margin: 0 0 8px 4px;
+  border-left: 4px solid #e0e0e0;
+  margin: 8px 0 8px 4px;
 }
 
 .preview :global(tr:nth-child(2n + 1)) {
-  background-color: #f0f0f0;
+  background-color: #fafafa;
 }
 
 .preview :global(tr:nth-child(2n + 2)) {
-  background-color: #e0e0e0;
+  background-color: #f0f0f0;
 }
 
 .preview :global(th),
@@ -170,13 +156,14 @@ onMounted(async () => {
 
 .preview :global(th) {
   font-weight: bold;
-  background-color: var(--color-theme-pale) !important;
+  background-color: rgb(var(--v-theme-primaryLight)) !important;
 }
 
 .preview :global(table) {
+  width: 100%;
   border-collapse: collapse;
-  margin: 0 4px 8px 4px !important;
-  border-radius: 4px;
+  margin-top: 8px !important;
+  border-radius: 2px;
   overflow: hidden;
 }
 
@@ -187,5 +174,11 @@ onMounted(async () => {
 
 .preview :global(a):hover {
   text-decoration: underline;
+}
+
+.preview :global(hr) {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 16px 0;
 }
 </style>
