@@ -21,7 +21,9 @@ const bgColor = computed(() => {
 <template>
   <div :class="$style.background" :style="{ backgroundColor: bgColor }">
     <div :class="$style.center">
-      <div :class="$style.pattern" :style="{ backgroundColor: logoColor }"></div>
+      <div :class="$style.frame">
+        <div :class="$style.inner" :style="{ backgroundColor: logoColor }"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -42,22 +44,21 @@ const bgColor = computed(() => {
   position: relative;
   height: 0;
   width: 0;
+  rotate: -20deg;
 }
 
-.pattern {
-  position: relative;
-  top: -2000px;
-  left: -2000px;
-  height: 8000px;
-  width: 8000px;
-  transform: rotate(-30deg);
-  mask-image: url('/logo/logo-bg.svg'), url('/logo/logo-bg.svg');
-  mask-size:
-    800px 600px,
-    800px 600px;
-  mask-position:
-    0 0,
-    400px 300px;
-  mask-repeat: repeat;
+.frame {
+  position: absolute;
+  width: 200vw;
+  height: 200vh;
+  transform: translate(-50%, -50%);
+}
+
+.inner {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  width: 100%;
+  height: 50%;
 }
 </style>
