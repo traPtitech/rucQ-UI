@@ -119,9 +119,7 @@ const isAnswerChanged = (questionId: number) => {
 // 編集を終了
 const quitEditMode = async () => {
   inEditMode.value = false
-  if (!import.meta.env.DEV) {
-    await refreshAnswersMap()
-  }
+  await refreshAnswersMap()
 }
 
 // 回答の更新
