@@ -3,14 +3,21 @@
 <script setup lang="ts">
 import { useCampStore } from '@/store'
 import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { getDayStringNoPad } from '@/lib/date'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
-const { displayCamp } = storeToRefs(useCampStore())
+
+const { displayCamp, allCamps } = storeToRefs(useCampStore())
+
+const pastCamps = computed(() => {
+  return allCamps.value.filter((camp) => camp.id !== displayCamp.value?.id)
+})
 </script>
 
 <template>
-  <div :class="$style.container">
-    <img :src="`/logo/logo-white.svg`" style="width: 200px" />
-    <v-expansion-panels v-if="displayCamp">
+  <div :class="$style.container" v-if="displayCamp">
+    <img :src="`/logo/logo-white.svg`" :class="$style.logo" />
+    <v-expansion-panels>
       <v-expansion-panel :class="$style.panel">
         <v-expansion-panel-title>
           <span :class="$style.title">{{ displayCamp.name }}</span>
@@ -34,13 +41,33 @@ const { displayCamp } = storeToRefs(useCampStore())
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
-    <div v-else>
+    <div v-if="pastCamps.length > 0" :class="$style.archives">
+      <span :class="$style.head">合宿アーカイブ</span>
+      <div :class="$style.archiveList">
+        <v-card
+          v-for="camp in pastCamps"
+          :key="camp.id"
+          link
+          elevation="0"
+          :class="$style.archiveBtn"
+        >
+          <div>{{ camp.name }}</div>
+          <div style="font-size: 12px">
+            {{ getDayStringNoPad(new Date(camp.dateStart)) }} -
+            {{ getDayStringNoPad(new Date(camp.dateEnd)) }}
+          </div>
+        </v-card>
+      </div>
+    </div>
+  </div>
+  <div :class="$style.container" v-else>
+    <img :src="`/logo/logo-white.svg`" style="width: 200px" />
+    <div>
       <v-alert type="error" :class="$style.alert">
-        合宿が選択されていません。管理者にお問い合わせください。
+        最新の合宿が見つかりませんでした。管理者にお問い合わせください
       </v-alert>
     </div>
   </div>
-  <div></div>
 </template>
 
 <style module>
@@ -49,8 +76,12 @@ const { displayCamp } = storeToRefs(useCampStore())
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  padding: 16px;
+  min-height: 100vh;
+  padding: 64px 16px;
+}
+
+.logo {
+  width: 200px;
 }
 
 .panel {
@@ -82,5 +113,45 @@ const { displayCamp } = storeToRefs(useCampStore())
 
 .alert {
   margin-top: 40px;
+}
+
+.archives {
+  margin-top: 40px;
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.head {
+  font-weight: bold;
+  font-size: 16px;
+  letter-spacing: 0.2em;
+  color: white;
+}
+
+.archiveList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+  margin-top: 16px;
+}
+
+.archiveBtn {
+  height: 40px !important;
+  width: 100%;
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  margin: 8px 0;
+  display: flex;
+  padding: 0 12px;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
