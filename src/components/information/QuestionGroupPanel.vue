@@ -146,8 +146,10 @@ const sendAnswers = async () => {
   }
 
   if (isAnswered.value) {
-    for (const question of props.questionGroup.questions) {
-      if (isAnswerChanged(question.id)) {
+    // 変更された回答のPUTリクエストを並列で実行
+    const updatePromises = props.questionGroup.questions
+      .filter((question: Question) => isAnswerChanged(question.id))
+      .map(async (question) => {
         const answer = answersMap[question.id]
         const { error } = await apiClient.PUT('/api/answers/{answerId}', {
           params: { path: { answerId: answer.id! } },
@@ -155,8 +157,9 @@ const sendAnswers = async () => {
         })
 
         if (error) throw error
-      }
-    }
+      })
+
+    await Promise.all(updatePromises)
   } else {
     // 初回回答の場合、全回答を POST で送信
     const { error } = await apiClient.POST('/api/question-groups/{questionGroupId}/answers', {
