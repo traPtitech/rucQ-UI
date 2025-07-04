@@ -54,7 +54,7 @@ router.beforeEach((to, from, next) => {
 
   if (isRegistered) {
     if (to.path === '/') {
-      next(`/${displayCamp!.name}/info`)
+      next(`/${displayCamp!.displayId}/info`)
       return
     }
   } else {
