@@ -3,15 +3,29 @@
 <script setup lang="ts">
 import { useCampStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
 import { getDayStringNoPad } from '@/lib/date'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
+import { apiClient } from '@/api/apiClient'
+import { useRouter } from 'vue-router'
+import type { components } from '@/api/schema'
 
-const { displayCamp, allCamps } = storeToRefs(useCampStore())
+type Camp = components['schemas']['CampResponse']
 
-const pastCamps = computed(() => {
-  return allCamps.value.filter((camp) => camp.id !== displayCamp.value?.id)
-})
+const router = useRouter()
+const { displayCamp, pastCamps } = storeToRefs(useCampStore())
+
+const register = async () => {
+  const { data, error } = await apiClient.POST('/api/camps/{campId}/register', {
+    params: { path: { campId: displayCamp.value!.id } },
+  })
+  if (error || !data) throw error ?? new Error('Failed to register for camp')
+  await router.push(`/${displayCamp.value!.displayId}/info`)
+}
+
+const showPastCamps = async (camp: Camp) => {
+  displayCamp.value = camp
+  await router.push(`/${displayCamp.value!.displayId}/info`)
+}
 </script>
 
 <template>
@@ -34,6 +48,7 @@ const pastCamps = computed(() => {
               variant="flat"
               color="primary"
               :class="[$style.save, 'font-weight-bold']"
+              @click="register"
             >
               <span class="font-weight-medium">この合宿に参加する</span>
             </v-btn>
@@ -42,14 +57,15 @@ const pastCamps = computed(() => {
       </v-expansion-panel>
     </v-expansion-panels>
     <div v-if="pastCamps.length > 0" :class="$style.archives">
-      <span :class="$style.head">合宿アーカイブ</span>
+      <span :class="$style.head">その他の合宿</span>
       <div :class="$style.archiveList">
         <v-card
-          v-for="camp in pastCamps"
+          v-for="camp in pastCamps.filter((c) => c.id !== displayCamp!.id)"
           :key="camp.id"
           link
           elevation="0"
           :class="$style.archiveBtn"
+          @click="showPastCamps(camp)"
         >
           <div>{{ camp.name }}</div>
           <div style="font-size: 12px">

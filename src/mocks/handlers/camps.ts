@@ -6,6 +6,28 @@ export const campsHandlers = [
     return HttpResponse.json([
       {
         id: 1,
+        displayId: 'camp23_summer',
+        name: '2023年度 夏合宿',
+        description: `# 2023年度 夏合宿のしおり\n以下略`,
+        isDraft: false,
+        isRegistrationOpen: true,
+        isPaymentOpen: true,
+        dateStart: '2023-06-01',
+        dateEnd: '2023-06-10',
+      },
+      {
+        id: 2,
+        displayId: 'camp24_summer',
+        name: '2024年度 夏合宿',
+        description: `# 2024年度 夏合宿のしおり\n以下略`,
+        isDraft: false,
+        isRegistrationOpen: true,
+        isPaymentOpen: true,
+        dateStart: '2024-07-01',
+        dateEnd: '2024-07-10',
+      },
+      {
+        id: 3,
         displayId: 'camp25_summer',
         name: '2025年度 夏合宿',
         description: `# 2025年度 夏合宿のしおり
@@ -131,5 +153,8 @@ A: 屋外活動は室内プログラムに変更となります。
         dateEnd: '2025-08-10',
       },
     ])
+  }),
+  http.post('/api/camps/{campId}/register', async ({ params }) => {
+    return HttpResponse.json({ message: `Successfully registered for camp ${params.campId}` })
   }),
 ]

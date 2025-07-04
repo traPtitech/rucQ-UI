@@ -23,22 +23,23 @@ export const useUserStore = defineStore('user', () => {
 
 export const useCampStore = defineStore('camp', () => {
   const displayCamp = ref<Camp>()
-  const allCamps = ref<Camp[]>([])
+  const pastCamps = ref<Camp[]>([])
 
   const initCamp = async (me: User) => {
     const camps = await apiClient.GET('/api/camps')
     if (camps.error || !camps.data) {
       throw Error(`合宿情報を取得できません: ${camps.error}`)
     }
-    allCamps.value = camps.data
-
-    const latestCamp = camps.data
+    pastCamps.value = camps.data
       .filter((camp) => !camp.isDraft)
       .sort((a, b) => new Date(a.dateStart).getTime() - new Date(b.dateStart).getTime())
-      .pop()
+
+    const latestCamp = pastCamps.value[pastCamps.value.length - 1]
     if (!latestCamp) {
       throw Error(`合宿が見つかりません`)
     }
+
+    pastCamps.value.reverse()
 
     const participants = await apiClient.GET('/api/camps/{campId}/participants', {
       params: { path: { campId: latestCamp.id } },
@@ -51,5 +52,5 @@ export const useCampStore = defineStore('camp', () => {
     }
   }
 
-  return { initCamp, displayCamp, allCamps }
+  return { initCamp, displayCamp, pastCamps }
 })
