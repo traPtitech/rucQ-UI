@@ -4,7 +4,7 @@ import { getDayString } from '@/lib/date'
 import { apiClient } from '@/api/apiClient'
 import { useCampStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { ref, computed, onMounted, reactive } from 'vue'
+import { ref, computed, onMounted, reactive, toRaw } from 'vue'
 import QuestionEditField from '@/components/information/QuestionEditField.vue'
 import QuestionShowField from '@/components/information/QuestionShowField.vue'
 
@@ -29,8 +29,9 @@ const getMyAnswers = async () => {
 }
 
 // Vuetify の v-select に対応した形式で回答を保存する
-// { questionId: answerId（あれば）, 答えそのもの | optionId | optionId[] }
-const answersMap = reactive<Record<number, { id?: number; value?: number | string | number[] }>>({})
+type AnswerData = { id?: number; value?: number | string | number[] }
+const answersMap = reactive<Record<number, AnswerData>>({})
+const originalMap = reactive<Record<number, AnswerData>>({})
 
 // getMyAnswers の結果をリアクティブ変数 answersMap に格納する
 const refreshAnswersMap = async () => {
@@ -54,23 +55,30 @@ const refreshAnswersMap = async () => {
   for (const answer of await getMyAnswers()) {
     isAnswered.value = true // すでに回答済み
     switch (answer.type) {
-      case 'free_text':
+      case 'free_text': {
         answersMap[answer.questionId] = { id: answer.id, value: answer.content as string }
         break
-      case 'free_number':
+      }
+      case 'free_number': {
         answersMap[answer.questionId] = { id: answer.id, value: answer.content as number }
         break
-      case 'single':
-        answersMap[answer.questionId] = { id: answer.id, value: answer.content.id }
+      }
+      case 'single': {
+        answersMap[answer.questionId] = { id: answer.id, value: answer.selectedOption.id }
         break
-      case 'multiple':
+      }
+      case 'multiple': {
         answersMap[answer.questionId] = {
           id: answer.id,
-          value: answer.content.map((option) => option.id),
+          value: answer.selectedOptions.map((option) => option.id),
         }
         break
+      }
     }
   }
+
+  // originalMap にディープコピーを追加
+  Object.assign(originalMap, structuredClone(toRaw(answersMap)))
 
   if (!isAnswered.value) {
     inEditMode.value = true // まだ回答が一つも存在しない場合、デフォルトで編集モードにする
@@ -95,43 +103,69 @@ const allChecked = computed(() => {
 // isOpen が true の質問が 1 つ以上存在するか。もし false ならばそもそも編集モードに入れない
 const isEditable = computed(() => props.questionGroup.questions.some((question) => question.isOpen))
 
+// 回答が変更されたかどうかを判定
+const isAnswerChanged = (questionId: number) => {
+  const current = answersMap[questionId]
+  const original = originalMap[questionId]
+
+  if (Array.isArray(current.value) && Array.isArray(original.value)) {
+    if (current.value.length !== original.value.length) return true
+    return current.value.some((val, index) => val !== (original.value as number[])[index])
+  } else {
+    return current.value !== original.value
+  }
+}
+
 // 編集を終了
 const quitEditMode = async () => {
   inEditMode.value = false
-  if (!import.meta.env.DEV) {
-    await refreshAnswersMap()
-  }
+  await refreshAnswersMap()
 }
 
 // 回答の更新
 const sendAnswers = async () => {
-  const getAnswerBody = (question: Question, value: unknown) => {
+  const getAnswerBody = (question: Question, value: string | number | number[]) => {
     switch (question.type) {
       case 'free_text':
         return { questionId: question.id, type: question.type, content: value as string } as const
       case 'free_number':
         return { questionId: question.id, type: question.type, content: value as number } as const
       case 'single':
-        return { questionId: question.id, type: question.type, content: value as number } as const
+        return { questionId: question.id, type: question.type, optionId: value as number } as const
       case 'multiple':
-        return { questionId: question.id, type: question.type, content: value as number[] } as const
+        return {
+          questionId: question.id,
+          type: question.type,
+          optionIds: value as number[],
+        } as const
     }
   }
 
-  for (const question of props.questionGroup.questions) {
-    const answer = answersMap[question.id]
-    const body = getAnswerBody(question, answer.value)
+  if (isAnswered.value) {
+    // 変更された回答のPUTリクエストを並列で実行
+    const updatePromises = props.questionGroup.questions
+      .filter((question: Question) => isAnswerChanged(question.id))
+      .map(async (question) => {
+        const answer = answersMap[question.id]
+        const { error } = await apiClient.PUT('/api/answers/{answerId}', {
+          params: { path: { answerId: answer.id! } },
+          body: getAnswerBody(question, answer.value!),
+        })
 
-    if (answer.id === undefined) {
-      const { error } = await apiClient.POST('/api/answers', { body })
-      if (error) throw error
-    } else {
-      const { error } = await apiClient.PUT('/api/answers/{answerId}', {
-        params: { path: { answerId: answer.id } },
-        body,
+        if (error) throw error
       })
-      if (error) throw error
-    }
+
+    await Promise.all(updatePromises)
+  } else {
+    // 初回回答の場合、全回答を POST で送信
+    const { error } = await apiClient.POST('/api/question-groups/{questionGroupId}/answers', {
+      params: { path: { questionGroupId: props.questionGroup.id } },
+      body: props.questionGroup.questions.map((question: Question) =>
+        getAnswerBody(question, answersMap[question.id].value!),
+      ),
+    })
+
+    if (error) throw error
   }
 
   await quitEditMode()

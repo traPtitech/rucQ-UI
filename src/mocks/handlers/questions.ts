@@ -13,86 +13,79 @@ export const questionsHandlers = [
         questions: [
           {
             id: 3,
-            questionGroupId: 2,
             title: 'スキーをする？',
             description: null,
             type: 'single',
             options: [
-              { id: 5, questionId: 3, content: 'する' },
-              { id: 6, questionId: 3, content: 'しない' },
+              { id: 5, content: 'する' },
+              { id: 6, content: 'しない' },
             ],
             isPublic: true,
             isOpen: true,
           },
           {
             id: 4,
-            questionGroupId: 2,
             title: 'スキーセット',
             description: null,
             type: 'single',
             options: [
-              { id: 7, questionId: 4, content: '借りる' },
-              { id: 8, questionId: 4, content: '借りない' },
+              { id: 7, content: '借りる' },
+              { id: 8, content: '借りない' },
             ],
             isPublic: true,
             isOpen: true,
           },
           {
             id: 5,
-            questionGroupId: 2,
             title: '自由選択',
             description: null,
             type: 'multiple',
             options: [
-              { id: 18, questionId: 5, content: '選択肢1' },
-              { id: 19, questionId: 5, content: '選択肢2' },
+              { id: 18, content: '選択肢1' },
+              { id: 19, content: '選択肢2' },
             ],
             isPublic: true,
             isOpen: true,
           },
           {
             id: 6,
-            questionGroupId: 2,
             title: 'スノーボードセット',
             description: null,
             type: 'single',
             options: [
-              { id: 9, questionId: 6, content: '借りる' },
-              { id: 10, questionId: 6, content: '借りない' },
+              { id: 9, content: '借りる' },
+              { id: 10, content: '借りない' },
             ],
             isPublic: true,
             isOpen: false,
           },
           {
             id: 7,
-            questionGroupId: 2,
             title: 'スキーウェア',
             description: null,
             type: 'single',
             options: [
-              { id: 11, questionId: 7, content: 'S' },
-              { id: 12, questionId: 7, content: 'M' },
-              { id: 13, questionId: 7, content: 'L' },
+              { id: 11, content: 'S' },
+              { id: 12, content: 'M' },
+              { id: 13, content: 'L' },
             ],
             isPublic: true,
             isOpen: true,
           },
           {
             id: 8,
-            questionGroupId: 2,
             title: 'ゴーグル',
             description: null,
             type: 'single',
             options: [
-              { id: 14, questionId: 8, content: '借りる' },
-              { id: 15, questionId: 8, content: '借りない' },
+              { id: 14, content: '借りる' },
+              { id: 15, content: '借りない' },
             ],
             isPublic: true,
             isOpen: false,
           },
           {
             id: 9,
-            questionGroupId: 2,
             title: '自由記述',
             description: null,
             type: 'free_text',
@@ -101,13 +94,12 @@ export const questionsHandlers = [
           },
           {
             id: 10,
-            questionGroupId: 2,
             title: 'グローブ',
             description: null,
             type: 'single',
             options: [
-              { id: 16, questionId: 10, content: '借りる' },
-              { id: 17, questionId: 10, content: '借りない' },
+              { id: 16, content: '借りる' },
+              { id: 17, content: '借りない' },
             ],
             isPublic: true,
             isOpen: false,
@@ -115,7 +107,6 @@ export const questionsHandlers = [
 
           {
             id: 11,
-            questionGroupId: 2,
             title: '身長',
             description: '単位はcm',
             type: 'free_number',
@@ -124,7 +115,6 @@ export const questionsHandlers = [
           },
           {
             id: 12,
-            questionGroupId: 2,
             title: '足のサイズ',
             description: '単位はcm',
             type: 'free_number',
@@ -141,13 +131,12 @@ export const questionsHandlers = [
         questions: [
           {
             id: 1,
-            questionGroupId: 1,
             title: '乗るものにチェック',
             description: null,
             type: 'multiple',
             options: [
-              { id: 1, questionId: 1, content: '行き' },
-              { id: 2, questionId: 1, content: '帰り' },
+              { id: 1, content: '行き' },
+              { id: 2, content: '帰り' },
             ],
             isPublic: true,
             isOpen: false,
@@ -162,7 +151,6 @@ export const questionsHandlers = [
         questions: [
           {
             id: 13,
-            questionGroupId: 3,
             title: 'アレルギー',
             description: null,
             type: 'free_text',
@@ -181,42 +169,42 @@ export const questionsHandlers = [
           type: 'single',
           questionId: 3,
           userId: 'traP',
-          content: { id: 5, questionId: 3, content: 'する' },
+          selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 204,
           type: 'single',
           questionId: 4,
           userId: 'traP',
-          content: { id: 7, questionId: 4, content: '借りる' },
+          selectedOption: { id: 7, content: '借りる' },
         },
         {
           id: 205,
           type: 'multiple',
           questionId: 5,
           userId: 'traP',
-          content: [],
+          selectedOptions: [],
         },
         {
           id: 206,
           type: 'single',
           questionId: 6,
           userId: 'traP',
-          content: { id: 10, questionId: 6, content: '借りない' },
+          selectedOption: { id: 10, content: '借りない' },
         },
         {
           id: 207,
           type: 'single',
           questionId: 7,
           userId: 'traP',
-          content: { id: 12, questionId: 7, content: 'M' },
+          selectedOption: { id: 12, content: 'M' },
         },
         {
           id: 208,
           type: 'single',
           questionId: 8,
           userId: 'traP',
-          content: { id: 14, questionId: 8, content: '借りる' },
+          selectedOption: { id: 14, content: '借りる' },
         },
         {
           id: 208,
@@ -230,7 +218,7 @@ export const questionsHandlers = [
           type: 'single',
           questionId: 10,
           userId: 'traP',
-          content: { id: 16, questionId: 10, content: '借りる' },
+          selectedOption: { id: 16, content: '借りる' },
         },
         {
           id: 210,
@@ -256,7 +244,7 @@ export const questionsHandlers = [
           type: 'multiple',
           questionId: 1,
           userId: 'traP',
-          content: [{ id: 1, questionId: 1, content: '行き' }],
+          selectedOptions: [{ id: 1, content: '行き' }],
         },
         // {
         //   id: 202,
@@ -270,16 +258,16 @@ export const questionsHandlers = [
 
     return HttpResponse.json([])
   }),
-  http.post('/api/answers', async () => {
-    // 送られた request には answer の id しか含まれておらず、
-    // そこから完全な Option を復元することが困難なので、とりあえず無関係なレスポンスを返す
-    const resp = {
-      id: 1,
-      type: 'free_text' as const,
-      questionId: 301,
-      userId: 'traP',
-      content: 'はろー',
-    }
+  http.post('/api/question-groups/{questionGroupId}/answers', async () => {
+    const resp = [
+      {
+        id: 1,
+        type: 'free_text' as const,
+        questionId: 301,
+        userId: 'traP',
+        content: 'はろー',
+      },
+    ]
     return HttpResponse.json(resp, { status: 201 })
   }),
   http.put('/api/answers/{answerId}', async () => {
@@ -290,6 +278,6 @@ export const questionsHandlers = [
       userId: 'traP',
       content: 'はろー',
     }
-    return HttpResponse.json(resp, { status: 201 })
+    return HttpResponse.json(resp, { status: 200 })
   }),
 ]
