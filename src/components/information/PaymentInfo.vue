@@ -4,7 +4,7 @@ import type { components } from '@/api/schema'
 
 type Payment = components['schemas']['PaymentResponse']
 
-const props = defineProps<{ payment?: Payment }>()
+const props = defineProps<{ isReady: boolean; payment?: Payment }>()
 
 const isPaid = computed(() => props.payment?.amount === props.payment?.amountPaid)
 
@@ -17,20 +17,11 @@ const sepAmount = computed(() => {
 
 <template>
   <div v-if="props.payment" :class="$style.container">
-    <div v-if="isPaid" :class="[$style.content, $style.paid]">
-      <v-icon icon="mdi-check" size="36" class="mx-3" />
-      <span :class="$style.text">¥ {{ sepAmount }} 支払い済みです</span>
-    </div>
-    <div v-else :class="[$style.content, $style.notpaid]">
-      <v-icon icon="mdi-alert-circle-outline" size="36" class="mx-3" />
-      <span :class="$style.text">¥ {{ sepAmount }} の支払いが完了していません</span>
-    </div>
+    <v-alert v-if="isPaid" type="success"> ¥ {{ sepAmount }} 支払い済みです </v-alert>
+    <v-alert v-else type="warning"> ¥ {{ sepAmount }} の支払いが完了していません </v-alert>
   </div>
   <div v-else :class="$style.container">
-    <div :class="[$style.content, $style.noinfo]">
-      <v-icon icon="mdi-information-outline" size="36" class="mx-3" />
-      <span :class="$style.text">支払いに関する登録情報はありません</span>
-    </div>
+    <v-alert v-if="isReady" type="info"> 支払いに関する登録情報はありません </v-alert>
   </div>
 </template>
 
@@ -41,34 +32,5 @@ const sepAmount = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.content {
-  width: 100%;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  border-radius: 8px;
-}
-
-.paid {
-  background-color: rgba(0, 206, 0, 0.2);
-  color: #008c00;
-}
-
-.notpaid {
-  background-color: rgba(255, 140, 91, 0.2);
-  color: #ff4d00;
-}
-
-.noinfo {
-  background-color: transparent;
-  color: #000000;
-}
-
-.text {
-  font-size: 14px;
-  font-weight: bold;
 }
 </style>
