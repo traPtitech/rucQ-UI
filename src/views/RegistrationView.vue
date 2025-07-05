@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCampStore } from '@/store'
+import { useCampStore, useTimeStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { getDayStringNoPad } from '@/lib/date'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
@@ -12,6 +12,7 @@ type Camp = components['schemas']['CampResponse']
 
 const router = useRouter()
 const { displayCamp, allCamps, hasRegisteredLatest } = storeToRefs(useCampStore())
+const { currentTime } = storeToRefs(useTimeStore())
 const latestCamp = computed(() => allCamps.value[0])
 
 // 参加登録申込期限を過ぎていて、かつまだ終わっていない合宿は表示不可能とする
@@ -19,7 +20,7 @@ const isViewable = computed(() => {
   if (!latestCamp.value) return false
   const endDate = new Date(latestCamp.value.dateEnd)
   endDate.setDate(endDate.getDate() + 1)
-  return latestCamp.value.isRegistrationOpen || new Date() > endDate
+  return latestCamp.value.isRegistrationOpen || currentTime.value > endDate
 })
 
 const register = async () => {

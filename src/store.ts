@@ -56,3 +56,16 @@ export const useCampStore = defineStore('camp', () => {
 
   return { initCamp, displayCamp, allCamps, hasRegisteredLatest }
 })
+
+export const useTimeStore = defineStore('time', () => {
+  const currentTime = ref(new Date())
+
+  const updateTime = () => {
+    currentTime.value = new Date()
+    requestAnimationFrame(updateTime)
+  }
+
+  updateTime() // 呼び出されて即座に現在時刻の更新を開始
+
+  return { currentTime }
+})
