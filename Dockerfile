@@ -28,8 +28,11 @@ FROM caddy:2-alpine
 # ビルドされたファイルをCaddyの公開ディレクトリにコピー
 COPY --from=builder /app/dist /usr/share/caddy
 
+# CaddyfileをコピーしてSPAルーティングを有効化
+COPY Caddyfile /etc/caddy/Caddyfile
+
 # ポート80を公開
 EXPOSE 80
 
-# Caddyを起動
-CMD ["caddy", "file-server", "--root", "/usr/share/caddy"]
+# Caddyを起動（Caddyfileを使用）
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile"]

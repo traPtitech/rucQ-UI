@@ -35,7 +35,6 @@ const vuetify = createVuetify({
 })
 
 app.use(pinia)
-app.use(router)
 app.use(vuetify)
 
 import { useUserStore, useCampStore } from './store'
@@ -54,6 +53,8 @@ async function initializeApp() {
     console.error(error)
   }
 
+  // 初期化完了後にルーターを登録
+  app.use(router)
   app.mount('#app')
 }
 
