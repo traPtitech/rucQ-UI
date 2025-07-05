@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useCampStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { apiClient } from '@/api/apiClient'
-const { displayCamp, latestCamp } = storeToRefs(useCampStore())
+const { displayCamp, latestCamp, hasRegisteredLatest } = storeToRefs(useCampStore())
 
 const router = useRouter()
 
@@ -24,6 +24,7 @@ const cancelRegistration = async () => {
     params: { path: { campId: displayCamp.value.id } },
   })
   if (error) throw error
+  hasRegisteredLatest.value = false
   routeTop()
 }
 </script>
