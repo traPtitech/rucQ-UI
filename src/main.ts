@@ -48,7 +48,11 @@ async function initializeApp() {
   }
 
   const me = await useUserStore().initUser()
-  await useCampStore().initCamp(me)
+  try {
+    await useCampStore().initCamp(me)
+  } catch (error) {
+    console.error(error)
+  }
 
   app.mount('#app')
 }
