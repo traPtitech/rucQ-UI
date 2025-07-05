@@ -4,7 +4,7 @@ import { markedHighlight } from 'marked-highlight'
 import { Marked } from 'marked'
 import hljs from 'highlight.js'
 import darkStyle from 'highlight.js/styles/github-dark.css?inline'
-import DOMPurify from 'dompurify'
+import sanitizeHtml from 'sanitize-html'
 
 type HeadingInfo = {
   id: string
@@ -44,9 +44,9 @@ watch(
     const headingInfos: HeadingInfo[] = []
     let idCounter = 0
 
-    // DOMPurify を使用してHTMLをサニタイズ（script 等を除去）
-    const cleanHtml = DOMPurify.sanitize(rawHtml, {
-      ALLOWED_TAGS: [
+    // sanitize-html を使用して HTML をサニタイズ（script 等を除去）
+    const cleanHtml = sanitizeHtml(rawHtml, {
+      allowedTags: [
         'h1',
         'h2',
         'h3',
@@ -73,18 +73,16 @@ watch(
         'br',
         'span', // hljs のシンタックスハイライトで必要
       ],
-      ALLOWED_ATTR: ['href', 'id', 'class'],
-      FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed'],
-      FORBID_ATTR: [
-        'onload',
-        'onerror',
-        'onclick',
-        'onmouseover',
-        'onfocus',
-        'onblur',
-        'onchange',
-        'onsubmit',
-      ],
+      allowedAttributes: {
+        '*': ['class', 'id'],
+        a: ['href'],
+        code: ['class'],
+        pre: ['class'],
+        span: ['class'],
+      },
+      allowedClasses: {
+        '*': ['hljs*'], // hljs で始まるクラス名を許可
+      },
     })
 
     // DOM パーサーを使用して安全に見出しを処理
@@ -246,6 +244,7 @@ onMounted(async () => {
 .preview :global(a) {
   color: #0066ff !important;
   text-decoration: none;
+  font-weight: 500;
 }
 
 .preview :global(a):hover {
