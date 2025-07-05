@@ -23,7 +23,8 @@ export const useUserStore = defineStore('user', () => {
 
 export const useCampStore = defineStore('camp', () => {
   const displayCamp = ref<Camp>()
-  const pastCamps = ref<Camp[]>([])
+  const allCamps = ref<Camp[]>([])
+  const hasRegisteredLatest = ref(false) // 最新の合宿に参加登録済みかどうか
 
   const initCamp = async (me: User) => {
     const camps = await apiClient.GET('/api/camps')
@@ -31,12 +32,12 @@ export const useCampStore = defineStore('camp', () => {
       throw Error(`合宿情報を取得できません: ${camps.error}`)
     }
 
-    // pastCamps[0] が最新の合宿
-    pastCamps.value = camps.data
+    // インデックスが小さいほど新しい合宿
+    allCamps.value = camps.data
       .filter((camp) => !camp.isDraft)
       .sort((a, b) => new Date(b.dateStart).getTime() - new Date(a.dateStart).getTime())
 
-    const latestCamp = pastCamps.value[0]
+    const latestCamp = allCamps.value[0]
     if (!latestCamp) {
       throw Error(`合宿が見つかりません`)
     }
@@ -49,8 +50,9 @@ export const useCampStore = defineStore('camp', () => {
     }
     if (participants.data.some((user) => user.id === me.id)) {
       displayCamp.value = latestCamp
+      hasRegisteredLatest.value = true
     }
   }
 
-  return { initCamp, displayCamp, pastCamps }
+  return { initCamp, displayCamp, allCamps, hasRegisteredLatest }
 })

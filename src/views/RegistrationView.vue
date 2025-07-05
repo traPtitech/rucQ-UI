@@ -1,5 +1,3 @@
-<!-- 参加登録・合宿選択 View -->
-<!-- すでにユーザーが最新の合宿の参加登録を済ませている場合は GuidebookView へリダイレクトする -->
 <script setup lang="ts">
 import { useCampStore } from '@/store'
 import { storeToRefs } from 'pinia'
@@ -13,39 +11,39 @@ import type { components } from '@/api/schema'
 type Camp = components['schemas']['CampResponse']
 
 const router = useRouter()
-const { displayCamp, pastCamps } = storeToRefs(useCampStore())
+const { displayCamp, allCamps, hasRegisteredLatest } = storeToRefs(useCampStore())
 
 const register = async () => {
-  displayCamp.value = pastCamps.value[0]
-  const { data, error } = await apiClient.POST('/api/camps/{campId}/register', {
-    params: { path: { campId: pastCamps.value[0].id } },
+  const { error } = await apiClient.POST('/api/camps/{campId}/register', {
+    params: { path: { campId: allCamps.value[0].id } },
   })
-  if (error || !data) throw error ?? new Error('Failed to register for camp')
-  await router.push(`/${pastCamps.value[0].displayId}/info`)
+  if (error) throw error
+  hasRegisteredLatest.value = true
+  await openCamp(allCamps.value[0])
 }
 
-const openPastCamps = async (camp: Camp) => {
+const openCamp = async (camp: Camp) => {
   displayCamp.value = camp
   await router.push(`/${camp.displayId}/info`)
 }
 
 onBeforeMount(async () => {
-  if (displayCamp.value) router.push(`/${displayCamp.value.displayId}/info`)
+  if (displayCamp.value) openCamp(displayCamp.value)
 })
 </script>
 
 <template>
-  <div :class="$style.container" v-if="pastCamps.length > 0">
+  <div :class="$style.container" v-if="allCamps.length > 0">
     <img :src="`/logo/logo-white.svg`" :class="$style.logo" />
     <v-expansion-panels>
       <v-expansion-panel :class="$style.panel">
         <v-expansion-panel-title>
-          <span :class="$style.title">{{ pastCamps[0].name }}</span>
+          <span :class="$style.title">{{ allCamps[0].name }}</span>
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <div :class="$style.content">
             <div :class="$style.guidebook">
-              <markdown-preview v-model:text="pastCamps[0].description" />
+              <markdown-preview v-model:text="allCamps[0].description" />
             </div>
             <v-btn
               elevation="0"
@@ -62,16 +60,16 @@ onBeforeMount(async () => {
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
-    <div v-if="pastCamps.length > 1" :class="$style.archives">
+    <div v-if="allCamps.length > 1" :class="$style.archives">
       <span :class="$style.head">その他の合宿</span>
       <div :class="$style.archiveList">
         <v-card
-          v-for="camp in pastCamps.slice(1)"
+          v-for="camp in allCamps.slice(1)"
           :key="camp.id"
           link
           elevation="0"
           :class="$style.archiveBtn"
-          @click="openPastCamps(camp)"
+          @click="openCamp(camp)"
         >
           <div>{{ camp.name }}</div>
           <div style="font-size: 12px">
