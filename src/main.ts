@@ -42,8 +42,8 @@ import { useUserStore, useCampStore } from './store'
 
 async function initializeApp() {
   if (import.meta.env.DEV) {
-    const { worker } = await import('./mocks/browser')
-    await worker.start()
+    // const { worker } = await import('./mocks/browser')
+    // await worker.start()
     // await (await import('./dev/setup')).default()
   }
 
