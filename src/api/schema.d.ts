@@ -271,7 +271,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/api/question-groups/{questionGroupId}/questions': {
+  '/api/admin/question-groups/{questionGroupId}/questions': {
     parameters: {
       query?: never
       header?: never

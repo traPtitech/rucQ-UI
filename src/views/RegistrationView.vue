@@ -59,7 +59,7 @@ onBeforeMount(async () => {
         <v-expansion-panel-text>
           <div :class="$style.content">
             <div :class="$style.guidebook">
-              <markdown-preview v-model:text="latestCamp.description" />
+              <markdown-preview v-model:text="latestCamp.guidebook" />
             </div>
             <v-btn
               v-if="!hasRegisteredLatest && latestCamp.isRegistrationOpen"

@@ -53,8 +53,6 @@ const refreshAnswersMap = async () => {
   }
 
   const myAnswers = await getMyAnswers()
-  console.log('myAnswers', myAnswers)
-
   for (const answer of myAnswers) {
     isAnswered.value = true // すでに回答済み
     switch (answer.type) {
@@ -149,13 +147,11 @@ const sendAnswers = async () => {
     const updatePromises = props.questionGroup.questions
       .filter((question: Question) => isAnswerChanged(question.id))
       .map(async (question) => {
-        console.log('changing', question.id, answersMap[question.id])
         const answer = answersMap[question.id]
         const resp = await apiClient.PUT('/api/answers/{answerId}', {
           params: { path: { answerId: answer.id! } },
           body: getAnswerBody(question, answer.value!),
         })
-        console.log('response', resp)
         const { error } = resp
 
         if (error) throw error

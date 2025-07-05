@@ -40,7 +40,7 @@ app.use(vuetify)
 if (import.meta.env.DEV) {
   // const { worker } = await import('./mocks/browser')
   // await worker.start()
-  // await (await import('./dev/setup')).default()
+  await (await import('./dev/setup')).default()
 }
 
 app.use(router)
