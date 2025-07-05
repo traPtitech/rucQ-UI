@@ -63,8 +63,26 @@ export default async () => {
         due: '2024-08-10',
         questions: [
           {
+            type: 'free_number',
+            title: '年齢',
+            isPublic: true,
+            isOpen: true,
+          },
+          {
             type: 'free_text',
             title: 'あなたの名前',
+            isPublic: true,
+            isOpen: true,
+          },
+          {
+            type: 'single',
+            title: '合宿に参加する理由は何ですか？',
+            options: [
+              { content: 'プログラミングを学びたい' },
+              { content: '友達と遊びたい' },
+              { content: '新しい技術に触れたい' },
+              { content: 'リラックスしたい' },
+            ],
             isPublic: true,
             isOpen: true,
           },
