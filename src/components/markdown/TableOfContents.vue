@@ -1,16 +1,17 @@
 <template>
-  <div :class="$style.container">
+  <div>
     <div :class="$style.header">目次</div>
     <nav :class="$style.nav">
       <ul :class="$style.list">
         <li
           v-for="heading in headings"
           :key="heading.id"
-          :class="[$style.item, $style[`level${heading.level}`]]"
+          :class="[$style.item, { [$style.level1]: heading.level === 1 }]"
         >
           <a
             :href="`#${heading.id}`"
             :class="$style.link"
+            :style="getLinkStyle(heading.level)"
             @click.prevent="scrollToHeading(heading.id)"
           >
             {{ heading.text }}
@@ -37,36 +38,30 @@ const scrollToHeading = (id: string) => {
   if (element) {
     element.scrollIntoView({
       behavior: 'smooth',
-      block: 'start',
+      block: 'center',
     })
   }
 }
+
+const getLinkStyle = (level: number) => ({
+  paddingLeft: `${4 + (level - 1) * 12}px`,
+  fontSize: `${Math.max(11, 14 - (level - 1))}px`,
+  color: level === 1 ? '#333' : '#666',
+  fontWeight: level === 1 ? 'bold' : 'normal',
+})
 </script>
 
 <style module>
-.container {
-  background: #f8f9fa;
-  border-left: 3px solid #0066ff;
-  border-radius: 4px;
-  padding: 16px;
-  height: fit-content;
-  max-height: 70vh;
-  overflow-y: auto;
-  position: sticky;
-  top: 20px;
-}
-
 .header {
   font-weight: bold;
   font-size: 14px;
-  color: #333;
   margin-bottom: 12px;
   padding-bottom: 8px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .nav {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .list {
@@ -75,57 +70,16 @@ const scrollToHeading = (id: string) => {
   margin: 0;
 }
 
-.item {
-  margin-bottom: 4px;
-}
-
 .link {
   display: block;
-  color: #666;
   text-decoration: none;
-  padding: 4px 0;
+  padding: 6px 0;
   border-radius: 2px;
-  transition: all 0.2s ease;
   line-height: 1.3;
 }
 
 .link:hover {
-  color: #0066ff;
+  color: #0066ff !important;
   background-color: rgba(0, 102, 255, 0.05);
-  padding-left: 8px;
-}
-
-.level1 {
-  font-weight: bold;
-}
-
-.level1 .link {
-  font-size: 14px;
-  color: #333;
-}
-
-.level2 .link {
-  padding-left: 12px;
-  font-size: 13px;
-}
-
-.level3 .link {
-  padding-left: 24px;
-  font-size: 12px;
-}
-
-.level4 .link {
-  padding-left: 36px;
-  font-size: 12px;
-}
-
-.level5 .link {
-  padding-left: 48px;
-  font-size: 11px;
-}
-
-.level6 .link {
-  padding-left: 60px;
-  font-size: 11px;
 }
 </style>

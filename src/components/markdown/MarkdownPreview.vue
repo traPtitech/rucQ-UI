@@ -86,7 +86,6 @@ onMounted(async () => {
   min-height: 100%;
   max-width: 1000px;
   margin: 0 auto;
-  padding: 12px;
 }
 
 .preview :global(p) {

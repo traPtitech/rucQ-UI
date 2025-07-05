@@ -1,9 +1,12 @@
 <template>
   <div :class="$style.container">
     <div :class="$style.content">
+      <div v-if="smAndDown" :class="$style.sidebarMobile">
+        <table-of-contents :headings="headings" />
+      </div>
       <markdown-preview :mdtext="guidebookContent" v-model:headings="headings" />
     </div>
-    <div :class="$style.sidebar">
+    <div v-if="!smAndDown" :class="$style.sidebar">
       <table-of-contents :headings="headings" />
     </div>
   </div>
@@ -15,6 +18,9 @@ import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import TableOfContents from '@/components/markdown/TableOfContents.vue'
 import { useCampStore } from '@/store'
 import { storeToRefs } from 'pinia'
+import { useDisplay } from 'vuetify'
+
+const { smAndDown } = useDisplay()
 
 type HeadingInfo = {
   id: string
@@ -31,8 +37,9 @@ const headings = ref<HeadingInfo[]>([])
 <style module>
 .container {
   width: 100%;
-  height: 100%;
-  padding: 40px 16px;
+  margin: 0 auto;
+  max-width: 1000px;
+  height: 100vh;
   display: flex;
   gap: 24px;
 }
@@ -40,24 +47,20 @@ const headings = ref<HeadingInfo[]>([])
 .content {
   flex-grow: 1;
   height: 100%;
-  min-width: 0; /* フレックスアイテムの縮小を許可 */
+  overflow: scroll;
+  padding: 40px 16px;
+}
+
+.sidebarMobile {
+  width: 100%;
+  margin-bottom: 40px;
 }
 
 .sidebar {
   width: 280px;
+  padding: 40px 16px;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
   flex-shrink: 0;
-}
-
-/* レスポンシブ対応 */
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .sidebar {
-    width: 100%;
-    order: -1; /* モバイルでは目次を上に表示 */
-  }
 }
 </style>
