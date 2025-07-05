@@ -3,9 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - VITE_API_BASE_URL=${VITE_API_BASE_URL}
-        - VITE_DEV_USER=${VITE_DEV_USER}
+    environment:
+      VITE_DEV_USER: ${VITE_DEV_USER:-rucq}
     ports:
       - '5173:80'
     restart: unless-stopped

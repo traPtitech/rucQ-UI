@@ -13,12 +13,6 @@ RUN npm ci
 # ソースコードをコピー
 COPY . .
 
-# ビルド引数として環境変数を受け取る
-ARG VITE_API_BASE_URL
-ARG VITE_DEV_USER
-ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
-ENV VITE_DEV_USER=$VITE_DEV_USER
-
 # アプリケーションをビルド
 RUN npm run build
 
