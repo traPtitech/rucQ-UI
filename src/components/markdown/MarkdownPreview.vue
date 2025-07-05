@@ -1,19 +1,22 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { markedHighlight } from 'marked-highlight'
 import { Marked } from 'marked'
 import hljs from 'highlight.js'
 import darkStyle from 'highlight.js/styles/github-dark.css?inline'
-// ?inline をつけて読み込むことでCSSファイルもテキストデータになる
 
-const text = defineModel<string>('text')
+type HeadingInfo = {
+  id: string
+  level: number
+  text: string
+}
 
-defineProps<{ pad?: number }>()
+const props = defineProps<{
+  mdtext: string
+}>()
 
-const html = computed(() => {
-  const tempHtml = marked.parse(text.value || '') as string
-  return tempHtml.replace('<pre><code>', '<pre><code class="hljs">')
-})
+const headings = defineModel<HeadingInfo[]>('headings')
+const htmltext = ref('')
 
 const marked = new Marked(
   markedHighlight({
@@ -32,6 +35,28 @@ const marked = new Marked(
   },
 )
 
+// mdtext 変更時に HTML と見出し情報を更新
+watch(
+  () => props.mdtext,
+  () => {
+    const tempHtml = marked.parse(props.mdtext || '') as string
+    const headingInfos: HeadingInfo[] = []
+    let idCounter = 0
+
+    // 見出しに ID を追加しつつ、見出し情報も抽出
+    const htmlWithIds = tempHtml.replace(/<h([1-6])>(.*?)<\/h[1-6]>/gi, (_, level, content) => {
+      const id = `heading-${idCounter++}`
+      const cleanText = content.replace(/<[^>]*>/g, '')
+      headingInfos.push({ id, level: parseInt(level), text: cleanText })
+      return `<h${level} id="${id}">${content}</h${level}>`
+    })
+
+    htmltext.value = htmlWithIds.replace('<pre><code>', '<pre><code class="hljs">')
+    headings.value = headingInfos
+  },
+  { immediate: true },
+)
+
 onMounted(async () => {
   const highlightStyleTag = document.createElement('style')
   highlightStyleTag.textContent = darkStyle
@@ -42,11 +67,7 @@ onMounted(async () => {
 <template>
   <div :class="$style.container">
     <div :class="$style.content">
-      <div
-        v-html="html"
-        :class="$style.preview"
-        :style="`padding: ${pad !== undefined ? pad : 12}px;`"
-      ></div>
+      <div v-html="htmltext" :class="$style.preview"></div>
     </div>
   </div>
 </template>
@@ -65,10 +86,8 @@ onMounted(async () => {
   min-height: 100%;
   max-width: 1000px;
   margin: 0 auto;
+  padding: 12px;
 }
-
-/* 合宿のしおり、イベント告知文、個人メモのプレビューなどこのスタイルで統一する */
-/* 使いやすくてクセのないスタイルであることが望ましい。基本的には traQ に寄せる */
 
 .preview :global(p) {
   font-size: 1em;
