@@ -4,6 +4,7 @@ import { markedHighlight } from 'marked-highlight'
 import { Marked } from 'marked'
 import hljs from 'highlight.js'
 import darkStyle from 'highlight.js/styles/github-dark.css?inline'
+import DOMPurify from 'dompurify'
 
 type HeadingInfo = {
   id: string
@@ -31,7 +32,7 @@ const marked = new Marked(
   }),
   {
     gfm: true, // GitHub Flavored Markdown を有効にする
-    breaks: true, // 1段の改行を有効にする
+    breaks: true, // 1 段の改行を有効にする
   },
 )
 
@@ -39,19 +40,76 @@ const marked = new Marked(
 watch(
   () => props.mdtext,
   () => {
-    const tempHtml = marked.parse(props.mdtext || '') as string
+    const rawHtml = marked.parse(props.mdtext || '') as string
     const headingInfos: HeadingInfo[] = []
     let idCounter = 0
 
-    // 見出しに ID を追加しつつ、見出し情報も抽出
-    const htmlWithIds = tempHtml.replace(/<h([1-6])>(.*?)<\/h[1-6]>/gi, (_, level, content) => {
-      const id = `heading-${idCounter++}`
-      const cleanText = content.replace(/<[^>]*>/g, '')
-      headingInfos.push({ id, level: parseInt(level), text: cleanText })
-      return `<h${level} id="${id}">${content}</h${level}>`
+    // DOMPurify を使用してHTMLをサニタイズ（script 等を除去）
+    const cleanHtml = DOMPurify.sanitize(rawHtml, {
+      ALLOWED_TAGS: [
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'p',
+        'a',
+        'ul',
+        'ol',
+        'li',
+        'blockquote',
+        'code',
+        'pre',
+        'strong',
+        'em',
+        'table',
+        'thead',
+        'tbody',
+        'tr',
+        'th',
+        'td',
+        'hr',
+        'br',
+        'span', // hljs のシンタックスハイライトで必要
+      ],
+      ALLOWED_ATTR: ['href', 'id', 'class'],
+      FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed'],
+      FORBID_ATTR: [
+        'onload',
+        'onerror',
+        'onclick',
+        'onmouseover',
+        'onfocus',
+        'onblur',
+        'onchange',
+        'onsubmit',
+      ],
     })
 
-    htmltext.value = htmlWithIds.replace('<pre><code>', '<pre><code class="hljs">')
+    // DOM パーサーを使用して安全に見出しを処理
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(cleanHtml, 'text/html')
+    const headingElements = doc.querySelectorAll('h1, h2, h3, h4, h5, h6')
+
+    headingElements.forEach((heading) => {
+      const level = parseInt(heading.tagName.charAt(1))
+      const id = `heading-${idCounter++}`
+      const text = heading.textContent || ''
+
+      heading.setAttribute('id', id)
+      headingInfos.push({ id, level, text })
+    })
+
+    // コードブロックに hljs クラスを追加
+    const codeElements = doc.querySelectorAll('pre code')
+    codeElements.forEach((code) => {
+      if (!code.className.includes('hljs')) {
+        code.className = `${code.className} hljs`.trim()
+      }
+    })
+
+    htmltext.value = doc.body.innerHTML
     headings.value = headingInfos
   },
   { immediate: true },

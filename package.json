@@ -17,6 +17,7 @@
     "@mdi/font": "^7.4.47",
     "@yeger/vue-masonry-wall": "^5.0.20",
     "axios": "^1.7.9",
+    "dompurify": "^3.2.6",
     "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.0",
     "marked": "^15.0.6",
@@ -34,6 +35,7 @@
   "devDependencies": {
     "@mdi/font": "^7.4.47",
     "@tsconfig/node22": "^22.0.0",
+    "@types/dompurify": "^3.0.5",
     "@types/node": "^22.10.2",
     "@vite-pwa/assets-generator": "^0.2.6",
     "@vitejs/plugin-vue": "^5.2.1",
