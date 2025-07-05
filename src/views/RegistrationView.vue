@@ -1,59 +1,68 @@
-<!-- 参加登録・合宿選択 View -->
-<!-- すでにユーザーが最新の合宿の参加登録を済ませている場合は GuidebookView へリダイレクトする -->
 <script setup lang="ts">
-import { useCampStore } from '@/store'
+import { useCampStore, useTimeStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { getDayStringNoPad } from '@/lib/date'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import { apiClient } from '@/api/apiClient'
 import { useRouter } from 'vue-router'
-import { onBeforeMount } from 'vue'
+import { onBeforeMount, computed } from 'vue'
 import type { components } from '@/api/schema'
 
 type Camp = components['schemas']['CampResponse']
 
 const router = useRouter()
-const { displayCamp, pastCamps } = storeToRefs(useCampStore())
+const { displayCamp, latestCamp, allCamps, hasRegisteredLatest } = storeToRefs(useCampStore())
+const { currentTime } = storeToRefs(useTimeStore())
+
+// 参加登録申込期限を過ぎていて、かつまだ終わっていない合宿は表示不可能とする
+const isViewable = computed(() => {
+  if (!latestCamp.value) return false
+  const endDate = new Date(latestCamp.value.dateEnd)
+  endDate.setDate(endDate.getDate() + 1)
+  return latestCamp.value.isRegistrationOpen || currentTime.value > endDate
+})
 
 const register = async () => {
-  displayCamp.value = pastCamps.value[0]
+  if (!latestCamp.value) return
   const { error } = await apiClient.POST('/api/camps/{campId}/register', {
-    params: { path: { campId: pastCamps.value[0].id } },
+    params: { path: { campId: latestCamp.value.id } },
   })
   if (error) throw error
-
-  console.log(
-    await apiClient.GET('/api/camps/{campId}/participants', {
-      params: { path: { campId: pastCamps.value[0].id } },
-    }),
-  )
-  await router.push(`/${pastCamps.value[0].displayId}/info`)
+  hasRegisteredLatest.value = true
+  await openCamp(latestCamp.value)
 }
 
-const openPastCamps = async (camp: Camp) => {
+const openCamp = async (camp: Camp) => {
   displayCamp.value = camp
   await router.push(`/${camp.displayId}/info`)
 }
 
 onBeforeMount(async () => {
-  if (displayCamp.value) router.push(`/${displayCamp.value.displayId}/info`)
+  if (displayCamp.value) openCamp(displayCamp.value)
 })
 </script>
 
 <template>
-  <div :class="$style.container" v-if="pastCamps.length > 0">
+  <div :class="$style.container" v-if="latestCamp">
     <img :src="`/logo/logo-white.svg`" :class="$style.logo" />
     <v-expansion-panels>
       <v-expansion-panel :class="$style.panel">
         <v-expansion-panel-title>
-          <span :class="$style.title">{{ pastCamps[0].name }}</span>
+          <div :class="$style.title">
+            <span :class="$style.titleText">{{ latestCamp.name }}</span>
+            <span>
+              {{ getDayStringNoPad(new Date(latestCamp.dateStart)) }} -
+              {{ getDayStringNoPad(new Date(latestCamp.dateEnd)) }}
+            </span>
+          </div>
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <div :class="$style.content">
             <div :class="$style.guidebook">
-              <markdown-preview v-model:text="pastCamps[0].guidebook" />
+              <markdown-preview v-model:text="latestCamp.description" />
             </div>
             <v-btn
+              v-if="!hasRegisteredLatest && latestCamp.isRegistrationOpen"
               elevation="0"
               prepend-icon="mdi-arrow-right"
               baseColor="transparent"
@@ -64,20 +73,44 @@ onBeforeMount(async () => {
             >
               <span class="font-weight-medium">この合宿に参加する</span>
             </v-btn>
+            <v-btn
+              v-else-if="isViewable"
+              elevation="0"
+              prepend-icon="mdi-arrow-right"
+              baseColor="transparent"
+              variant="flat"
+              color="primary"
+              :class="[$style.save, 'font-weight-bold']"
+              @click="openCamp(latestCamp)"
+            >
+              <span class="font-weight-medium">この合宿を表示する</span>
+            </v-btn>
+            <v-btn
+              v-else
+              elevation="0"
+              prepend-icon="mdi-close"
+              baseColor="transparent"
+              variant="flat"
+              color="grey"
+              disabled
+              :class="[$style.save, 'font-weight-bold']"
+            >
+              <span class="font-weight-medium">参加申込期限を過ぎています</span>
+            </v-btn>
           </div>
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
-    <div v-if="pastCamps.length > 1" :class="$style.archives">
-      <span :class="$style.head">その他の合宿</span>
+    <div v-if="allCamps.length > 1" :class="$style.archives">
+      <span :class="$style.head">合宿アーカイブ</span>
       <div :class="$style.archiveList">
         <v-card
-          v-for="camp in pastCamps.slice(1)"
+          v-for="camp in allCamps.slice(1)"
           :key="camp.id"
           link
           elevation="0"
           :class="$style.archiveBtn"
-          @click="openPastCamps(camp)"
+          @click="openCamp(camp)"
         >
           <div>{{ camp.name }}</div>
           <div style="font-size: 12px">
@@ -136,6 +169,15 @@ onBeforeMount(async () => {
 }
 
 .title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  padding-right: 16px;
+}
+
+.titleText {
   font-weight: bold;
 }
 
