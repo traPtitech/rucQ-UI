@@ -14,7 +14,6 @@ export const questionsHandlers = [
           {
             id: 3,
             title: 'スキーをする？',
-            description: null,
             type: 'single',
             options: [
               { id: 5, content: 'する' },
@@ -26,7 +25,6 @@ export const questionsHandlers = [
           {
             id: 4,
             title: 'スキーセット',
-            description: null,
             type: 'single',
             options: [
               { id: 7, content: '借りる' },
@@ -38,7 +36,6 @@ export const questionsHandlers = [
           {
             id: 5,
             title: '自由選択',
-            description: null,
             type: 'multiple',
             options: [
               { id: 18, content: '選択肢1' },
@@ -50,7 +47,6 @@ export const questionsHandlers = [
           {
             id: 6,
             title: 'スノーボードセット',
-            description: null,
             type: 'single',
             options: [
               { id: 9, content: '借りる' },
@@ -62,7 +58,6 @@ export const questionsHandlers = [
           {
             id: 7,
             title: 'スキーウェア',
-            description: null,
             type: 'single',
             options: [
               { id: 11, content: 'S' },
@@ -75,7 +70,6 @@ export const questionsHandlers = [
           {
             id: 8,
             title: 'ゴーグル',
-            description: null,
             type: 'single',
             options: [
               { id: 14, content: '借りる' },
@@ -87,7 +81,6 @@ export const questionsHandlers = [
           {
             id: 9,
             title: '自由記述',
-            description: null,
             type: 'free_text',
             isPublic: true,
             isOpen: true,
@@ -95,7 +88,6 @@ export const questionsHandlers = [
           {
             id: 10,
             title: 'グローブ',
-            description: null,
             type: 'single',
             options: [
               { id: 16, content: '借りる' },
@@ -132,7 +124,6 @@ export const questionsHandlers = [
           {
             id: 1,
             title: '乗るものにチェック',
-            description: null,
             type: 'multiple',
             options: [
               { id: 1, content: '行き' },
@@ -152,7 +143,6 @@ export const questionsHandlers = [
           {
             id: 13,
             title: 'アレルギー',
-            description: null,
             type: 'free_text',
             isPublic: true,
             isOpen: true,
