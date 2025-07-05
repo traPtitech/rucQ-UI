@@ -30,7 +30,9 @@ export const campsHandlers = [
         id: 3,
         displayId: 'camp25_summer',
         name: '2025年度 夏合宿',
-        guidebook: `# 2025年度 夏合宿のしおり
+        guidebook: `！！このデータはダミーです！！
+
+# 2025年度 夏合宿のしおり
 
 ## 合宿概要
 
