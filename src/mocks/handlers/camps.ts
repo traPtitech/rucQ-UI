@@ -147,7 +147,7 @@ A: 屋外活動は室内プログラムに変更となります。
 
 *合宿実行委員会*`,
         isDraft: false,
-        isRegistrationOpen: true,
+        isRegistrationOpen: false,
         isPaymentOpen: true,
         dateStart: '2025-08-01',
         dateEnd: '2025-08-10',

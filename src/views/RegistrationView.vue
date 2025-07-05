@@ -5,21 +5,30 @@ import { getDayStringNoPad } from '@/lib/date'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import { apiClient } from '@/api/apiClient'
 import { useRouter } from 'vue-router'
-import { onBeforeMount } from 'vue'
+import { onBeforeMount, computed } from 'vue'
 import type { components } from '@/api/schema'
 
 type Camp = components['schemas']['CampResponse']
 
 const router = useRouter()
 const { displayCamp, allCamps, hasRegisteredLatest } = storeToRefs(useCampStore())
+const latestCamp = computed(() => allCamps.value[0])
+
+// 参加登録申込期限を過ぎていて、かつまだ終わっていない合宿は表示不可能とする
+const isViewable = computed(() => {
+  if (!latestCamp.value) return false
+  const endDate = new Date(latestCamp.value.dateEnd)
+  endDate.setDate(endDate.getDate() + 1)
+  return latestCamp.value.isRegistrationOpen || new Date() > endDate
+})
 
 const register = async () => {
   const { error } = await apiClient.POST('/api/camps/{campId}/register', {
-    params: { path: { campId: allCamps.value[0].id } },
+    params: { path: { campId: latestCamp.value.id } },
   })
   if (error) throw error
   hasRegisteredLatest.value = true
-  await openCamp(allCamps.value[0])
+  await openCamp(latestCamp.value)
 }
 
 const openCamp = async (camp: Camp) => {
@@ -39,20 +48,32 @@ onBeforeMount(async () => {
       <v-expansion-panel :class="$style.panel">
         <v-expansion-panel-title>
           <div :class="$style.title">
-            <span :class="$style.titleText">{{ allCamps[0].name }}</span>
+            <span :class="$style.titleText">{{ latestCamp.name }}</span>
             <span>
-              {{ getDayStringNoPad(new Date(allCamps[0].dateStart)) }} -
-              {{ getDayStringNoPad(new Date(allCamps[0].dateEnd)) }}
+              {{ getDayStringNoPad(new Date(latestCamp.dateStart)) }} -
+              {{ getDayStringNoPad(new Date(latestCamp.dateEnd)) }}
             </span>
           </div>
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <div :class="$style.content">
             <div :class="$style.guidebook">
-              <markdown-preview v-model:text="allCamps[0].description" />
+              <markdown-preview v-model:text="latestCamp.description" />
             </div>
             <v-btn
-              v-if="hasRegisteredLatest"
+              v-if="!hasRegisteredLatest && latestCamp.isRegistrationOpen"
+              elevation="0"
+              prepend-icon="mdi-arrow-right"
+              baseColor="transparent"
+              variant="flat"
+              color="primary"
+              :class="[$style.save, 'font-weight-bold']"
+              @click="register"
+            >
+              <span class="font-weight-medium">この合宿に参加する</span>
+            </v-btn>
+            <v-btn
+              v-else-if="isViewable"
               elevation="0"
               prepend-icon="mdi-arrow-right"
               baseColor="transparent"
@@ -66,14 +87,14 @@ onBeforeMount(async () => {
             <v-btn
               v-else
               elevation="0"
-              prepend-icon="mdi-arrow-right"
+              prepend-icon="mdi-close"
               baseColor="transparent"
               variant="flat"
-              color="primary"
+              color="grey"
+              disabled
               :class="[$style.save, 'font-weight-bold']"
-              @click="register"
             >
-              <span class="font-weight-medium">この合宿に参加する</span>
+              <span class="font-weight-medium">参加申込期限を過ぎています</span>
             </v-btn>
           </div>
         </v-expansion-panel-text>
