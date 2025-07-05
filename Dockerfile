@@ -25,10 +25,10 @@ RUN npm run build
 # 本番用のCaddyイメージ
 FROM caddy:2-alpine
 
-# CaddyfileをコピーしてSPAルーティングを有効化（軽いファイルを先に）
+# CaddyfileをコピーしてSPAルーティングを有効化
 COPY Caddyfile /etc/caddy/Caddyfile
 
-# ビルドされたファイルをCaddyの公開ディレクトリにコピー（重いファイルを後に）
+# ビルドされたファイルをCaddyの公開ディレクトリにコピー
 COPY --from=builder /app/dist /usr/share/caddy
 
 # ポート80を公開
