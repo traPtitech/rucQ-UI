@@ -271,7 +271,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/api/question-groups/{questionGroupId}/questions': {
+  '/api/admin/question-groups/{questionGroupId}/questions': {
     parameters: {
       query?: never
       header?: never
@@ -696,7 +696,8 @@ export interface components {
     CampRequest: {
       displayId: string
       name: string
-      description: string
+      /** @description 合宿のしおり（Markdown形式） */
+      guidebook: string
       isDraft: boolean
       isRegistrationOpen: boolean
       isPaymentOpen: boolean
@@ -709,7 +710,8 @@ export interface components {
       id: number
       displayId: string
       name: string
-      description: string
+      /** @description 合宿のしおり（Markdown形式） */
+      guidebook: string
       isDraft: boolean
       isRegistrationOpen: boolean
       isPaymentOpen: boolean
@@ -823,13 +825,13 @@ export interface components {
     PostQuestionGroupRequest: components['schemas']['PutQuestionGroupRequest'] & {
       questions: components['schemas']['PostQuestionRequest'][]
     }
-    QuestionGroupResponse: components['schemas']['PostQuestionGroupRequest'] & {
+    QuestionGroupResponse: components['schemas']['PutQuestionGroupRequest'] & {
       id: number
       questions: components['schemas']['QuestionResponse'][]
     }
     QuestionRequestBase: {
       title: string
-      description?: string | null
+      description?: string
       isPublic: boolean
       isOpen: boolean
     }
@@ -855,7 +857,7 @@ export interface components {
     FreeTextQuestionResponse: {
       id: number
       title: string
-      description: string | null
+      description?: string
       /** @enum {string} */
       type: 'free_text'
       isPublic: boolean
@@ -868,7 +870,7 @@ export interface components {
     FreeNumberQuestionResponse: {
       id: number
       title: string
-      description: string | null
+      description?: string
       /** @enum {string} */
       type: 'free_number'
       isPublic: boolean
@@ -887,7 +889,7 @@ export interface components {
     SingleChoiceQuestionResponse: {
       id: number
       title: string
-      description: string | null
+      description?: string
       /** @enum {string} */
       type: 'single'
       isPublic: boolean
@@ -907,7 +909,7 @@ export interface components {
     MultipleChoiceQuestionResponse: {
       id: number
       title: string
-      description: string | null
+      description?: string
       /** @enum {string} */
       type: 'multiple'
       isPublic: boolean

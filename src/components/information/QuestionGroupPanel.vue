@@ -52,7 +52,8 @@ const refreshAnswersMap = async () => {
     }
   }
 
-  for (const answer of await getMyAnswers()) {
+  const myAnswers = await getMyAnswers()
+  for (const answer of myAnswers) {
     isAnswered.value = true // すでに回答済み
     switch (answer.type) {
       case 'free_text': {
@@ -147,10 +148,11 @@ const sendAnswers = async () => {
       .filter((question: Question) => isAnswerChanged(question.id))
       .map(async (question) => {
         const answer = answersMap[question.id]
-        const { error } = await apiClient.PUT('/api/answers/{answerId}', {
+        const resp = await apiClient.PUT('/api/answers/{answerId}', {
           params: { path: { answerId: answer.id! } },
           body: getAnswerBody(question, answer.value!),
         })
+        const { error } = resp
 
         if (error) throw error
       })
