@@ -1,21 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useDisplay } from 'vuetify'
+import HeaderButtonList from './HeaderButtonList.vue'
 
 const route = useRoute()
-const router = useRouter()
 const { xs } = useDisplay()
-
-const options = computed(() => [
-  {
-    name: '新規イベント作成',
-    func: () => {
-      router.push({ path: `/${route.params.campname}/schedule`, query: { action: 'newevent' } })
-    },
-  },
-  // { name: '別の合宿を表示', func: () => router.push(`/camps`) },
-])
 </script>
 
 <template>
@@ -23,25 +12,17 @@ const options = computed(() => [
     <template v-slot:prepend>
       <img src="/icons/icon-transparent.svg" alt="rucQ Icon" :class="$style.icon" />
     </template>
-
-    <v-app-bar-title class="text-primary"
-      ><span style="font-weight: bold">{{ route.name }}</span></v-app-bar-title
-    >
+    <v-app-bar-title class="text-primary">
+      <span :class="$style.routeTitle">{{ route.name }}</span>
+    </v-app-bar-title>
     <v-menu>
       <template v-slot:activator="{ props: activatorProps }">
-        <v-btn icon="mdi-dots-horizontal" v-bind="activatorProps" color="primary" disabled></v-btn>
+        <v-btn icon="mdi-dots-horizontal" v-bind="activatorProps" color="primary"></v-btn>
       </template>
-      <v-list>
-        <v-list-item v-for="(option, i) in options" :key="i" @click="option.func">
-          <v-list-item-title>{{ option.name }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
+      <header-button-list />
     </v-menu>
   </v-app-bar>
-  <!-- <div
-    v-if="!xs && route.name !== 'ノート'"
-    style="position: fixed; top: 10px; right: 10px; z-index: 3"
-  >
+  <div v-else :class="$style.button">
     <v-menu>
       <template v-slot:activator="{ props: activatorProps }">
         <v-btn
@@ -53,18 +34,25 @@ const options = computed(() => [
           :class="`text-primary`"
         ></v-btn>
       </template>
-      <v-list>
-        <v-list-item v-for="(option, i) in options" :key="i" @click="option.func">
-          <v-list-item-title>{{ option.name }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
+      <header-button-list />
     </v-menu>
-  </div> -->
+  </div>
 </template>
 
 <style module>
 .icon {
   height: 80%;
   margin-right: 6px;
+}
+
+.button {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+}
+
+.routeTitle {
+  font-weight: bold;
 }
 </style>
