@@ -11,9 +11,8 @@ import type { components } from '@/api/schema'
 type Camp = components['schemas']['CampResponse']
 
 const router = useRouter()
-const { displayCamp, allCamps, hasRegisteredLatest } = storeToRefs(useCampStore())
+const { displayCamp, latestCamp, allCamps, hasRegisteredLatest } = storeToRefs(useCampStore())
 const { currentTime } = storeToRefs(useTimeStore())
-const latestCamp = computed(() => allCamps.value[0])
 
 // 参加登録申込期限を過ぎていて、かつまだ終わっていない合宿は表示不可能とする
 const isViewable = computed(() => {
@@ -24,6 +23,7 @@ const isViewable = computed(() => {
 })
 
 const register = async () => {
+  if (!latestCamp.value) return
   const { error } = await apiClient.POST('/api/camps/{campId}/register', {
     params: { path: { campId: latestCamp.value.id } },
   })
@@ -43,7 +43,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div :class="$style.container" v-if="allCamps.length > 0">
+  <div :class="$style.container" v-if="latestCamp">
     <img :src="`/logo/logo-white.svg`" :class="$style.logo" />
     <v-expansion-panels>
       <v-expansion-panel :class="$style.panel">
@@ -81,7 +81,7 @@ onBeforeMount(async () => {
               variant="flat"
               color="primary"
               :class="[$style.save, 'font-weight-bold']"
-              @click="openCamp(allCamps[0])"
+              @click="openCamp(latestCamp)"
             >
               <span class="font-weight-medium">この合宿を表示する</span>
             </v-btn>

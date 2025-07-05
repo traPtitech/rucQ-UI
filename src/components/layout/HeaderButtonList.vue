@@ -4,12 +4,12 @@ import { useRouter } from 'vue-router'
 import { useCampStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { apiClient } from '@/api/apiClient'
-const { displayCamp, allCamps } = storeToRefs(useCampStore())
+const { displayCamp, latestCamp } = storeToRefs(useCampStore())
 
 const router = useRouter()
 
 const isViewingLatestCamp = computed(() => {
-  return displayCamp.value && displayCamp.value.id === allCamps.value[0].id
+  return displayCamp.value && latestCamp.value && displayCamp.value.id === latestCamp.value.id
 })
 
 const routeTop = () => {
