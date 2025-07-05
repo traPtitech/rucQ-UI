@@ -35,7 +35,10 @@ const vuetify = createVuetify({
 })
 
 app.use(pinia)
+app.use(router)
 app.use(vuetify)
+
+import { useUserStore, useCampStore } from './store'
 
 async function initializeApp() {
   if (import.meta.env.DEV) {
@@ -43,10 +46,6 @@ async function initializeApp() {
     await worker.start()
     // await (await import('./dev/setup')).default()
   }
-
-  app.use(router)
-
-  const { useUserStore, useCampStore } = await import('./store')
 
   const me = await useUserStore().initUser()
   await useCampStore().initCamp(me)
