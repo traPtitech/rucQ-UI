@@ -37,17 +37,21 @@ const vuetify = createVuetify({
 app.use(pinia)
 app.use(vuetify)
 
-if (import.meta.env.DEV) {
-  // const { worker } = await import('./mocks/browser')
-  // await worker.start()
-  await (await import('./dev/setup')).default()
+async function initializeApp() {
+  if (import.meta.env.DEV) {
+    const { worker } = await import('./mocks/browser')
+    await worker.start()
+    // await (await import('./dev/setup')).default()
+  }
+
+  app.use(router)
+
+  const { useUserStore, useCampStore } = await import('./store')
+
+  const me = await useUserStore().initUser()
+  await useCampStore().initCamp(me)
+
+  app.mount('#app')
 }
 
-app.use(router)
-
-import { useUserStore, useCampStore } from './store'
-
-const me = await useUserStore().initUser()
-await useCampStore().initCamp(me)
-
-app.mount('#app')
+initializeApp().catch(console.error)
