@@ -15,7 +15,7 @@ const router = createRouter({
         {
           path: '',
           name: '合宿のしおり',
-          component: () => import('@/views/WorkInProgressView.vue'),
+          component: () => import('@/views/GuidebookView.vue'),
           meta: { showLayout: true },
         },
         {

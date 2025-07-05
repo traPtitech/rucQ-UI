@@ -38,6 +38,8 @@ export const campsHandlers = [
 **会場**: 山中湖研修センター
 **参加費**: 一般 50,000円 / 学生 35,000円
 
+[Google](https://www.google.com/)
+
 ## スケジュール
 
 これが \`schedule\` の例です。
