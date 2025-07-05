@@ -1,13 +1,9 @@
 <template>
   <div>
     <div :class="$style.header">目次</div>
-    <nav :class="$style.nav">
+    <nav>
       <ul :class="$style.list">
-        <li
-          v-for="heading in headings"
-          :key="heading.id"
-          :class="[$style.item, { [$style.level1]: heading.level === 1 }]"
-        >
+        <li v-for="heading in headings" :key="heading.id">
           <a
             :href="`#${heading.id}`"
             :class="$style.link"
@@ -60,10 +56,6 @@ const getLinkStyle = (level: number) => ({
   border-bottom: 1px solid #e0e0e0;
 }
 
-.nav {
-  font-size: 14px;
-}
-
 .list {
   list-style: none;
   padding: 0;
@@ -73,9 +65,8 @@ const getLinkStyle = (level: number) => ({
 .link {
   display: block;
   text-decoration: none;
-  padding: 6px 0;
+  padding: 4px 0;
   border-radius: 2px;
-  line-height: 1.3;
 }
 
 .link:hover {

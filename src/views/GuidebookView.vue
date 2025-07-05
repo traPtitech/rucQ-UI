@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.container">
-    <div :class="$style.content">
+    <div :class="smAndDown ? $style.contentMobile : $style.content">
       <div v-if="smAndDown" :class="$style.sidebarMobile">
         <table-of-contents :headings="headings" />
       </div>
@@ -41,10 +41,16 @@ const headings = ref<HeadingInfo[]>([])
   max-width: 1000px;
   height: 100vh;
   display: flex;
-  gap: 24px;
 }
 
 .content {
+  flex-grow: 1;
+  height: 100%;
+  overflow: scroll;
+  padding: 40px 24px;
+}
+
+.contentMobile {
   flex-grow: 1;
   height: 100%;
   overflow: scroll;
