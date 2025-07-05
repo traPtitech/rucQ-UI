@@ -8,7 +8,7 @@ export const campsHandlers = [
         id: 1,
         displayId: 'camp23_summer',
         name: '2023年度 夏合宿',
-        description: `# 2023年度 夏合宿のしおり\n以下略`,
+        guidebook: `# 2023年度 夏合宿のしおり\n以下略`,
         isDraft: false,
         isRegistrationOpen: true,
         isPaymentOpen: true,
@@ -19,7 +19,7 @@ export const campsHandlers = [
         id: 2,
         displayId: 'camp24_summer',
         name: '2024年度 夏合宿',
-        description: `# 2024年度 夏合宿のしおり\n以下略`,
+        guidebook: `# 2024年度 夏合宿のしおり\n以下略`,
         isDraft: false,
         isRegistrationOpen: true,
         isPaymentOpen: true,
@@ -30,7 +30,7 @@ export const campsHandlers = [
         id: 3,
         displayId: 'camp25_summer',
         name: '2025年度 夏合宿',
-        description: `# 2025年度 夏合宿のしおり
+        guidebook: `# 2025年度 夏合宿のしおり
 
 ## 合宿概要
 
