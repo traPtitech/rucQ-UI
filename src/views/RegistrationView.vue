@@ -38,7 +38,13 @@ onBeforeMount(async () => {
     <v-expansion-panels>
       <v-expansion-panel :class="$style.panel">
         <v-expansion-panel-title>
-          <span :class="$style.title">{{ allCamps[0].name }}</span>
+          <div :class="$style.title">
+            <span :class="$style.titleText">{{ allCamps[0].name }}</span>
+            <span>
+              {{ getDayStringNoPad(new Date(allCamps[0].dateStart)) }} -
+              {{ getDayStringNoPad(new Date(allCamps[0].dateEnd)) }}
+            </span>
+          </div>
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <div :class="$style.content">
@@ -46,6 +52,19 @@ onBeforeMount(async () => {
               <markdown-preview v-model:text="allCamps[0].description" />
             </div>
             <v-btn
+              v-if="hasRegisteredLatest"
+              elevation="0"
+              prepend-icon="mdi-arrow-right"
+              baseColor="transparent"
+              variant="flat"
+              color="primary"
+              :class="[$style.save, 'font-weight-bold']"
+              @click="openCamp(allCamps[0])"
+            >
+              <span class="font-weight-medium">この合宿を表示する</span>
+            </v-btn>
+            <v-btn
+              v-else
               elevation="0"
               prepend-icon="mdi-arrow-right"
               baseColor="transparent"
@@ -61,7 +80,7 @@ onBeforeMount(async () => {
       </v-expansion-panel>
     </v-expansion-panels>
     <div v-if="allCamps.length > 1" :class="$style.archives">
-      <span :class="$style.head">その他の合宿</span>
+      <span :class="$style.head">合宿アーカイブ</span>
       <div :class="$style.archiveList">
         <v-card
           v-for="camp in allCamps.slice(1)"
@@ -128,6 +147,15 @@ onBeforeMount(async () => {
 }
 
 .title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  padding-right: 16px;
+}
+
+.titleText {
   font-weight: bold;
 }
 
