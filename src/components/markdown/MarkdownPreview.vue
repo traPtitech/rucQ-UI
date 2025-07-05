@@ -1,19 +1,23 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { markedHighlight } from 'marked-highlight'
 import { Marked } from 'marked'
 import hljs from 'highlight.js'
 import darkStyle from 'highlight.js/styles/github-dark.css?inline'
-// ?inline をつけて読み込むことでCSSファイルもテキストデータになる
+import sanitizeHtml from 'sanitize-html'
 
-const text = defineModel<string>('text')
+type HeadingInfo = {
+  id: string
+  level: number
+  text: string
+}
 
-defineProps<{ pad?: number }>()
+const props = defineProps<{
+  mdtext: string
+}>()
 
-const html = computed(() => {
-  const tempHtml = marked.parse(text.value || '') as string
-  return tempHtml.replace('<pre><code>', '<pre><code class="hljs">')
-})
+const headings = defineModel<HeadingInfo[]>('headings')
+const htmltext = ref('')
 
 const marked = new Marked(
   markedHighlight({
@@ -28,8 +32,85 @@ const marked = new Marked(
   }),
   {
     gfm: true, // GitHub Flavored Markdown を有効にする
-    breaks: true, // 1段の改行を有効にする
+    breaks: true, // 1 段の改行を有効にする
   },
+)
+
+// mdtext 変更時に HTML と見出し情報を更新
+watch(
+  () => props.mdtext,
+  () => {
+    const rawHtml = marked.parse(props.mdtext || '') as string
+    const headingInfos: HeadingInfo[] = []
+    let idCounter = 0
+
+    // sanitize-html を使用して HTML をサニタイズ（script 等を除去）
+    const cleanHtml = sanitizeHtml(rawHtml, {
+      allowedTags: [
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'p',
+        'a',
+        'ul',
+        'ol',
+        'li',
+        'blockquote',
+        'code',
+        'pre',
+        'strong',
+        'em',
+        'table',
+        'thead',
+        'tbody',
+        'tr',
+        'th',
+        'td',
+        'hr',
+        'br',
+        'span', // hljs のシンタックスハイライトで必要
+      ],
+      allowedAttributes: {
+        '*': ['class', 'id'],
+        a: ['href'],
+        code: ['class'],
+        pre: ['class'],
+        span: ['class'],
+      },
+      allowedClasses: {
+        '*': ['hljs*'], // hljs で始まるクラス名を許可
+      },
+    })
+
+    // DOM パーサーを使用して安全に見出しを処理
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(cleanHtml, 'text/html')
+    const headingElements = doc.querySelectorAll('h1, h2, h3, h4, h5, h6')
+
+    headingElements.forEach((heading) => {
+      const level = parseInt(heading.tagName.charAt(1))
+      const id = `heading-${idCounter++}`
+      const text = heading.textContent || ''
+
+      heading.setAttribute('id', id)
+      headingInfos.push({ id, level, text })
+    })
+
+    // コードブロックに hljs クラスを追加
+    const codeElements = doc.querySelectorAll('pre code')
+    codeElements.forEach((code) => {
+      if (!code.className.includes('hljs')) {
+        code.className = `${code.className} hljs`.trim()
+      }
+    })
+
+    htmltext.value = doc.body.innerHTML
+    headings.value = headingInfos
+  },
+  { immediate: true },
 )
 
 onMounted(async () => {
@@ -42,11 +123,7 @@ onMounted(async () => {
 <template>
   <div :class="$style.container">
     <div :class="$style.content">
-      <div
-        v-html="html"
-        :class="$style.preview"
-        :style="`padding: ${pad !== undefined ? pad : 12}px;`"
-      ></div>
+      <div v-html="htmltext" :class="$style.preview"></div>
     </div>
   </div>
 </template>
@@ -66,9 +143,6 @@ onMounted(async () => {
   max-width: 1000px;
   margin: 0 auto;
 }
-
-/* 合宿のしおり、イベント告知文、個人メモのプレビューなどこのスタイルで統一する */
-/* 使いやすくてクセのないスタイルであることが望ましい。基本的には traQ に寄せる */
 
 .preview :global(p) {
   font-size: 1em;
@@ -170,6 +244,7 @@ onMounted(async () => {
 .preview :global(a) {
   color: #0066ff !important;
   text-decoration: none;
+  font-weight: 500;
 }
 
 .preview :global(a):hover {
