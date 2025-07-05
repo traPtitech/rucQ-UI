@@ -20,9 +20,10 @@ const routeTop = () => {
 // 合宿の参加を取り消す。displayCamp === allCamp[0] を前提とする
 const cancelRegistration = async () => {
   if (!displayCamp.value) return
-  await apiClient.DELETE('/api/camps/{campId}/register', {
+  const { error } = await apiClient.DELETE('/api/camps/{campId}/register', {
     params: { path: { campId: displayCamp.value.id } },
   })
+  if (error) throw error
   routeTop()
 }
 </script>
