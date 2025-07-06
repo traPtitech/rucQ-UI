@@ -5,8 +5,6 @@ import type { paths } from '@/api/schema'
 const headers: Record<string, string> = {}
 if (import.meta.env.DEV) {
   headers['X-Forwarded-User'] = import.meta.env.VITE_DEV_USER
-    ? import.meta.env.VITE_DEV_USER
-    : 'rucq'
 }
 
 export const apiClient = createClient<paths>({
