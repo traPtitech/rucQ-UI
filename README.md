@@ -24,9 +24,9 @@ traQ 認証を突破するためにCookieをコピーしてくる必要がある
 
 ### ローカルで建てたAPIを使う方法
 
-1. `.env` の `VITE_API_BASE_URL` を対象のサーバーのURLに変更する
+1. `.env` の `RUCQ_API_PROXY_URL` を対象のサーバーのURLに変更する
     ```bash
-    VITE_API_BASE_URL="http://localhost:サーバーのポート"
+    RUCQ_API_PROXY_URL="http://localhost:サーバーのポート"
     ```
 2. `npm run dev` を実行する
 3. <http://localhost:5173> にアクセスする
