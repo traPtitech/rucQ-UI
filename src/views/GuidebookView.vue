@@ -28,12 +28,11 @@ type HeadingInfo = {
   text: string
 }
 
-const { getCampByDisplayId } = useCampStore()
+const campStore = useCampStore()
 const route = useRoute()
 
-// 現在表示中の合宿を取得
 const displayCamp = computed(() => {
-  return getCampByDisplayId(route.params.campname as string)
+  return campStore.getCampByDisplayId(route.params.campname as string)
 })
 
 const headings = ref<HeadingInfo[]>([])

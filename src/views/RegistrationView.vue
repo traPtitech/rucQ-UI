@@ -22,8 +22,8 @@ const isViewable = computed(() => {
   return latestCamp.value.isRegistrationOpen || currentTime.value > endDate
 })
 
-const register = async () => {
-  await campStore.register()
+const registerAndOpen = async () => {
+  await campStore.register(latestCamp.value.id)
   await openCamp(latestCamp.value)
 }
 
@@ -59,7 +59,7 @@ const openCamp = async (camp: Camp) => {
               variant="flat"
               color="primary"
               :class="[$style.save, 'font-weight-bold']"
-              @click="register"
+              @click="registerAndOpen"
             >
               <span class="font-weight-medium">この合宿に参加する</span>
             </v-btn>

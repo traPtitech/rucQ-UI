@@ -67,16 +67,15 @@ export const useCampStore = defineStore('camp', () => {
     return camp
   }
 
-  const register = async () => {
-    if (!latestCamp.value) return
+  const register = async (campId: number) => {
     const { error } = await apiClient.POST('/api/camps/{campId}/register', {
-      params: { path: { campId: latestCamp.value.id } },
+      params: { path: { campId: campId } },
     })
     if (error) throw error
     hasRegisteredLatest.value = true
   }
 
-  const cancelRegistration = async (campId: number) => {
+  const unregister = async (campId: number) => {
     const { error } = await apiClient.DELETE('/api/camps/{campId}/register', {
       params: { path: { campId } },
     })
@@ -96,7 +95,7 @@ export const useCampStore = defineStore('camp', () => {
     allCamps: computed(() => allCamps.value),
     hasRegisteredLatest,
     register,
-    cancelRegistration,
+    unregister,
   }
 })
 

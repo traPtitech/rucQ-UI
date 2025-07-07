@@ -12,12 +12,11 @@ import QuestionGroupPanel from '@/components/information/QuestionGroupPanel.vue'
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Dashboard = components['schemas']['DashboardResponse']
 
-const { getCampByDisplayId } = useCampStore()
+const campStore = useCampStore()
 const route = useRoute()
 
-// 現在表示中の合宿を取得
 const displayCamp = computed(() => {
-  return getCampByDisplayId(route.params.campname as string)
+  return campStore.getCampByDisplayId(route.params.campname as string)
 })
 
 const getQuestionGroups = async () => {

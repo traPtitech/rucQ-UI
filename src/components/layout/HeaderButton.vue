@@ -8,12 +8,11 @@ import HeaderButtonList from './HeaderButtonList.vue'
 const route = useRoute()
 const { xs } = useDisplay()
 
-const { getCampByDisplayId } = useCampStore()
+const campStore = useCampStore()
 
-// 現在表示中の合宿を取得
 const displayCamp = computed(() => {
   const campname = route.params.campname as string
-  return getCampByDisplayId(campname)
+  return campStore.getCampByDisplayId(campname)
 })
 </script>
 
