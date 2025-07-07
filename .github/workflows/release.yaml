@@ -8,7 +8,7 @@ on:
       - '**'
 
 env:
-  IMAGE_NAME: traq-ui
+  IMAGE_NAME: rucq-ui
 
 jobs:
   build-image:
