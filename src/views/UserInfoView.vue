@@ -3,19 +3,24 @@ import MasonryWall from '@yeger/vue-masonry-wall'
 import PaymentInfo from '@/components/information/PaymentInfo.vue'
 import RoomInfo from '@/components/information/RoomInfo.vue'
 import { apiClient } from '@/api/apiClient'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useCampStore } from '@/store'
-import { storeToRefs } from 'pinia'
+import { useRoute } from 'vue-router'
 import type { components } from '@/api/schema'
 import QuestionGroupPanel from '@/components/information/QuestionGroupPanel.vue'
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Dashboard = components['schemas']['DashboardResponse']
 
-const { displayCamp } = storeToRefs(useCampStore())
+const { getCampByDisplayId } = useCampStore()
+const route = useRoute()
+
+// 現在表示中の合宿を取得
+const displayCamp = computed(() => {
+  return getCampByDisplayId(route.params.campname as string)
+})
 
 const getQuestionGroups = async () => {
-  if (!displayCamp.value) throw new Error('Camp is not selected')
   const { data, error } = await apiClient.GET('/api/camps/{campId}/question-groups', {
     params: { path: { campId: displayCamp.value.id } },
   })
@@ -24,7 +29,6 @@ const getQuestionGroups = async () => {
 }
 
 const getDashboard = async () => {
-  if (!displayCamp.value) throw new Error('Camp is not selected')
   const { data, error } = await apiClient.GET('/api/camps/{campId}/me', {
     params: { path: { campId: displayCamp.value.id } },
   })
@@ -51,7 +55,7 @@ onMounted(async () => {
     <div :class="$style.questionGroups">
       <masonry-wall :items="questionGroups" :column-width="300" :gap="16">
         <template #default="{ item: questionGroup }">
-          <question-group-panel :questionGroup="questionGroup" />
+          <question-group-panel :questionGroup="questionGroup" :camp="displayCamp" />
         </template>
       </masonry-wall>
     </div>

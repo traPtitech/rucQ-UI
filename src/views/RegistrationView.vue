@@ -4,14 +4,14 @@ import { storeToRefs } from 'pinia'
 import { getDayStringNoPad } from '@/lib/date'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import { useRouter } from 'vue-router'
-import { onBeforeMount, computed } from 'vue'
+import { computed } from 'vue'
 import type { components } from '@/api/schema'
 
 type Camp = components['schemas']['CampResponse']
 
 const router = useRouter()
 const campStore = useCampStore()
-const { displayCamp, latestCamp, allCamps, hasRegisteredLatest } = storeToRefs(campStore)
+const { latestCamp, allCamps, hasRegisteredLatest } = storeToRefs(campStore)
 const { currentTime } = storeToRefs(useTimeStore())
 
 // 参加登録申込期限を過ぎていて、かつまだ終わっていない合宿は表示不可能とする
@@ -28,13 +28,8 @@ const register = async () => {
 }
 
 const openCamp = async (camp: Camp) => {
-  campStore.openCamp(camp)
   await router.push(`/${camp.displayId}/info`)
 }
-
-onBeforeMount(async () => {
-  if (displayCamp.value) openCamp(displayCamp.value)
-})
 </script>
 
 <template>

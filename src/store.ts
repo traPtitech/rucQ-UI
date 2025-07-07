@@ -29,7 +29,6 @@ export const useUserStore = defineStore('user', () => {
 })
 
 export const useCampStore = defineStore('camp', () => {
-  const displayCamp = ref<Camp>()
   const latestCamp = ref<Camp>()
   const allCamps = ref<Camp[]>([])
   const hasRegisteredLatest = ref(false) // 最新の合宿に参加登録済みかどうか
@@ -56,10 +55,16 @@ export const useCampStore = defineStore('camp', () => {
     if (participants.error || !participants.data) {
       throw new Error(`合宿参加者情報を取得できません: ${participants.error}`)
     }
-    if (participants.data.some((user) => user.id === me.id)) {
-      displayCamp.value = latestCamp.value
-      hasRegisteredLatest.value = true
+    hasRegisteredLatest.value = participants.data.some((user) => user.id === me.id)
+  }
+
+  // パスパラメータから合宿を取得する関数
+  const getCampByDisplayId = (displayId: string) => {
+    const camp = allCamps.value.find((camp) => camp.displayId === displayId)
+    if (!camp) {
+      throw new Error(`合宿が見つかりません: ${displayId}`)
     }
+    return camp
   }
 
   const register = async () => {
@@ -71,22 +76,17 @@ export const useCampStore = defineStore('camp', () => {
     hasRegisteredLatest.value = true
   }
 
-  const cancelRegistration = async () => {
-    if (!displayCamp.value) return
+  const cancelRegistration = async (campId: number) => {
     const { error } = await apiClient.DELETE('/api/camps/{campId}/register', {
-      params: { path: { campId: displayCamp.value.id } },
+      params: { path: { campId } },
     })
     if (error) throw error
     hasRegisteredLatest.value = false
   }
 
-  const openCamp = async (camp: Camp) => {
-    displayCamp.value = camp
-  }
-
   return {
     initCamp,
-    displayCamp,
+    getCampByDisplayId,
     latestCamp: computed(() => {
       if (!latestCamp.value) {
         throw new Error('最新の合宿情報が初期化されていません')
@@ -97,7 +97,6 @@ export const useCampStore = defineStore('camp', () => {
     hasRegisteredLatest,
     register,
     cancelRegistration,
-    openCamp,
   }
 })
 

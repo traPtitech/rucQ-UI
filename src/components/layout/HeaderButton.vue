@@ -1,10 +1,20 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { useDisplay } from 'vuetify'
+import { useCampStore } from '@/store'
+import { computed } from 'vue'
 import HeaderButtonList from './HeaderButtonList.vue'
 
 const route = useRoute()
 const { xs } = useDisplay()
+
+const { getCampByDisplayId } = useCampStore()
+
+// 現在表示中の合宿を取得
+const displayCamp = computed(() => {
+  const campname = route.params.campname as string
+  return getCampByDisplayId(campname)
+})
 </script>
 
 <template>
@@ -19,7 +29,7 @@ const { xs } = useDisplay()
       <template v-slot:activator="{ props: activatorProps }">
         <v-btn icon="mdi-dots-horizontal" v-bind="activatorProps" color="primary"></v-btn>
       </template>
-      <header-button-list />
+      <header-button-list :camp="displayCamp" />
     </v-menu>
   </v-app-bar>
   <div v-else :class="$style.button">
@@ -34,7 +44,7 @@ const { xs } = useDisplay()
           :class="`text-primary`"
         ></v-btn>
       </template>
-      <header-button-list />
+      <header-button-list :camp="displayCamp" />
     </v-menu>
   </div>
 </template>

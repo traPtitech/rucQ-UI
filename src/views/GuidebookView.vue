@@ -4,7 +4,7 @@
       <div v-if="smAndDown" :class="$style.sidebarMobile">
         <table-of-contents :headings="headings" />
       </div>
-      <markdown-preview :mdtext="guidebookContent" v-model:headings="headings" />
+      <markdown-preview :mdtext="displayCamp.guidebook" v-model:headings="headings" />
     </div>
     <div v-if="!smAndDown" :class="$style.sidebar">
       <table-of-contents :headings="headings" />
@@ -17,7 +17,7 @@ import { computed, ref } from 'vue'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import TableOfContents from '@/components/markdown/TableOfContents.vue'
 import { useCampStore } from '@/store'
-import { storeToRefs } from 'pinia'
+import { useRoute } from 'vue-router'
 import { useDisplay } from 'vuetify'
 
 const { smAndDown } = useDisplay()
@@ -28,9 +28,14 @@ type HeadingInfo = {
   text: string
 }
 
-const { displayCamp } = storeToRefs(useCampStore())
+const { getCampByDisplayId } = useCampStore()
+const route = useRoute()
 
-const guidebookContent = computed(() => displayCamp.value?.guidebook || '')
+// 現在表示中の合宿を取得
+const displayCamp = computed(() => {
+  return getCampByDisplayId(route.params.campname as string)
+})
+
 const headings = ref<HeadingInfo[]>([])
 </script>
 

@@ -49,22 +49,36 @@ const router = createRouter({
 
 // ナビゲーションガード
 router.beforeEach((to, from, next) => {
-  const { displayCamp } = useCampStore()
-  const isRegistered = !!displayCamp
+  try {
+    const { latestCamp, hasRegisteredLatest, getCampByDisplayId } = useCampStore()
 
-  if (isRegistered) {
+    // トップページの場合
     if (to.path === '/') {
-      next(`/${displayCamp.displayId}/info`)
+      if (hasRegisteredLatest) {
+        // 登録済みの場合は最新合宿のページにリダイレクト
+        next(`/${latestCamp.displayId}`)
+      }
+      next()
       return
     }
-  } else {
-    if (to.path !== '/') {
-      next('/')
-      return
-    }
-  }
 
-  next()
+    // 合宿固有のページの場合
+    const campname = to.params.campname as string
+    if (campname) {
+      try {
+        getCampByDisplayId(campname)
+      } catch {
+        // 合宿が見つからない場合は404へリダイレクト
+        next('/')
+        return
+      }
+    }
+
+    next()
+  } catch (error) {
+    console.error(error)
+    next('/') // エラーが発生した場合は404へリダイレクト})
+  }
 })
 
 export default router
