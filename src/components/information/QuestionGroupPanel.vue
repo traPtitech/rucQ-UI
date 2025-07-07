@@ -2,27 +2,26 @@
 import type { components } from '@/api/schema'
 import { getDayString } from '@/lib/date'
 import { apiClient } from '@/api/apiClient'
-import { useCampStore } from '@/store'
-import { storeToRefs } from 'pinia'
 import { ref, computed, onMounted, reactive, toRaw } from 'vue'
 import QuestionEditField from '@/components/information/QuestionEditField.vue'
 import QuestionShowField from '@/components/information/QuestionShowField.vue'
 
-const { displayCamp } = storeToRefs(useCampStore())
-
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Question = components['schemas']['QuestionResponse']
+type Camp = components['schemas']['CampResponse']
 
-const props = defineProps<{ questionGroup: QuestionGroup }>()
+const props = defineProps<{
+  questionGroup: QuestionGroup
+  camp: Camp
+}>()
 
 const inEditMode = ref(false) // 編集モードであるか
 const isAnswered = ref(false) // すでに一度回答を送信したことがあるか
 const isReady = ref(false) // 質問のデータが読み込まれたか
 
 const getMyAnswers = async () => {
-  if (!displayCamp.value) throw new Error('Camp is not selected')
   const { data, error } = await apiClient.GET('/api/me/question-groups/{questionGroupId}/answers', {
-    params: { path: { campId: displayCamp.value.id, questionGroupId: props.questionGroup.id } },
+    params: { path: { campId: props.camp.id, questionGroupId: props.questionGroup.id } },
   })
   if (error || !data) throw error ?? new Error('Failed to fetch answers')
   return data

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useCampStore } from '@/store'
+import { useCampStore, useTimeStore } from '@/store'
+import { storeToRefs } from 'pinia'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,22 +50,58 @@ const router = createRouter({
 
 // ナビゲーションガード
 router.beforeEach((to, from, next) => {
-  const { displayCamp } = useCampStore()
-  const isRegistered = !!displayCamp
+  try {
+    const campStore = useCampStore()
+    const timeStore = useTimeStore()
+    const { hasRegisteredLatest } = storeToRefs(campStore)
 
-  if (isRegistered) {
+    // トップページの場合
     if (to.path === '/') {
-      next(`/${displayCamp.displayId}/info`)
-      return
-    }
-  } else {
-    if (to.path !== '/') {
-      next('/')
-      return
-    }
-  }
+      if (to.query.back === 'true') {
+        next() // 明示的にトップページに戻る場合はリダイレクトしない
+        return
+      }
 
-  next()
+      if (hasRegisteredLatest.value) {
+        next(`/${campStore.latestCamp.displayId}`)
+        // 登録済みの場合は最新合宿のページにリダイレクト
+        // latestCamp が存在しない場合、campStore.latestCamp の呼び出し時点でエラーが生じ、
+        // 外側の try-catch によってトップページに導かれる
+        // 各コンポーネントにおける latestCamp の存在が保証され、エラーハンドリングを書く必要がなくて嬉しい
+        return
+      }
+      next()
+      return
+    }
+
+    // 合宿固有のページの場合
+    if (to.params.campname as string) {
+      const targetCamp = campStore.getCampByDisplayId(to.params.campname as string)
+      // to.params.campname に基づいて合宿を探しても見つからない場合には getCampByDisplayId はエラーを生じ、
+      // 外側の try-catch によってトップページに導かれる
+      if (hasRegisteredLatest.value || timeStore.isCampEnded(targetCamp)) {
+        next()
+        return
+      }
+      next('/') // 表示不可能な場合はトップページにリダイレクト
+      return
+    }
+
+    next()
+    return
+  } catch (error) {
+    console.error(error)
+    if (to.path !== '/') next('/')
+    return
+  }
+})
+
+// ナビゲーション完了後に URL を綺麗にする
+router.afterEach((to) => {
+  // トップページで back=true クエリパラメータがある場合、URL を綺麗にする
+  if (to.path === '/' && to.query.back === 'true') {
+    window.history.replaceState({}, '', '/')
+  }
 })
 
 export default router

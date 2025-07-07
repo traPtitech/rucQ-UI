@@ -1,45 +1,44 @@
 <script setup lang="ts">
 import { useCampStore, useTimeStore } from '@/store'
 import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 import { getDayStringNoPad } from '@/lib/date'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
-import { apiClient } from '@/api/apiClient'
 import { useRouter } from 'vue-router'
-import { onBeforeMount, computed } from 'vue'
 import type { components } from '@/api/schema'
 
 type Camp = components['schemas']['CampResponse']
 
 const router = useRouter()
-const { displayCamp, latestCamp, allCamps, hasRegisteredLatest } = storeToRefs(useCampStore())
-const { currentTime } = storeToRefs(useTimeStore())
+const campStore = useCampStore()
+const timeStore = useTimeStore()
 
-// 参加登録申込期限を過ぎていて、かつまだ終わっていない合宿は表示不可能とする
-const isViewable = computed(() => {
-  if (!latestCamp.value) return false
-  const endDate = new Date(latestCamp.value.dateEnd)
-  endDate.setDate(endDate.getDate() + 1)
-  return latestCamp.value.isRegistrationOpen || currentTime.value > endDate
+const { allCamps, hasRegisteredLatest } = storeToRefs(campStore)
+
+// RegistrationView においてだけは latestCamp が存在しない可能性があるので、ラップする
+const latestCamp = computed(() => {
+  try {
+    return campStore.latestCamp
+  } catch (error) {
+    console.error(error)
+    return undefined
+  }
 })
 
-const register = async () => {
+const isLatestCampEnded = computed(() => {
+  if (!latestCamp.value) return false
+  return timeStore.isCampEnded(latestCamp.value)
+})
+
+const registerAndOpen = async () => {
   if (!latestCamp.value) return
-  const { error } = await apiClient.POST('/api/camps/{campId}/register', {
-    params: { path: { campId: latestCamp.value.id } },
-  })
-  if (error) throw error
-  hasRegisteredLatest.value = true
+  await campStore.register(latestCamp.value.id)
   await openCamp(latestCamp.value)
 }
 
 const openCamp = async (camp: Camp) => {
-  displayCamp.value = camp
   await router.push(`/${camp.displayId}/info`)
 }
-
-onBeforeMount(async () => {
-  if (displayCamp.value) openCamp(displayCamp.value)
-})
 </script>
 
 <template>
@@ -69,12 +68,12 @@ onBeforeMount(async () => {
               variant="flat"
               color="primary"
               :class="[$style.save, 'font-weight-bold']"
-              @click="register"
+              @click="registerAndOpen"
             >
               <span class="font-weight-medium">この合宿に参加する</span>
             </v-btn>
             <v-btn
-              v-else-if="isViewable"
+              v-else-if="hasRegisteredLatest || isLatestCampEnded"
               elevation="0"
               prepend-icon="mdi-arrow-right"
               baseColor="transparent"

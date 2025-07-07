@@ -3,39 +3,33 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCampStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { apiClient } from '@/api/apiClient'
-const { displayCamp, latestCamp, hasRegisteredLatest } = storeToRefs(useCampStore())
+import type { components } from '@/api/schema'
 
+type Camp = components['schemas']['CampResponse']
+
+const props = defineProps<{ camp: Camp }>()
+const campStore = useCampStore()
 const router = useRouter()
+const { latestCamp } = storeToRefs(campStore)
 
-const isViewingLatestCamp = computed(() => {
-  return displayCamp.value && latestCamp.value && displayCamp.value.id === latestCamp.value.id
-})
+const isViewingLatestCamp = computed(() => props.camp.id === latestCamp.value.id)
 
-const routeTop = () => {
-  displayCamp.value = undefined
-  router.push('/')
-}
-
-// 合宿の参加を取り消す。displayCamp === allCamp[0] を前提とする
-const cancelRegistration = async () => {
-  if (!displayCamp.value) return
-  const { error } = await apiClient.DELETE('/api/camps/{campId}/register', {
-    params: { path: { campId: displayCamp.value.id } },
-  })
-  if (error) throw error
-  hasRegisteredLatest.value = false
-  routeTop()
+// 合宿の参加を取り消す。displayCamp が最新の合宿である場合のみ実行される
+const unregisterAndClose = async () => {
+  await campStore.unregister(props.camp.id)
+  router.push('/?back=true')
 }
 </script>
 
 <template>
   <v-list dense>
-    <v-list-item @click="routeTop" prepend-icon="mdi-arrow-right"> トップページに戻る </v-list-item>
+    <v-list-item @click="router.push('/?back=true')" prepend-icon="mdi-arrow-right">
+      トップページに戻る
+    </v-list-item>
     <v-divider v-if="isViewingLatestCamp" :class="$style.divider" />
     <v-list-item
       v-if="isViewingLatestCamp"
-      @click="cancelRegistration"
+      @click="unregisterAndClose"
       class="text-error"
       prepend-icon="mdi-close"
     >

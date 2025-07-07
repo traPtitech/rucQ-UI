@@ -23,15 +23,15 @@ export default async () => {
   const newCamp = (
     await apiClient.POST('/api/admin/camps', {
       body: {
-        displayId: 'summer2024',
-        name: '夏の合宿 2024',
+        displayId: 'summer2025',
+        name: '夏の合宿 2025',
         guidebook:
           '毎年恒例の夏の合宿です！海の近くでプログラミングと交流を楽しみましょう。初心者から上級者まで大歓迎です。',
         isDraft: false,
         isRegistrationOpen: true,
         isPaymentOpen: true,
-        dateStart: '2024-08-15',
-        dateEnd: '2024-08-18',
+        dateStart: '2025-10-15',
+        dateEnd: '2025-10-18',
       },
     })
   ).data!
@@ -60,7 +60,7 @@ export default async () => {
       body: {
         name: '合宿参加者アンケート',
         description: '合宿に参加する前に、以下のアンケートに回答してください。',
-        due: '2024-08-10',
+        due: '2025-10-10',
         questions: [
           {
             type: 'free_number',

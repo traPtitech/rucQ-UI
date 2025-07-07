@@ -46,14 +46,15 @@ async function initializeApp() {
     // await (await import('./dev/setup')).default()
   }
 
-  const me = await useUserStore().initUser()
   try {
-    await useCampStore().initCamp(me)
+    const userStore = useUserStore()
+    const campStore = useCampStore()
+    await userStore.initUser()
+    await campStore.initCamp(userStore.user)
   } catch (error) {
     console.error(error)
   }
 
-  // 初期化完了後にルーターを登録
   app.use(router)
   app.mount('#app')
 }
