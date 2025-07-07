@@ -77,6 +77,8 @@ router.beforeEach((to, from, next) => {
     // 合宿固有のページの場合
     if (to.params.campname as string) {
       const targetCamp = campStore.getCampByDisplayId(to.params.campname as string)
+      // to.params.campname に基づいて合宿を探しても見つからない場合には getCampByDisplayId はエラーを生じ、
+      // 外側の try-catch によってトップページに導かれる
       if (hasRegisteredLatest.value || timeStore.isCampEnded(targetCamp)) {
         next()
         return
