@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type { components } from '@/api/schema'
 import { apiClient } from '@/api/apiClient'
 
@@ -12,13 +12,19 @@ export const useUserStore = defineStore('user', () => {
   const initUser = async () => {
     const { data, error } = await apiClient.GET('/api/me')
     if (error || !data) {
-      throw Error(`ユーザー情報を取得できません: ${error}`)
+      throw new Error(`ユーザー情報を取得できません: ${error}`)
     }
     user.value = data
-    return user.value
   }
-
-  return { initUser, user }
+  return {
+    initUser,
+    user: computed(() => {
+      if (!user.value) {
+        throw new Error('ユーザー情報が初期化されていません')
+      }
+      return user.value
+    }),
+  }
 })
 
 export const useCampStore = defineStore('camp', () => {
@@ -30,24 +36,24 @@ export const useCampStore = defineStore('camp', () => {
   const initCamp = async (me: User) => {
     const camps = await apiClient.GET('/api/camps')
     if (camps.error || !camps.data) {
-      throw Error(`合宿情報を取得できません: ${camps.error}`)
+      throw new Error(`合宿情報を取得できません: ${camps.error}`)
     }
 
-    // インデックスが小さいほど新しい合宿
+    // index が小さいほど新しい合宿
     allCamps.value = camps.data
       .filter((camp) => !camp.isDraft)
       .sort((a, b) => new Date(b.dateStart).getTime() - new Date(a.dateStart).getTime())
 
     latestCamp.value = allCamps.value[0]
     if (!latestCamp.value) {
-      throw Error(`合宿が見つかりません`)
+      return
     }
 
     const participants = await apiClient.GET('/api/camps/{campId}/participants', {
       params: { path: { campId: latestCamp.value.id } },
     })
     if (participants.error || !participants.data) {
-      throw Error(`合宿情報を取得できません: ${participants.error}`)
+      throw new Error(`合宿参加者情報を取得できません: ${participants.error}`)
     }
     if (participants.data.some((user) => user.id === me.id)) {
       displayCamp.value = latestCamp.value
@@ -55,7 +61,18 @@ export const useCampStore = defineStore('camp', () => {
     }
   }
 
-  return { initCamp, displayCamp, latestCamp, allCamps, hasRegisteredLatest }
+  return {
+    initCamp,
+    displayCamp,
+    latestCamp: computed(() => {
+      if (!latestCamp.value) {
+        throw new Error('最新の合宿情報が初期化されていません')
+      }
+      return latestCamp.value
+    }),
+    allCamps: computed(() => allCamps.value),
+    hasRegisteredLatest,
+  }
 })
 
 export const useTimeStore = defineStore('time', () => {
@@ -68,5 +85,5 @@ export const useTimeStore = defineStore('time', () => {
 
   updateTime() // 呼び出されて即座に現在時刻の更新を開始
 
-  return { currentTime }
+  return { currentTime: computed(() => currentTime.value) }
 })
