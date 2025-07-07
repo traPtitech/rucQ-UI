@@ -3,7 +3,6 @@ import { useCampStore, useTimeStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { getDayStringNoPad } from '@/lib/date'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
-import { apiClient } from '@/api/apiClient'
 import { useRouter } from 'vue-router'
 import { onBeforeMount, computed } from 'vue'
 import type { components } from '@/api/schema'
@@ -11,7 +10,8 @@ import type { components } from '@/api/schema'
 type Camp = components['schemas']['CampResponse']
 
 const router = useRouter()
-const { displayCamp, latestCamp, allCamps, hasRegisteredLatest } = storeToRefs(useCampStore())
+const campStore = useCampStore()
+const { displayCamp, latestCamp, allCamps, hasRegisteredLatest } = storeToRefs(campStore)
 const { currentTime } = storeToRefs(useTimeStore())
 
 // 参加登録申込期限を過ぎていて、かつまだ終わっていない合宿は表示不可能とする
@@ -23,17 +23,12 @@ const isViewable = computed(() => {
 })
 
 const register = async () => {
-  if (!latestCamp.value) return
-  const { error } = await apiClient.POST('/api/camps/{campId}/register', {
-    params: { path: { campId: latestCamp.value.id } },
-  })
-  if (error) throw error
-  hasRegisteredLatest.value = true
+  await campStore.register()
   await openCamp(latestCamp.value)
 }
 
 const openCamp = async (camp: Camp) => {
-  displayCamp.value = camp
+  campStore.openCamp(camp)
   await router.push(`/${camp.displayId}/info`)
 }
 

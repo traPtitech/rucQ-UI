@@ -3,8 +3,9 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCampStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { apiClient } from '@/api/apiClient'
-const { displayCamp, latestCamp, hasRegisteredLatest } = storeToRefs(useCampStore())
+
+const campStore = useCampStore()
+const { displayCamp, latestCamp } = storeToRefs(campStore)
 
 const router = useRouter()
 
@@ -19,12 +20,7 @@ const routeTop = () => {
 
 // 合宿の参加を取り消す。displayCamp === allCamp[0] を前提とする
 const cancelRegistration = async () => {
-  if (!displayCamp.value) return
-  const { error } = await apiClient.DELETE('/api/camps/{campId}/register', {
-    params: { path: { campId: displayCamp.value.id } },
-  })
-  if (error) throw error
-  hasRegisteredLatest.value = false
+  await campStore.cancelRegistration()
   routeTop()
 }
 </script>

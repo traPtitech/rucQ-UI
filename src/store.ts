@@ -16,6 +16,7 @@ export const useUserStore = defineStore('user', () => {
     }
     user.value = data
   }
+
   return {
     initUser,
     user: computed(() => {
@@ -61,6 +62,28 @@ export const useCampStore = defineStore('camp', () => {
     }
   }
 
+  const register = async () => {
+    if (!latestCamp.value) return
+    const { error } = await apiClient.POST('/api/camps/{campId}/register', {
+      params: { path: { campId: latestCamp.value.id } },
+    })
+    if (error) throw error
+    hasRegisteredLatest.value = true
+  }
+
+  const cancelRegistration = async () => {
+    if (!displayCamp.value) return
+    const { error } = await apiClient.DELETE('/api/camps/{campId}/register', {
+      params: { path: { campId: displayCamp.value.id } },
+    })
+    if (error) throw error
+    hasRegisteredLatest.value = false
+  }
+
+  const openCamp = async (camp: Camp) => {
+    displayCamp.value = camp
+  }
+
   return {
     initCamp,
     displayCamp,
@@ -72,6 +95,9 @@ export const useCampStore = defineStore('camp', () => {
     }),
     allCamps: computed(() => allCamps.value),
     hasRegisteredLatest,
+    register,
+    cancelRegistration,
+    openCamp,
   }
 })
 
