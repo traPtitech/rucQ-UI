@@ -15,7 +15,7 @@
 1. `npm run dev` を実行する
 2. <http://localhost:5173> にアクセスする
 
-### リモートのStaging APIを使う方法 (Default)
+### リモートのStaging APIを使う方法
 
 traQ 認証を突破するためにCookieをコピーしてくる必要があるためその方法を説明します。
 
