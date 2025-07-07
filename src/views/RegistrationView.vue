@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useCampStore, useTimeStore } from '@/store'
 import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 import { getDayStringNoPad } from '@/lib/date'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import { useRouter } from 'vue-router'
@@ -11,9 +12,20 @@ type Camp = components['schemas']['CampResponse']
 const router = useRouter()
 const campStore = useCampStore()
 const timeStore = useTimeStore()
-const { latestCamp, allCamps, hasRegisteredLatest } = storeToRefs(campStore)
+
+const { allCamps, hasRegisteredLatest } = storeToRefs(campStore)
+
+const latestCamp = computed(() => {
+  try {
+    return campStore.latestCamp
+  } catch (error) {
+    console.error(error)
+    return undefined
+  }
+})
 
 const registerAndOpen = async () => {
+  if (!latestCamp.value) return
   await campStore.register(latestCamp.value.id)
   await openCamp(latestCamp.value)
 }

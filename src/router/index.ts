@@ -53,12 +53,12 @@ router.beforeEach((to, from, next) => {
   try {
     const campStore = useCampStore()
     const timeStore = useTimeStore()
-    const { latestCamp, hasRegisteredLatest } = storeToRefs(campStore)
+    const { hasRegisteredLatest } = storeToRefs(campStore)
 
     // トップページの場合
     if (to.path === '/') {
       if (hasRegisteredLatest.value) {
-        next(`/${latestCamp.value.displayId}`) // 登録済みの場合は最新合宿のページにリダイレクト
+        next(`/${campStore.latestCamp.displayId}`) // 登録済みの場合は最新合宿のページにリダイレクト
         return
       }
       next()
@@ -80,7 +80,7 @@ router.beforeEach((to, from, next) => {
     return
   } catch (error) {
     console.error(error)
-    if (from.path !== '/') next('/')
+    if (to.path !== '/') next('/')
     return
   }
 })
