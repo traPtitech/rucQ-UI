@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useCampStore } from '@/store'
+import { useCampStore, useTimeStore } from '@/store'
 import { storeToRefs } from 'pinia'
 
 const router = createRouter({
@@ -52,34 +52,36 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   try {
     const campStore = useCampStore()
+    const timeStore = useTimeStore()
     const { latestCamp, hasRegisteredLatest } = storeToRefs(campStore)
 
     // トップページの場合
     if (to.path === '/') {
-      if (hasRegisteredLatest) {
-        // 登録済みの場合は最新合宿のページにリダイレクト
-        next(`/${latestCamp.value.displayId}`)
+      if (hasRegisteredLatest.value) {
+        next(`/${latestCamp.value.displayId}`) // 登録済みの場合は最新合宿のページにリダイレクト
+        return
       }
       next()
       return
     }
 
     // 合宿固有のページの場合
-    const campname = to.params.campname as string
-    if (campname) {
-      try {
-        campStore.getCampByDisplayId(campname)
-      } catch {
-        // 合宿が見つからない場合は404へリダイレクト
-        next('/')
+    if (to.params.campname as string) {
+      const targetCamp = campStore.getCampByDisplayId(to.params.campname as string)
+      if (!timeStore.isCampViewable(targetCamp)) {
+        next('/') // 表示不可能な場合はトップページにリダイレクト
         return
       }
+      next()
+      return
     }
 
     next()
+    return
   } catch (error) {
     console.error(error)
-    next('/') // エラーが発生した場合は404へリダイレクト})
+    if (from.path !== '/') next('/')
+    return
   }
 })
 

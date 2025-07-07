@@ -4,23 +4,14 @@ import { storeToRefs } from 'pinia'
 import { getDayStringNoPad } from '@/lib/date'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import { useRouter } from 'vue-router'
-import { computed } from 'vue'
 import type { components } from '@/api/schema'
 
 type Camp = components['schemas']['CampResponse']
 
 const router = useRouter()
 const campStore = useCampStore()
+const timeStore = useTimeStore()
 const { latestCamp, allCamps, hasRegisteredLatest } = storeToRefs(campStore)
-const { currentTime } = storeToRefs(useTimeStore())
-
-// 参加登録申込期限を過ぎていて、かつまだ終わっていない合宿は表示不可能とする
-const isViewable = computed(() => {
-  if (!latestCamp.value) return false
-  const endDate = new Date(latestCamp.value.dateEnd)
-  endDate.setDate(endDate.getDate() + 1)
-  return latestCamp.value.isRegistrationOpen || currentTime.value > endDate
-})
 
 const registerAndOpen = async () => {
   await campStore.register(latestCamp.value.id)
@@ -64,7 +55,7 @@ const openCamp = async (camp: Camp) => {
               <span class="font-weight-medium">この合宿に参加する</span>
             </v-btn>
             <v-btn
-              v-else-if="isViewable"
+              v-else-if="timeStore.isCampViewable(latestCamp)"
               elevation="0"
               prepend-icon="mdi-arrow-right"
               baseColor="transparent"
