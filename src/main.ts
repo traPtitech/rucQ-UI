@@ -46,10 +46,14 @@ async function initializeApp() {
     // await (await import('./dev/setup')).default()
   }
 
-  const userStore = useUserStore()
-  const campStore = useCampStore()
-  await userStore.initUser()
-  await campStore.initCamp(userStore.user)
+  try {
+    const userStore = useUserStore()
+    const campStore = useCampStore()
+    await userStore.initUser()
+    await campStore.initCamp(userStore.user)
+  } catch (error) {
+    console.error(error)
+  }
 
   app.use(router)
   app.mount('#app')

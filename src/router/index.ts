@@ -63,7 +63,11 @@ router.beforeEach((to, from, next) => {
       }
 
       if (hasRegisteredLatest.value) {
-        next(`/${campStore.latestCamp.displayId}`) // 登録済みの場合は最新合宿のページにリダイレクト
+        next(`/${campStore.latestCamp.displayId}`)
+        // 登録済みの場合は最新合宿のページにリダイレクト
+        // latestCamp が存在しない場合、campStore.latestCamp の呼び出し時点でエラーが生じ、
+        // 外側の try-catch によってトップページに導かれる
+        // 各コンポーネントにおける latestCamp の存在が保証され、エラーハンドリングを書く必要がなくて嬉しい
         return
       }
       next()

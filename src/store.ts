@@ -87,6 +87,7 @@ export const useCampStore = defineStore('camp', () => {
     initCamp,
     getCampByDisplayId,
     latestCamp: computed(() => {
+      // latestCamp が初期化されていない場合、外から latestCamp を呼び出した瞬間にエラーが生じる
       if (!latestCamp.value) {
         throw new Error('最新の合宿情報が初期化されていません')
       }

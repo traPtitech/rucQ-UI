@@ -15,6 +15,7 @@ const timeStore = useTimeStore()
 
 const { allCamps, hasRegisteredLatest } = storeToRefs(campStore)
 
+// RegistrationView においてだけは latestCamp が存在しない可能性があるので、ラップする
 const latestCamp = computed(() => {
   try {
     return campStore.latestCamp
@@ -22,6 +23,11 @@ const latestCamp = computed(() => {
     console.error(error)
     return undefined
   }
+})
+
+const isLatestCampViewable = computed(() => {
+  if (!latestCamp.value) return false
+  return timeStore.isCampViewable(latestCamp.value)
 })
 
 const registerAndOpen = async () => {
@@ -67,7 +73,7 @@ const openCamp = async (camp: Camp) => {
               <span class="font-weight-medium">この合宿に参加する</span>
             </v-btn>
             <v-btn
-              v-else-if="timeStore.isCampViewable(latestCamp)"
+              v-else-if="isLatestCampViewable"
               elevation="0"
               prepend-icon="mdi-arrow-right"
               baseColor="transparent"
