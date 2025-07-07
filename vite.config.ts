@@ -4,19 +4,25 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
-export default defineConfig({
-  plugins: [vue(), vueDevTools()],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
-  },
-  server: {
-    proxy: {
-      '/api': {
-        target: process.env.VITE_API_BASE_URL,
-        changeOrigin: true,
+export default defineConfig(({ mode }) => {
+
+  return {
+    plugins: [vue(), vueDevTools()],
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
       },
     },
-  },
+    server: {
+      proxy:
+        mode === 'staging'
+          ? {
+            '/api': {
+              target: 'https://rucq-dev.trap.show',
+              changeOrigin: true,
+            },
+          }
+          : ({} as Record<string, string>),
+    },
+  }
 })
