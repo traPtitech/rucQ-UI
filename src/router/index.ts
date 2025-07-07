@@ -57,6 +57,11 @@ router.beforeEach((to, from, next) => {
 
     // トップページの場合
     if (to.path === '/') {
+      if (to.query.back === 'true') {
+        next() // 明示的にトップページに戻る場合はリダイレクトしない
+        return
+      }
+
       if (hasRegisteredLatest.value) {
         next(`/${campStore.latestCamp.displayId}`) // 登録済みの場合は最新合宿のページにリダイレクト
         return
@@ -82,6 +87,14 @@ router.beforeEach((to, from, next) => {
     console.error(error)
     if (to.path !== '/') next('/')
     return
+  }
+})
+
+// ナビゲーション完了後に URL を綺麗にする
+router.afterEach((to) => {
+  // トップページで back=true クエリパラメータがある場合、URL を綺麗にする
+  if (to.path === '/' && to.query.back === 'true') {
+    window.history.replaceState({}, '', '/')
   }
 })
 
