@@ -77,11 +77,11 @@ router.beforeEach((to, from, next) => {
     // 合宿固有のページの場合
     if (to.params.campname as string) {
       const targetCamp = campStore.getCampByDisplayId(to.params.campname as string)
-      if (!timeStore.isCampViewable(targetCamp)) {
-        next('/') // 表示不可能な場合はトップページにリダイレクト
+      if (hasRegisteredLatest.value || timeStore.isCampEnded(targetCamp)) {
+        next()
         return
       }
-      next()
+      next('/') // 表示不可能な場合はトップページにリダイレクト
       return
     }
 

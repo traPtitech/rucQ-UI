@@ -25,9 +25,9 @@ const latestCamp = computed(() => {
   }
 })
 
-const isLatestCampViewable = computed(() => {
+const isLatestCampEnded = computed(() => {
   if (!latestCamp.value) return false
-  return timeStore.isCampViewable(latestCamp.value)
+  return timeStore.isCampEnded(latestCamp.value)
 })
 
 const registerAndOpen = async () => {
@@ -73,7 +73,7 @@ const openCamp = async (camp: Camp) => {
               <span class="font-weight-medium">この合宿に参加する</span>
             </v-btn>
             <v-btn
-              v-else-if="isLatestCampViewable"
+              v-else-if="hasRegisteredLatest || isLatestCampEnded"
               elevation="0"
               prepend-icon="mdi-arrow-right"
               baseColor="transparent"

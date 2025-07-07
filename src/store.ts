@@ -110,15 +110,15 @@ export const useTimeStore = defineStore('time', () => {
 
   updateTime() // 呼び出されて即座に現在時刻の更新を開始
 
-  const isCampViewable = (camp: Camp) => {
-    // 参加登録申込期限を過ぎていて、かつまだ終わっていない合宿は表示不可能とする
+  const isCampEnded = (camp: Camp) => {
+    // すでに終わっている → 閲覧可能
     const endDate = new Date(camp.dateEnd)
     endDate.setDate(endDate.getDate() + 1)
-    return camp.isRegistrationOpen || currentTime.value > endDate
+    return currentTime.value > endDate
   }
 
   return {
     currentTime: computed(() => currentTime.value),
-    isCampViewable,
+    isCampEnded,
   }
 })
