@@ -11,11 +11,7 @@ const pinia = createPinia()
 
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
 const vuetify = createVuetify({
-  components,
-  directives,
   theme: {
     defaultTheme: 'light',
     themes: {
@@ -40,7 +36,7 @@ app.use(vuetify)
 import { useUserStore, useCampStore } from './store'
 
 async function initializeApp() {
-  if (import.meta.env.DEV && import.meta.env.MODE !== "staging") {
+  if (import.meta.env.DEV && import.meta.env.MODE !== 'staging') {
     const { worker } = await import('./mocks/browser')
     await worker.start()
     // await (await import('./dev/setup')).default()
