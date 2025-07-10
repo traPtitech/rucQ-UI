@@ -108,13 +108,16 @@ const openCamp = async (camp: Camp) => {
           :key="camp.id"
           link
           elevation="0"
-          :class="$style.archiveBtn"
+          color="transparent"
+          class="w-100 my-2"
           @click="openCamp(camp)"
         >
-          <div>{{ camp.name }}</div>
-          <div style="font-size: 12px">
-            {{ getDayStringNoPad(new Date(camp.dateStart)) }} -
-            {{ getDayStringNoPad(new Date(camp.dateEnd)) }}
+          <div :class="$style.archiveBtnInner">
+            <div>{{ camp.name }}</div>
+            <div style="font-size: 12px">
+              {{ getDayStringNoPad(new Date(camp.dateStart)) }} -
+              {{ getDayStringNoPad(new Date(camp.dateEnd)) }}
+            </div>
           </div>
         </v-card>
       </div>
@@ -146,7 +149,7 @@ const openCamp = async (camp: Camp) => {
 
 .panel {
   margin-top: 40px;
-  max-width: 600px;
+  max-width: 600px !important;
   width: 80%;
 }
 
@@ -197,7 +200,7 @@ const openCamp = async (camp: Camp) => {
 .head {
   font-weight: bold;
   font-size: 16px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.2em !important;
   color: white;
 }
 
@@ -211,13 +214,11 @@ const openCamp = async (camp: Camp) => {
   margin-top: 16px;
 }
 
-.archiveBtn {
-  height: 40px !important;
-  width: 100%;
-  background-color: transparent;
+.archiveBtnInner {
+  height: 40px;
   color: white;
   border: 1px solid white;
-  margin: 8px 0;
+  border-radius: 4px;
   display: flex;
   padding: 0 12px;
   justify-content: space-between;
