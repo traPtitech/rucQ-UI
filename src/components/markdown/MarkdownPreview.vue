@@ -214,7 +214,7 @@ onMounted(async () => {
   color: #888888;
   padding: 0px 0px 0px 10px;
   border-left: 4px solid #e0e0e0;
-  margin: 8px 0 8px 4px;
+  margin: 8px 0;
 }
 
 .preview :global(tr:nth-child(2n + 1)) {
@@ -238,7 +238,7 @@ onMounted(async () => {
 .preview :global(table) {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 8px !important;
+  margin: 8px 0;
   border-radius: 2px;
   overflow: hidden;
 }
