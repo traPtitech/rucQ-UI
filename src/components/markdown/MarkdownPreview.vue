@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
-import { markedHighlight } from 'marked-highlight'
-import { Marked } from 'marked'
+import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
 import darkStyle from 'highlight.js/styles/github-dark.css?inline'
 import sanitizeHtml from 'sanitize-html'
@@ -19,28 +18,29 @@ const props = defineProps<{
 const headings = defineModel<HeadingInfo[]>('headings')
 const htmltext = ref('')
 
-const marked = new Marked(
-  markedHighlight({
-    langPrefix: 'hljs language-',
-    highlight(code, lang) {
-      if (typeof lang === 'string' && lang.includes(':')) {
-        lang = lang.substring(0, lang.indexOf(':'))
+const md = new MarkdownIt({
+  breaks: true,
+  linkify: true,
+  highlight(code, lang) {
+    if (typeof lang === 'string' && lang.includes(':')) {
+      lang = lang.substring(0, lang.indexOf(':'))
+    }
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return hljs.highlight(code, { language: lang }).value
+      } catch {
+        // highlight.js が予期せずエラーを起こしても無視する
       }
-      const language = hljs.getLanguage(lang) ? lang : 'plaintext'
-      return hljs.highlight(code, { language }).value
-    },
-  }),
-  {
-    gfm: true, // GitHub Flavored Markdown を有効にする
-    breaks: true, // 1 段の改行を有効にする
+    }
+    return ''
   },
-)
+})
 
 // mdtext 変更時に HTML と見出し情報を更新
 watch(
   () => props.mdtext,
   () => {
-    const rawHtml = marked.parse(props.mdtext || '') as string
+    const rawHtml = md.render(props.mdtext || '')
     const headingInfos: HeadingInfo[] = []
     let idCounter = 0
 
@@ -72,6 +72,8 @@ watch(
         'hr',
         'br',
         'span', // hljs のシンタックスハイライトで必要
+        's',
+        'del',
       ],
       allowedAttributes: {
         '*': ['class', 'id'],
@@ -212,7 +214,7 @@ onMounted(async () => {
   color: #888888;
   padding: 0px 0px 0px 10px;
   border-left: 4px solid #e0e0e0;
-  margin: 8px 0 8px 4px;
+  margin: 8px 0;
 }
 
 .preview :global(tr:nth-child(2n + 1)) {
@@ -236,7 +238,7 @@ onMounted(async () => {
 .preview :global(table) {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 8px !important;
+  margin: 8px 0;
   border-radius: 2px;
   overflow: hidden;
 }
