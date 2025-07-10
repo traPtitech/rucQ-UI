@@ -84,6 +84,6 @@ onMounted(async () => {
   max-width: 800px;
   box-sizing: border-box;
   position: relative;
-  padding: 16px;
+  padding: 16px 16px 80px 16px;
 }
 </style>
