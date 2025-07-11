@@ -7,6 +7,20 @@
   font-weight: normal;
 }
 
+html {
+  height: 100vh;
+  overflow: hidden !important;
+}
+
+::-webkit-scrollbar {
+  width: 4px;  /* 縦スクロールバーの幅 */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(38, 37, 36, 0.45); /* 色を付ける */
+  border-radius: 4px;
+}
+
 body {
   min-height: 100vh;
   color: rgb(var(--v-theme-text));

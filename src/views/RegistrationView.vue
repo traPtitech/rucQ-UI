@@ -138,8 +138,9 @@ const openCamp = async (camp: Camp) => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
+  overflow-y: auto;
   padding: 64px 16px;
 }
 
