@@ -241,7 +241,7 @@ onMounted(refreshAnswersMap)
       </div>
     </template>
     <v-card-text v-if="inEditMode" class="bg-white pt-4">
-      <div>{{ questionGroup.description }}</div>
+      <div class="text-pre-line">{{ questionGroup.description }}</div>
       <div :class="$style.editContent">
         <div v-for="(unit, index) in questionUnits" :key="index">
           <div :class="$style.unitColumns" v-if="unit.size === 1">
