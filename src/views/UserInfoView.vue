@@ -48,15 +48,17 @@ onMounted(async () => {
 
 <template>
   <div :class="$style.container" v-if="questionGroups">
-    <room-info v-if="dashboard?.room" :room="dashboard?.room" />
-    <payment-info v-else :is-ready="isReady" :payment="dashboard?.payment" />
-    <div :class="$style.heading">合宿オプション</div>
-    <div :class="$style.questionGroups">
-      <masonry-wall :items="questionGroups" :column-width="300" :gap="16">
-        <template #default="{ item: questionGroup }">
-          <question-group-panel :questionGroup="questionGroup" :camp="displayCamp" />
-        </template>
-      </masonry-wall>
+    <div :class="$style.inner">
+      <room-info v-if="dashboard?.room" :room="dashboard?.room" />
+      <payment-info v-else :is-ready="isReady" :payment="dashboard?.payment" />
+      <div :class="$style.heading">合宿オプション</div>
+      <div :class="$style.questionGroups">
+        <masonry-wall :items="questionGroups" :column-width="300" :gap="16">
+          <template #default="{ item: questionGroup }">
+            <question-group-panel :questionGroup="questionGroup" :camp="displayCamp" />
+          </template>
+        </masonry-wall>
+      </div>
     </div>
   </div>
 </template>
@@ -78,12 +80,18 @@ onMounted(async () => {
 }
 
 .container {
-  height: 100%;
+  height: 100vh;
   width: 100%;
+  overflow-y: auto;
   margin: auto;
-  max-width: 800px;
   box-sizing: border-box;
   position: relative;
   padding: 16px 16px 80px 16px;
+}
+
+.inner {
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
 }
 </style>
