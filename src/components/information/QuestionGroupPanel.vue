@@ -5,6 +5,7 @@ import { apiClient } from '@/api/apiClient'
 import { ref, computed, onMounted, reactive, toRaw } from 'vue'
 import QuestionEditField from '@/components/information/QuestionEditField.vue'
 import QuestionShowField from '@/components/information/QuestionShowField.vue'
+import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Question = components['schemas']['QuestionResponse']
@@ -241,7 +242,7 @@ onMounted(refreshAnswersMap)
       </div>
     </template>
     <v-card-text v-if="inEditMode" class="bg-white pt-4">
-      <div class="text-pre-line">{{ questionGroup.description }}</div>
+      <markdown-preview :mdtext="questionGroup.description ?? ''" />
       <div :class="$style.editContent">
         <div v-for="(unit, index) in questionUnits" :key="index">
           <div :class="$style.unitColumns" v-if="unit.size === 1">
