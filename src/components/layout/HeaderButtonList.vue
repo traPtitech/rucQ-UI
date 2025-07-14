@@ -13,12 +13,6 @@ const router = useRouter()
 const { latestCamp } = storeToRefs(campStore)
 
 const isViewingLatestCamp = computed(() => props.camp.id === latestCamp.value.id)
-
-// 合宿の参加を取り消す。displayCamp が最新の合宿である場合のみ実行される
-const unregisterAndClose = async () => {
-  await campStore.unregister(props.camp.id)
-  router.push('/?back=true')
-}
 </script>
 
 <template>
@@ -27,14 +21,6 @@ const unregisterAndClose = async () => {
       トップページに戻る
     </v-list-item>
     <v-divider v-if="isViewingLatestCamp" :class="$style.divider" />
-    <v-list-item
-      v-if="isViewingLatestCamp"
-      @click="unregisterAndClose"
-      class="text-error"
-      prepend-icon="mdi-close"
-    >
-      合宿の参加を取り消す
-    </v-list-item>
   </v-list>
 </template>
 
