@@ -83,6 +83,10 @@ export const useCampStore = defineStore('camp', () => {
     hasRegisteredLatest.value = false
   }
 
+  const isRegistrationOpen = (camp: Camp) => {
+    return camp.isRegistrationOpen
+  }
+
   return {
     initCamp,
     getCampByDisplayId,
@@ -97,6 +101,7 @@ export const useCampStore = defineStore('camp', () => {
     hasRegisteredLatest,
     register,
     unregister,
+    isRegistrationOpen,
   }
 })
 
