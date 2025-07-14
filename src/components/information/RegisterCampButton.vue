@@ -54,17 +54,16 @@ const handleParticipate = async () => {
       </v-btn>
     </div>
 
-    <v-btn
-      v-else
-      color="primary"
-      size="large"
-      variant="elevated"
-      @click="dialog = true"
-      class="text-none"
-      :class="$style.participateButton"
-    >
-      合宿に参加する
-    </v-btn>
+    <div v-else :class="$style.statusRow">
+      <div :class="$style.registeredLabel">
+        <v-icon class="text-secondary" size="20">mdi-close-circle-outline</v-icon>
+        <span class="text-secondary">未登録</span>
+      </div>
+
+      <v-btn color="primary" elevation="0" size="small" class="text-none" @click="dialog = true">
+        合宿に参加する
+      </v-btn>
+    </div>
   </v-card>
 
   <v-dialog v-model="dialog" width="400">
@@ -80,7 +79,7 @@ const handleParticipate = async () => {
       <v-card-actions class="pa-4 pt-2">
         <v-spacer />
         <v-btn variant="text" @click="dialog = false" class="text-none"> キャンセル </v-btn>
-        <v-btn color="primary" variant="elevated" @click="handleParticipate" class="text-none ml-2">
+        <v-btn color="primary" @click="handleParticipate" class="text-none ml-2">
           {{ confirmButtonText }}
         </v-btn>
       </v-card-actions>
