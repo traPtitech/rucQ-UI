@@ -87,6 +87,18 @@ export const useCampStore = defineStore('camp', () => {
     return camp.isRegistrationOpen
   }
 
+  // 指定した合宿がユーザーにとって操作可能かどうかを判定
+  // ・ユーザーがその合宿に参加している
+  // ・合宿が終了していない
+  const timeStore = useTimeStore()
+
+  const isOperable = (camp: Camp) => {
+    // 最新の合宿かつ登録済みで、かつ終了していない場合のみ操作可能
+    const isLatest = latestCamp.value ? camp.id === latestCamp.value.id : false
+    const registered = isLatest ? hasRegisteredLatest.value : false
+    return registered && !timeStore.isCampEnded(camp)
+  }
+
   return {
     initCamp,
     getCampByDisplayId,
@@ -102,6 +114,7 @@ export const useCampStore = defineStore('camp', () => {
     register,
     unregister,
     isRegistrationOpen,
+    isOperable,
   }
 })
 
