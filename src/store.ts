@@ -83,11 +83,6 @@ export const useCampStore = defineStore('camp', () => {
     hasRegisteredLatest.value = false
   }
 
-  // 指定した合宿が参加登録可能かどうかを判定
-  const isRegistrationOpen = (camp: Camp) => {
-    return camp.isRegistrationOpen
-  }
-
   // 指定した合宿がユーザーにとって操作可能かどうかを判定
   // ・ユーザーがその合宿に参加している
   // ・合宿が終了していない
@@ -95,9 +90,8 @@ export const useCampStore = defineStore('camp', () => {
 
   const isOperable = (camp: Camp) => {
     // 最新の合宿かつ登録済みで、かつ終了していない場合のみ操作可能
-    const isLatest = latestCamp.value ? camp.id === latestCamp.value.id : false
-    const registered = isLatest ? hasRegisteredLatest.value : false
-    return registered && !timeStore.isCampEnded(camp)
+    if (!latestCamp.value || latestCamp.value.id !== camp.id) return false
+    return hasRegisteredLatest.value && !timeStore.isCampEnded(camp)
   }
 
   return {
@@ -114,7 +108,6 @@ export const useCampStore = defineStore('camp', () => {
     hasRegisteredLatest,
     register,
     unregister,
-    isRegistrationOpen,
     isOperable,
   }
 })

@@ -46,7 +46,7 @@ onMounted(async () => {
 })
 
 // 参加登録が可能な状態かどうかを判定
-const isRegisteredOpen = campStore.isRegistrationOpen(displayCamp.value)
+const isRegisteredOpen = displayCamp.value.isRegistrationOpen
 </script>
 
 <template>
