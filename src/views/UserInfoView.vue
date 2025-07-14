@@ -8,7 +8,7 @@ import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
 import type { components } from '@/api/schema'
 import QuestionGroupPanel from '@/components/information/QuestionGroupPanel.vue'
-
+import ParticipateCamp from '@/components/information/ParticipateCamp.vue'
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Dashboard = components['schemas']['DashboardResponse']
 
@@ -44,10 +44,13 @@ onMounted(async () => {
   dashboard.value = await getDashboard()
   isReady.value = true
 })
+
+const isRegisteredOpen = campStore.isRegistrationOpen(displayCamp.value)
 </script>
 
 <template>
   <div :class="$style.container" v-if="questionGroups">
+    <participate-camp v-if="isRegisteredOpen" />
     <room-info v-if="dashboard?.room" :room="dashboard?.room" />
     <payment-info v-else :is-ready="isReady" :payment="dashboard?.payment" />
     <div :class="$style.heading">合宿オプション</div>
