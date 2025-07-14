@@ -83,6 +83,7 @@ export const useCampStore = defineStore('camp', () => {
     hasRegisteredLatest.value = false
   }
 
+  // 指定した合宿が参加登録可能かどうかを判定
   const isRegistrationOpen = (camp: Camp) => {
     return camp.isRegistrationOpen
   }
