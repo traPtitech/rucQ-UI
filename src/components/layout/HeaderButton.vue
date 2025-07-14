@@ -28,7 +28,7 @@ const displayCamp = computed(() => {
       <template v-slot:activator="{ props: activatorProps }">
         <v-btn icon="mdi-dots-horizontal" v-bind="activatorProps" color="primary"></v-btn>
       </template>
-      <header-button-list :camp="displayCamp" />
+      <header-button-list  />
     </v-menu>
   </v-app-bar>
   <div v-else :class="$style.button">
@@ -43,7 +43,7 @@ const displayCamp = computed(() => {
           :class="`text-primary`"
         ></v-btn>
       </template>
-      <header-button-list :camp="displayCamp" />
+      <header-button-list />
     </v-menu>
   </div>
 </template>
