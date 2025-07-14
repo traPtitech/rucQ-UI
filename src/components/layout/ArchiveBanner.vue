@@ -1,43 +1,48 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { useCampStore, useTimeStore } from '@/store'
+import { useDisplay } from 'vuetify'
 
-const route = useRoute()
-const campStore = useCampStore()
-const timeStore = useTimeStore()
+defineProps<{
+  campName?: string
+}>()
 
-const displayCamp = computed(() => {
-  const campname = route.params.campname as string | undefined
-  if (!campname) return null
-  return campStore.getCampByDisplayId(campname)
-})
-
-const isArchived = computed(() => {
-  return displayCamp.value ? timeStore.isCampEnded(displayCamp.value) : false
-})
-
-const campName = computed(() => displayCamp.value?.name)
+const { xs } = useDisplay()
 </script>
 
 <template>
-  <v-sheet v-if="isArchived" elevation="2" color="primaryLight" :class="$style.banner">
+  <div
+    :class="[$style.banner, xs ? $style.bannerMobile : $style.bannerDesktop]"
+    class="bg-primaryLight"
+  >
     <v-icon>mdi-archive</v-icon>
-    <span class="ml-3">{{ campName }} はアーカイブ済みです</span>
-  </v-sheet>
+    <span>{{ campName }} はアーカイブ済みです</span>
+  </div>
 </template>
 
 <style module>
 .banner {
-  width: 100%;
+  height: 50px;
   display: flex;
   align-items: center;
-  justify-content: center !important;
+  justify-content: center;
   gap: 8px;
-  padding: 16px 0;
-  padding-inline-start: 0 !important;
-  text-align: center;
+  padding: 12px 0;
   font-size: 16px;
-  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.bannerDesktop {
+  position: fixed;
+  top: 0;
+  left: 270px;
+  right: 0;
+  z-index: 1000;
+}
+
+.bannerMobile {
+  position: fixed;
+  top: 56px; /* v-app-barの高さ分下げる */
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 </style>

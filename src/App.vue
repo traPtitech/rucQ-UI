@@ -5,9 +5,35 @@ import PageNavigation from '@/components/layout/PageNavigation.vue'
 import HeaderButton from '@/components/layout/HeaderButton.vue'
 import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
 import ArchiveBanner from '@/components/layout/ArchiveBanner.vue'
+import { useCampStore, useTimeStore } from '@/store'
 
 const route = useRoute()
+const campStore = useCampStore()
+const timeStore = useTimeStore()
+
 const showLayout = computed(() => route.meta?.showLayout)
+
+const displayCamp = computed(() => {
+  const campname = route.params.campname as string | undefined
+  if (!campname) return null
+  try {
+    return campStore.getCampByDisplayId(campname)
+  } catch {
+    return null
+  }
+})
+
+const isArchived = computed(() => {
+  return displayCamp.value ? timeStore.isCampEnded(displayCamp.value) : false
+})
+
+const campName = computed(() => displayCamp.value?.name)
+
+// アーカイブバナーの高さ分のマージンを計算
+const routerViewMargin = computed(() => {
+  if (!isArchived.value) return '0px'
+  return  '50px' // アーカイブバナーの高さ
+})
 </script>
 
 <template>
@@ -16,8 +42,8 @@ const showLayout = computed(() => route.meta?.showLayout)
     <header-button v-if="showLayout" />
     <page-navigation v-if="showLayout" />
     <v-main>
-      <archive-banner v-if="showLayout" />
-      <router-view />
+      <archive-banner v-if="isArchived" :camp-name="campName" />
+      <router-view :style="{ marginTop: routerViewMargin }" />
     </v-main>
   </v-app>
 </template>
