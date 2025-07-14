@@ -32,7 +32,6 @@ const isLatestCampEnded = computed(() => {
 
 const registerAndOpen = async () => {
   if (!latestCamp.value) return
-  await campStore.register(latestCamp.value.id)
   await openCamp(latestCamp.value)
 }
 
