@@ -36,15 +36,19 @@ defineProps<{
       <v-table>
         <thead>
           <tr>
-            <th>回答</th>
-            <th>回答者</th>
+            <th :class="$style.firstColumn">回答</th>
+            <th :class="$style.secondColumn">回答者</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(ids, text) in answers" :key="text">
-            <td>{{ text }}</td>
             <td>
-              <div :class="$style.userIconsCell">
+              <div :class="$style.cell">
+                {{ text }}
+              </div>
+            </td>
+            <td>
+              <div :class="$style.cell">
                 <div v-for="id in ids" :key="id" :class="$style.userIcon">
                   <user-icon :id="id" :size="25" />
                 </div>
@@ -66,13 +70,21 @@ defineProps<{
   margin: 4px 0;
 }
 
-.userIconsCell {
-  padding: 4px 0;
+.cell {
+  padding: 12px 0;
 }
 
 .userIcon {
   display: inline-block;
   vertical-align: middle;
   margin: 1.5px 3px 1.5px 0;
+}
+
+.firstColumn {
+  min-width: 150px;
+}
+
+.secondColumn {
+  min-width: 80px;
 }
 </style>

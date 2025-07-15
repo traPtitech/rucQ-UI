@@ -82,7 +82,7 @@ export const questionsHandlers = [
             id: 9,
             title: '自由記述',
             type: 'free_text',
-            isPublic: false,
+            isPublic: true,
             isOpen: true,
           },
           {
@@ -509,6 +509,25 @@ export const questionsHandlers = [
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 6, content: 'しない' },
+        },
+      ])
+    }
+    if (params.questionId === '9') {
+      return HttpResponse.json([
+        {
+          id: 285,
+          type: 'free_text',
+          questionId: 9,
+          userId: 'traP',
+          content:
+            'サンプルテキストサンプルテキストサンプルテキストサンプルテキストサンプルテキストサンプルテキストサンプルテキストサンプルテキストサンプルテキストサンプルテキストサンプルテキストサンプルテキストサンプルテキスト',
+        },
+        {
+          id: 286,
+          type: 'free_text',
+          questionId: 9,
+          userId: 'traP',
+          content: 'サンプルテキストサンプルテキスト',
         },
       ])
     }
