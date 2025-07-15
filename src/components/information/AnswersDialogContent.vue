@@ -19,16 +19,12 @@ defineProps<{
       question.title
     }}</v-expansion-panel-title>
     <v-expansion-panel-text v-if="xs" :class="$style.content">
-      <div>
-        <div :class="$style.userIconsCell">
-          <div v-for="(ids, text) in answers" :key="text">
-            <div :class="$style.answerText">{{ text }}</div>
-            <v-divider :class="$style.divider" />
-            <div :class="$style.userIconsCell">
-              <div v-for="id in ids" :key="id" :class="$style.userIcon">
-                <user-icon :id="id" :size="25" />
-              </div>
-            </div>
+      <div v-for="(ids, text) in answers" :key="text">
+        <div :class="$style.answerText">{{ text }}</div>
+        <v-divider :class="$style.divider" />
+        <div :class="$style.userIcons">
+          <div v-for="id in ids" :key="id" :class="$style.userIcon">
+            <user-icon :id="id" :size="25" />
           </div>
         </div>
       </div>
@@ -92,6 +88,11 @@ defineProps<{
 
 .cell {
   padding: 12px 0;
+  min-height: 28px;
+}
+
+.userIcons {
+  min-height: 28px;
 }
 
 .userIcon {
