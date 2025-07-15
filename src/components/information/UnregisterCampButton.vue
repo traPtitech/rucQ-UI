@@ -7,11 +7,11 @@ const campStore = useCampStore()
 
 const dialog = ref(false)
 
-const handleParticipate = async () => {
+const handleUnregister = async () => {
   try {
-    await campStore.register(campStore.latestCamp.id)
+    await campStore.unregister(campStore.latestCamp.id)
   } catch (error) {
-    console.error('参加登録の処理でエラーが発生しました:', error)
+    console.error('参加取り消しの処理でエラーが発生しました:', error)
   }
 }
 </script>
@@ -25,27 +25,30 @@ const handleParticipate = async () => {
 
     <div :class="$style.statusRow">
       <div :class="$style.registeredLabel">
-        <v-icon class="text-secondary" size="20">mdi-close-circle-outline</v-icon>
-        <span class="text-secondary">未登録</span>
+        <v-icon color="success" size="20">mdi-check-circle-outline</v-icon>
+        <span>参加登録済み</span>
       </div>
 
-      <v-btn color="primary" elevation="0" size="small" class="text-none" @click="dialog = true">
-        合宿に参加する
+      <v-btn color="error" variant="outlined" size="small" class="text-none" @click="dialog = true">
+        参加を取り消す
       </v-btn>
     </div>
   </v-card>
 
-  <v-dialog v-model="dialog" width="400" @after-leave="handleParticipate">
+  <v-dialog v-model="dialog" width="400" @after-leave="handleUnregister">
     <v-card>
-      <v-card-title class="text-h6 font-weight-bold"> 合宿への参加確認 </v-card-title>
+      <v-card-title class="text-h6 font-weight-bold"> 参加取り消しの確認 </v-card-title>
 
       <v-card-text class="pb-2">
-        <p class="text-body-1 mb-0">この合宿に参加しますか？</p>
+        <p class="text-body-1 mb-0">この合宿への参加を取り消しますか？</p>
       </v-card-text>
 
       <v-card-actions class="pa-4 pt-2">
+        <v-spacer />
         <v-btn variant="text" @click="dialog = false" class="text-none"> キャンセル </v-btn>
-        <v-btn color="primary" @click="dialog = false"   class="text-none ml-2"> 参加する </v-btn>
+        <v-btn color="error" @click="dialog = false" class="text-none ml-2">
+          参加を取り消す
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
