@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive } from 'vue'
 import { useDisplay } from 'vuetify'
 import { apiClient } from '@/api/apiClient'
 import AnswersDialogContent from './AnswersDialogContent.vue'
@@ -57,12 +57,15 @@ const getAnswers = async (question: Question) => {
       break
     }
   }
-  console.log(question.title, ': ', byAnswer)
   return byAnswer
 }
 
 // 設問 ID 別 [回答テキスト別 回答者 ID の配列 の連想配列] の連想配列
 const traQIDsByAnswer = reactive<Record<number, Record<string, string[]>>>({})
+
+const publicQuestions = computed(() => {
+  return props.questionGroup.questions.filter((q) => q.isPublic)
+})
 
 onMounted(async () => {
   for (const question of props.questionGroup.questions) {
@@ -98,7 +101,7 @@ const closeBtnProps = {
         <v-card-text>
           <v-expansion-panels>
             <answers-dialog-content
-              v-for="q in questionGroup.questions"
+              v-for="q in publicQuestions"
               :key="q.id"
               :question="q"
               :answers="traQIDsByAnswer[q.id]"
@@ -114,7 +117,7 @@ const closeBtnProps = {
           <v-card-text>
             <v-expansion-panels>
               <answers-dialog-content
-                v-for="q in questionGroup.questions"
+                v-for="q in publicQuestions"
                 :key="q.id"
                 :question="q"
                 :answers="traQIDsByAnswer[q.id]"

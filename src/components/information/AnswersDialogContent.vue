@@ -6,12 +6,12 @@ type Question = components['schemas']['QuestionResponse']
 
 defineProps<{
   question: Question
-  answers: Record<string, string[]>
+  answers: Record<string, string[]> | undefined
 }>()
 </script>
 
 <template>
-  <v-expansion-panel v-if="question.isPublic" elevation="0">
+  <v-expansion-panel v-if="answers" elevation="0">
     <v-expansion-panel-title class="font-weight-medium">{{
       question.title
     }}</v-expansion-panel-title>
