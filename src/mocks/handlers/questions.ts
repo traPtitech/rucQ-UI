@@ -41,7 +41,7 @@ export const questionsHandlers = [
               { id: 18, content: '選択肢1' },
               { id: 19, content: '選択肢2' },
             ],
-            isPublic: false,
+            isPublic: true,
             isOpen: true,
           },
           {
@@ -512,6 +512,34 @@ export const questionsHandlers = [
         },
       ])
     }
+    if (params.questionId === '5') {
+      return HttpResponse.json([
+        {
+          id: 205,
+          type: 'multiple',
+          questionId: 5,
+          userId: 'traP',
+          selectedOptions: [{ id: 18, content: '選択肢1' }],
+        },
+        {
+          id: 206,
+          type: 'multiple',
+          questionId: 5,
+          userId: 'traP',
+          selectedOptions: [{ id: 19, content: '選択肢2' }],
+        },
+        {
+          id: 207,
+          type: 'multiple',
+          questionId: 5,
+          userId: 'traP',
+          selectedOptions: [
+            { id: 18, content: '選択肢1' },
+            { id: 19, content: '選択肢2' },
+          ],
+        },
+      ])
+    }
     if (params.questionId === '9') {
       return HttpResponse.json([
         {
@@ -524,6 +552,13 @@ export const questionsHandlers = [
         },
         {
           id: 286,
+          type: 'free_text',
+          questionId: 9,
+          userId: 'traP',
+          content: 'サンプルテキストサンプルテキスト',
+        },
+        {
+          id: 287,
           type: 'free_text',
           questionId: 9,
           userId: 'traP',

@@ -106,6 +106,6 @@ defineProps<{
 }
 
 .secondColumn {
-  min-width: 80px;
+  min-width: 90px;
 }
 </style>
