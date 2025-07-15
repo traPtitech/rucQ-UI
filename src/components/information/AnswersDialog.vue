@@ -100,7 +100,7 @@ const closeBtnProps = {
         <div :class="$style.heading">
           <v-btn @click="isActive.value = false" v-bind="closeBtnProps" />
         </div>
-        <v-expansion-panels v-model="openPanel">
+        <v-expansion-panels variant="accordion" v-model="openPanel">
           <answers-dialog-content
             v-for="q in publicQuestions"
             :key="q.id"
@@ -115,7 +115,7 @@ const closeBtnProps = {
           <div :class="$style.heading">
             <v-btn @click="isActive.value = false" v-bind="closeBtnProps" />
           </div>
-          <v-expansion-panels v-model="openPanel">
+          <v-expansion-panels variant="accordion" v-model="openPanel">
             <answers-dialog-content
               v-for="q in publicQuestions"
               :key="q.id"
