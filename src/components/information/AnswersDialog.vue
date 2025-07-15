@@ -98,7 +98,20 @@ const closeBtnProps = {
         <div :class="$style.heading">
           <v-btn @click="isActive.value = false" v-bind="closeBtnProps" />
         </div>
-        <v-card-text>
+        <v-expansion-panels>
+          <answers-dialog-content
+            v-for="q in publicQuestions"
+            :key="q.id"
+            :question="q"
+            :answers="traQIDsByAnswer[q.id]"
+          />
+        </v-expansion-panels>
+      </div>
+      <div v-else>
+        <v-card>
+          <div :class="$style.heading">
+            <v-btn @click="isActive.value = false" v-bind="closeBtnProps" />
+          </div>
           <v-expansion-panels>
             <answers-dialog-content
               v-for="q in publicQuestions"
@@ -107,23 +120,6 @@ const closeBtnProps = {
               :answers="traQIDsByAnswer[q.id]"
             />
           </v-expansion-panels>
-        </v-card-text>
-      </div>
-      <div v-else>
-        <v-card>
-          <div :class="$style.heading">
-            <v-btn @click="isActive.value = false" v-bind="closeBtnProps" />
-          </div>
-          <v-card-text>
-            <v-expansion-panels>
-              <answers-dialog-content
-                v-for="q in publicQuestions"
-                :key="q.id"
-                :question="q"
-                :answers="traQIDsByAnswer[q.id]"
-              />
-            </v-expansion-panels>
-          </v-card-text>
         </v-card>
       </div>
     </template>
@@ -134,8 +130,7 @@ const closeBtnProps = {
 .heading {
   display: flex;
   justify-content: flex-end;
-  padding: 4px 4px 0 4px;
-  margin-bottom: -12px;
+  padding: 4px;
 }
 
 .button {

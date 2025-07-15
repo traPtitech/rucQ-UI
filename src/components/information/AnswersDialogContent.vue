@@ -58,14 +58,7 @@ defineProps<{
 </template>
 
 <style module>
-.content :global(.v-expansion-panel-text__wrapper) {
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
 .answerText {
-  font-size: 16px;
-  font-weight: 500;
   margin-top: 10px;
 }
 
