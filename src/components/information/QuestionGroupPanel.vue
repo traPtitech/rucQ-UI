@@ -263,7 +263,7 @@ onMounted(refreshAnswersMap)
           ></question-edit-field>
         </div>
       </div>
-      <answers-dialog />
+      <answers-dialog :question-group="props.questionGroup" />
       <v-btn
         elevation="0"
         append-icon="mdi-check"
@@ -299,7 +299,6 @@ onMounted(refreshAnswersMap)
           />
         </div>
       </div>
-      <question-answers />
     </v-card-text>
   </v-card>
 </template>

@@ -1,6 +1,22 @@
 <script setup lang="ts">
 import { useDisplay } from 'vuetify'
+import AnswersDialogContent from './AnswersDialogContent.vue'
+import type { components } from '@/api/schema'
 const { xs } = useDisplay()
+
+type QuestionGroup = components['schemas']['QuestionGroupResponse']
+
+defineProps<{
+  questionGroup: QuestionGroup
+}>()
+
+const closeBtnProps = {
+  density: 'comfortable',
+  elevation: 0,
+  icon: 'mdi-close',
+  baseColor: 'transparent',
+  class: 'text-secondary',
+} as const
 </script>
 
 <template>
@@ -16,33 +32,33 @@ const { xs } = useDisplay()
     <template v-slot:default="{ isActive }">
       <div class="bg-white h-100" v-if="xs">
         <div :class="$style.heading">
-          <v-btn
-            @click="isActive.value = false"
-            density="comfortable"
-            elevation="0"
-            icon="mdi-close"
-            baseColor="transparent"
-            class="text-secondary"
-          ></v-btn>
+          <v-btn @click="isActive.value = false" v-bind="closeBtnProps" />
         </div>
         <v-card-text>
-          <div :class="$style.content">ここに参加者の回答を表示</div>
+          <v-expansion-panels>
+            <v-expansion-panel v-for="q in questionGroup.questions" :key="q.id" elevation="0">
+              <v-expansion-panel-title>{{ q.title }}</v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <answers-dialog-content />
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </v-card-text>
       </div>
       <div v-else>
         <v-card>
           <div :class="$style.heading">
-            <v-btn
-              @click="isActive.value = false"
-              density="comfortable"
-              elevation="0"
-              icon="mdi-close"
-              baseColor="transparent"
-              class="text-secondary"
-            ></v-btn>
+            <v-btn @click="isActive.value = false" v-bind="closeBtnProps" />
           </div>
           <v-card-text>
-            <div :class="$style.content">ここに参加者の回答を表示</div>
+            <v-expansion-panels>
+              <v-expansion-panel v-for="q in questionGroup.questions" :key="q.id" elevation="0">
+                <v-expansion-panel-title>{{ q.title }}</v-expansion-panel-title>
+                <v-expansion-panel-text>
+                  <answers-dialog-content />
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+            </v-expansion-panels>
           </v-card-text>
         </v-card>
       </div>
