@@ -270,4 +270,109 @@ export const questionsHandlers = [
     }
     return HttpResponse.json(resp, { status: 200 })
   }),
+  http.get('/api/questions/{questionId}/answers', async ({ params }) => {
+    if (params.questionId === '3') {
+      return HttpResponse.json([
+        {
+          id: 203,
+          type: 'single',
+          questionId: 3,
+          userId: 'traP',
+          selectedOption: { id: 5, content: 'する' },
+        },
+        {
+          id: 203,
+          type: 'single',
+          questionId: 3,
+          userId: 'traP',
+          selectedOption: { id: 5, content: 'する' },
+        },
+        {
+          id: 203,
+          type: 'single',
+          questionId: 3,
+          userId: 'traP',
+          selectedOption: { id: 5, content: 'する' },
+        },
+        {
+          id: 203,
+          type: 'single',
+          questionId: 3,
+          userId: 'traP',
+          selectedOption: { id: 5, content: 'する' },
+        },
+        {
+          id: 203,
+          type: 'single',
+          questionId: 3,
+          userId: 'traP',
+          selectedOption: { id: 5, content: 'する' },
+        },
+        {
+          id: 203,
+          type: 'single',
+          questionId: 3,
+          userId: 'traP',
+          selectedOption: { id: 5, content: 'する' },
+        },
+        {
+          id: 203,
+          type: 'single',
+          questionId: 3,
+          userId: 'traP',
+          selectedOption: { id: 5, content: 'する' },
+        },
+        {
+          id: 203,
+          type: 'single',
+          questionId: 3,
+          userId: 'traP',
+          selectedOption: { id: 5, content: 'する' },
+        },
+        {
+          id: 203,
+          type: 'single',
+          questionId: 3,
+          userId: 'traP',
+          selectedOption: { id: 5, content: 'する' },
+        },
+        {
+          id: 203,
+          type: 'single',
+          questionId: 3,
+          userId: 'traP',
+          selectedOption: { id: 5, content: 'する' },
+        },
+        {
+          id: 204,
+          type: 'single',
+          questionId: 3,
+          userId: 'traP',
+          selectedOption: { id: 6, content: 'しない' },
+        },
+        {
+          id: 204,
+          type: 'single',
+          questionId: 3,
+          userId: 'traP',
+          selectedOption: { id: 6, content: 'しない' },
+        },
+        {
+          id: 204,
+          type: 'single',
+          questionId: 3,
+          userId: 'traP',
+          selectedOption: { id: 6, content: 'しない' },
+        },
+        {
+          id: 204,
+          type: 'single',
+          questionId: 3,
+          userId: 'traP',
+          selectedOption: { id: 6, content: 'しない' },
+        },
+      ])
+    }
+    return HttpResponse.json([])
+  }),
 ]

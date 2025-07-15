@@ -37,9 +37,11 @@ const closeBtnProps = {
         <v-card-text>
           <v-expansion-panels>
             <v-expansion-panel v-for="q in questionGroup.questions" :key="q.id" elevation="0">
-              <v-expansion-panel-title>{{ q.title }}</v-expansion-panel-title>
+              <v-expansion-panel-title class="font-weight-medium">{{
+                q.title
+              }}</v-expansion-panel-title>
               <v-expansion-panel-text>
-                <answers-dialog-content />
+                <answers-dialog-content :question="q" />
               </v-expansion-panel-text>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -53,9 +55,11 @@ const closeBtnProps = {
           <v-card-text>
             <v-expansion-panels>
               <v-expansion-panel v-for="q in questionGroup.questions" :key="q.id" elevation="0">
-                <v-expansion-panel-title>{{ q.title }}</v-expansion-panel-title>
+                <v-expansion-panel-title class="font-weight-medium">{{
+                  q.title
+                }}</v-expansion-panel-title>
                 <v-expansion-panel-text>
-                  <answers-dialog-content />
+                  <answers-dialog-content :question="q" />
                 </v-expansion-panel-text>
               </v-expansion-panel>
             </v-expansion-panels>
