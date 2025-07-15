@@ -9,12 +9,13 @@ type Question = components['schemas']['QuestionResponse']
 defineProps<{
   question: Question
   answers: Record<string, string[]> | undefined
+  isSelected: boolean
 }>()
 </script>
 
 <template>
   <v-expansion-panel v-if="answers" elevation="0">
-    <v-expansion-panel-title class="font-weight-medium">{{
+    <v-expansion-panel-title :class="[$style.title, isSelected ? $style.open : $style.close]">{{
       question.title
     }}</v-expansion-panel-title>
     <v-expansion-panel-text v-if="xs" :class="$style.content">
@@ -62,8 +63,27 @@ defineProps<{
 </template>
 
 <style module>
+.title {
+  transition:
+    0.3s min-height cubic-bezier(0.4, 0, 0.2, 1),
+    0.3s color cubic-bezier(0.4, 0, 0.2, 1),
+    0.3s font-weight cubic-bezier(0.4, 0, 0.2, 1),
+    0.3s background-color cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .answerText {
-  margin-top: 10px;
+  margin-top: 16px;
+}
+
+.open {
+  color: rgb(var(--v-theme-primary));
+  background-color: rgb(var(--v-theme-primaryLight)) !important;
+  font-weight: 500;
+}
+
+.close {
+  color: rgb(var(--v-theme-secondary));
+  font-weight: 400;
 }
 
 .divider {

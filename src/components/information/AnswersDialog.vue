@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useDisplay } from 'vuetify'
 import { apiClient } from '@/api/apiClient'
 import AnswersDialogContent from './AnswersDialogContent.vue'
@@ -12,6 +12,8 @@ type Question = components['schemas']['QuestionResponse']
 const props = defineProps<{
   questionGroup: QuestionGroup
 }>()
+
+const openPanel = ref<number | undefined>(0)
 
 // 与えられた質問に対する回答を回答テキスト別 ID の配列として取得
 const getAnswers = async (question: Question) => {
@@ -98,12 +100,13 @@ const closeBtnProps = {
         <div :class="$style.heading">
           <v-btn @click="isActive.value = false" v-bind="closeBtnProps" />
         </div>
-        <v-expansion-panels>
+        <v-expansion-panels v-model="openPanel">
           <answers-dialog-content
             v-for="q in publicQuestions"
             :key="q.id"
             :question="q"
             :answers="traQIDsByAnswer[q.id]"
+            :isSelected="openPanel === publicQuestions.indexOf(q)"
           />
         </v-expansion-panels>
       </div>
@@ -112,12 +115,13 @@ const closeBtnProps = {
           <div :class="$style.heading">
             <v-btn @click="isActive.value = false" v-bind="closeBtnProps" />
           </div>
-          <v-expansion-panels>
+          <v-expansion-panels v-model="openPanel">
             <answers-dialog-content
               v-for="q in publicQuestions"
               :key="q.id"
               :question="q"
               :answers="traQIDsByAnswer[q.id]"
+              :isSelected="openPanel === publicQuestions.indexOf(q)"
             />
           </v-expansion-panels>
         </v-card>
