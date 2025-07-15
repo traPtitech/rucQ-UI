@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { components } from '@/api/schema'
-import UserIcon from '../generic/UserIcon.vue'
+import { useDisplay } from 'vuetify'
+import UserIcon from '@/components/generic/UserIcon.vue'
+const { xs } = useDisplay()
 
 type Question = components['schemas']['QuestionResponse']
 
@@ -15,7 +17,22 @@ defineProps<{
     <v-expansion-panel-title class="font-weight-medium">{{
       question.title
     }}</v-expansion-panel-title>
-    <v-expansion-panel-text>
+    <v-expansion-panel-text v-if="xs" :class="$style.content">
+      <div>
+        <div :class="$style.userIconsCell">
+          <div v-for="(ids, text) in answers" :key="text">
+            <div :class="$style.answerText">{{ text }}</div>
+            <v-divider :class="$style.divider" />
+            <div :class="$style.userIconsCell">
+              <div v-for="id in ids" :key="id" :class="$style.userIcon">
+                <user-icon :id="id" :size="25" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </v-expansion-panel-text>
+    <v-expansion-panel-text v-else>
       <v-table>
         <thead>
           <tr>
@@ -41,6 +58,21 @@ defineProps<{
 </template>
 
 <style module>
+.content :global(.v-expansion-panel-text__wrapper) {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.answerText {
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.divider {
+  margin: 4px 0;
+}
+
 .userIconsCell {
   padding: 4px 0;
 }
