@@ -1,14 +1,23 @@
 <script setup lang="ts">
 import { useUserStore } from '@/store'
 import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 
 const { user } = storeToRefs(useUserStore())
-defineProps<{ id?: string; size?: number }>()
+const props = defineProps<{ id?: string; size?: number }>()
+
+const imageStyle = computed(
+  () =>
+    ({
+      width: `${props.size}px`,
+      height: `${props.size}px`,
+      objectFit: 'contain',
+      borderRadius: `${props.size || 0}px`,
+      display: 'block',
+    }) as const,
+)
 </script>
 
 <template>
-  <img
-    :style="`width: ${size}px; height: ${size}px; object-fit: contain; border-radius: ${size || 0}px`"
-    :src="`https://q.trap.jp/api/v3/public/icon/${id || user?.id}`"
-  />
+  <img :style="imageStyle" :src="`https://q.trap.jp/api/v3/public/icon/${id || user?.id}`" />
 </template>

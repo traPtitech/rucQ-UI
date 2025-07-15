@@ -1,14 +1,75 @@
 <script setup lang="ts">
+import { onMounted, reactive } from 'vue'
 import { useDisplay } from 'vuetify'
+import { apiClient } from '@/api/apiClient'
 import AnswersDialogContent from './AnswersDialogContent.vue'
 import type { components } from '@/api/schema'
 const { xs } = useDisplay()
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
+type Question = components['schemas']['QuestionResponse']
 
-defineProps<{
+const props = defineProps<{
   questionGroup: QuestionGroup
 }>()
+
+// 与えられた質問に対する回答を回答テキスト別 ID の配列として取得
+const getAnswers = async (question: Question) => {
+  const { data, error } = await apiClient.GET('/api/questions/{questionId}/answers', {
+    params: { path: { questionId: question.id } },
+  })
+  if (error || !data) throw error ?? new Error('Failed to fetch answers')
+  const byAnswer: Record<string, string[]> = {}
+
+  switch (question.type) {
+    case 'single': {
+      for (const option of question.options) byAnswer[option.content] = []
+      for (const answer of data) {
+        if (answer.type !== 'single') continue
+        byAnswer[answer.selectedOption.content].push(answer.userId)
+      }
+      break
+    }
+    case 'multiple': {
+      for (const option of question.options) byAnswer[option.content] = []
+      for (const answer of data) {
+        if (answer.type !== 'multiple') continue
+        for (const selectedOption of answer.selectedOptions) {
+          byAnswer[selectedOption.content].push(answer.userId)
+        }
+      }
+      break
+    }
+    case 'free_text': {
+      for (const answer of data) {
+        if (answer.type !== 'free_text') continue
+        byAnswer[answer.content] ??= []
+        byAnswer[answer.content].push(answer.userId)
+      }
+      break
+    }
+    case 'free_number': {
+      for (const answer of data) {
+        if (answer.type !== 'free_number') continue
+        byAnswer[answer.content.toString()] ??= []
+        byAnswer[answer.content.toString()].push(answer.userId)
+      }
+      break
+    }
+  }
+  console.log(question.title, ': ', byAnswer)
+  return byAnswer
+}
+
+// 設問 ID 別 [回答テキスト別 回答者 ID の配列 の連想配列] の連想配列
+const traQIDsByAnswer = reactive<Record<number, Record<string, string[]>>>({})
+
+onMounted(async () => {
+  for (const question of props.questionGroup.questions) {
+    if (!question.isPublic) continue
+    traQIDsByAnswer[question.id] = await getAnswers(question)
+  }
+})
 
 const closeBtnProps = {
   density: 'comfortable',
@@ -36,14 +97,12 @@ const closeBtnProps = {
         </div>
         <v-card-text>
           <v-expansion-panels>
-            <v-expansion-panel v-for="q in questionGroup.questions" :key="q.id" elevation="0">
-              <v-expansion-panel-title class="font-weight-medium">{{
-                q.title
-              }}</v-expansion-panel-title>
-              <v-expansion-panel-text>
-                <answers-dialog-content :question="q" />
-              </v-expansion-panel-text>
-            </v-expansion-panel>
+            <answers-dialog-content
+              v-for="q in questionGroup.questions"
+              :key="q.id"
+              :question="q"
+              :answers="traQIDsByAnswer[q.id]"
+            />
           </v-expansion-panels>
         </v-card-text>
       </div>
@@ -54,14 +113,12 @@ const closeBtnProps = {
           </div>
           <v-card-text>
             <v-expansion-panels>
-              <v-expansion-panel v-for="q in questionGroup.questions" :key="q.id" elevation="0">
-                <v-expansion-panel-title class="font-weight-medium">{{
-                  q.title
-                }}</v-expansion-panel-title>
-                <v-expansion-panel-text>
-                  <answers-dialog-content :question="q" />
-                </v-expansion-panel-text>
-              </v-expansion-panel>
+              <answers-dialog-content
+                v-for="q in questionGroup.questions"
+                :key="q.id"
+                :question="q"
+                :answers="traQIDsByAnswer[q.id]"
+              />
             </v-expansion-panels>
           </v-card-text>
         </v-card>
