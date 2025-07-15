@@ -4,7 +4,7 @@ import { createPinia } from 'pinia'
 import { createVuetify } from 'vuetify'
 import App from './App.vue'
 
-import './assets/style.css'
+import './styles/main.scss'
 
 const app = createApp(App)
 const pinia = createPinia()
