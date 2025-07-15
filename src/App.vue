@@ -31,15 +31,14 @@ const campName = computed(() => displayCamp.value?.name)
 
 // アーカイブバナーの高さ分のマージンを計算
 const routerViewMargin = computed(() => {
-  if (!isArchived.value) return '0px'
-  return  '50px' // アーカイブバナーの高さ
+  return isArchived.value ? '50px' : '0px'
 })
 </script>
 
 <template>
   <background-pattern :variant="showLayout ? 'light' : 'primary'" />
   <v-app>
-    <header-button v-if="showLayout" />
+    <header-button v-if="showLayout" :style="{ marginTop: routerViewMargin }" />
     <page-navigation v-if="showLayout" />
     <v-main>
       <archive-banner v-if="isArchived" :camp-name="campName" />
