@@ -6,6 +6,7 @@ import { getDayStringNoPad } from '@/lib/date'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import { useRouter } from 'vue-router'
 import type { components } from '@/api/schema'
+import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
 
 type Camp = components['schemas']['CampResponse']
 
@@ -41,6 +42,7 @@ const openCamp = async (camp: Camp) => {
 </script>
 
 <template>
+  <background-pattern  variant="primary" />
   <div :class="$style.container" v-if="latestCamp">
     <img :src="`/logo/logo-white.svg`" :class="$style.logo" />
     <v-expansion-panels>
@@ -132,6 +134,7 @@ const openCamp = async (camp: Camp) => {
 
 .logo {
   width: 200px;
+  z-index: 1;
 }
 
 .panel {

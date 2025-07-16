@@ -8,42 +8,37 @@ const router = createRouter({
     {
       path: '/',
       component: () => import('@/views/RegistrationView.vue'),
-      meta: { showLayout: false },
     },
     {
       path: '/:campname',
+      component: () => import('@/layouts/CampLayout.vue'),
       children: [
         {
           path: '',
           name: '合宿のしおり',
           component: () => import('@/views/GuidebookView.vue'),
-          meta: { showLayout: true },
         },
         {
           path: 'schedule',
           name: 'スケジュール',
           component: () => import('@/views/WorkInProgressView.vue'),
-          meta: { showLayout: true },
         },
         {
           path: 'info',
           name: 'ユーザー情報',
           component: () => import('@/views/UserInfoView.vue'),
-          meta: { showLayout: true },
         },
         {
           path: 'rooms',
           name: '部屋情報',
           component: () => import('@/views/WorkInProgressView.vue'),
-          meta: { showLayout: true },
-        },
-        {
-          path: '/:path(.*)*',
-          name: 'NotFoundView',
-          component: () => import('@/views/NotFoundView.vue'),
-          meta: { showLayout: false },
         },
       ],
+    },
+    {
+      path: '/:path(.*)*',
+      name: 'NotFoundView',
+      component: () => import('@/views/NotFoundView.vue'),
     },
   ],
 })

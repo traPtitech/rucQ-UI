@@ -63,7 +63,6 @@ const navItems = [
   </v-bottom-navigation>
   <v-navigation-drawer
     v-else
-    floating
     width="270"
     color="primary"
     permanent
@@ -126,7 +125,11 @@ const navItems = [
 }
 
 .drawer {
-  z-index: 1;
+  z-index: 1001;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  height: 100vh !important;
   overflow: hidden;
 }
 </style>
