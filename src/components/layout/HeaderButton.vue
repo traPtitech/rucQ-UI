@@ -8,7 +8,7 @@ const { xs } = useDisplay()
 </script>
 
 <template>
-  <v-app-bar v-if="xs" elevation="2" color="white" density="comfortable">
+  <v-app-bar v-if="xs" elevation="2" color="white" density="comfortable" :class="$style.appBar">
     <template v-slot:prepend>
       <img src="/icons/icon-transparent.svg" alt="rucQ Icon" :class="$style.icon" />
     </template>
@@ -54,5 +54,9 @@ const { xs } = useDisplay()
 
 .routeTitle {
   font-weight: bold;
+}
+
+.appBar {
+  position: fixed !important;
 }
 </style>
