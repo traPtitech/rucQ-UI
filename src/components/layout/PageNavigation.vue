@@ -46,7 +46,7 @@ const navItems = [
 </script>
 
 <template>
-  <v-bottom-navigation v-if="xs" color="primary" v-model="currentPath" mandatory grow>
+  <v-bottom-navigation v-if="xs" color="primary" v-model="currentPath" mandatory grow :class="$style.bottomNavigation">
     <v-btn
       v-for="item in navItems"
       :value="fullPath(item.path)"
@@ -61,14 +61,7 @@ const navItems = [
       <user-icon v-else :size="24" />
     </v-btn>
   </v-bottom-navigation>
-  <v-navigation-drawer
-    v-else
-    width="270"
-    color="primary"
-    permanent
-    :class="$style.drawer"
-    app
-  >
+  <v-navigation-drawer v-else width="270" color="primary" permanent :class="$style.drawer" app>
     <background-pattern style="z-index: -1" variant="primary" />
     <img src="/logo/logo-white.svg" alt="rucQ Icon" :class="$style.logo" />
     <v-list dense v-model:selected="selectedItems" mandatory>
@@ -127,9 +120,11 @@ const navItems = [
 .drawer {
   z-index: 1001;
   position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  height: 100vh !important;
+  overflow: hidden;
+}
+
+.bottomNavigation {
+  position: fixed !important;
   overflow: hidden;
 }
 </style>
