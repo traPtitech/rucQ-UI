@@ -36,7 +36,7 @@ const campName = computed(() => displayCamp.value?.name)
 <template>
   <background-pattern variant="light" />
   <v-app>
-    <header-button :style="{ marginTop: routerViewMargin }" />
+    <header-button />
     <page-navigation />
     <v-main>
       <div
@@ -77,6 +77,6 @@ const campName = computed(() => displayCamp.value?.name)
   top: 56px; /* v-app-barの高さ分下げる */
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 10002;
 }
 </style>

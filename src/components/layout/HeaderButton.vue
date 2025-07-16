@@ -58,5 +58,6 @@ const { xs } = useDisplay()
 
 .appBar {
   position: fixed !important;
+  top: 0 !important;
 }
 </style>
