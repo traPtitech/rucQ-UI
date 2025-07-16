@@ -3,6 +3,7 @@ import type { components } from '@/api/schema'
 import { getDayString } from '@/lib/date'
 import { apiClient } from '@/api/apiClient'
 import { ref, computed, onMounted, reactive, toRaw } from 'vue'
+import { useCampStore } from '@/store'
 import QuestionEditField from '@/components/information/QuestionEditField.vue'
 import QuestionShowField from '@/components/information/QuestionShowField.vue'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
@@ -16,9 +17,14 @@ const props = defineProps<{
   camp: Camp
 }>()
 
+const campStore = useCampStore()
+
 const inEditMode = ref(false) // 編集モードであるか
 const isAnswered = ref(false) // すでに一度回答を送信したことがあるか
 const isReady = ref(false) // 質問のデータが読み込まれたか
+
+// 表示中の合宿が編集可能かどうか
+const isOperable = computed(() => campStore.isOperable(props.camp))
 
 const getMyAnswers = async () => {
   const { data, error } = await apiClient.GET('/api/me/question-groups/{questionGroupId}/answers', {
@@ -81,8 +87,9 @@ const refreshAnswersMap = async () => {
   // originalMap にディープコピーを追加
   Object.assign(originalMap, structuredClone(toRaw(answersMap)))
 
-  if (!isAnswered.value) {
-    inEditMode.value = true // まだ回答が一つも存在しない場合、デフォルトで編集モードにする
+  if (!isAnswered.value && isOperable.value) {
+    // まだ回答が一つも存在せず、かつ操作可能な場合デフォルトで編集モードにする
+    inEditMode.value = true
   }
 
   isReady.value = true
@@ -102,7 +109,9 @@ const allChecked = computed(() => {
 })
 
 // isOpen が true の質問が 1 つ以上存在するか。もし false ならばそもそも編集モードに入れない
-const isEditable = computed(() => props.questionGroup.questions.some((question) => question.isOpen))
+const isEditable = computed(
+  () => isOperable.value && props.questionGroup.questions.some((q) => q.isOpen),
+)
 
 // 回答が変更されたかどうかを判定
 const isAnswerChanged = (questionId: number) => {

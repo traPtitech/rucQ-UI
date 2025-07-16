@@ -32,7 +32,6 @@ const isLatestCampEnded = computed(() => {
 
 const registerAndOpen = async () => {
   if (!latestCamp.value) return
-  await campStore.register(latestCamp.value.id)
   await openCamp(latestCamp.value)
 }
 
@@ -61,7 +60,6 @@ const openCamp = async (camp: Camp) => {
               <markdown-preview :mdtext="latestCamp.guidebook" />
             </div>
             <v-btn
-              v-if="!hasRegisteredLatest && latestCamp.isRegistrationOpen"
               elevation="0"
               prepend-icon="mdi-arrow-right"
               baseColor="transparent"
@@ -70,31 +68,20 @@ const openCamp = async (camp: Camp) => {
               :class="[$style.save, 'font-weight-bold']"
               @click="registerAndOpen"
             >
-              <span class="font-weight-medium">この合宿に参加する</span>
-            </v-btn>
-            <v-btn
-              v-else-if="hasRegisteredLatest || isLatestCampEnded"
-              elevation="0"
-              prepend-icon="mdi-arrow-right"
-              baseColor="transparent"
-              variant="flat"
-              color="primary"
-              :class="[$style.save, 'font-weight-bold']"
-              @click="openCamp(latestCamp)"
-            >
-              <span class="font-weight-medium">この合宿を表示する</span>
-            </v-btn>
-            <v-btn
-              v-else
-              elevation="0"
-              prepend-icon="mdi-close"
-              baseColor="transparent"
-              variant="flat"
-              color="grey"
-              disabled
-              :class="[$style.save, 'font-weight-bold']"
-            >
-              <span class="font-weight-medium">参加申込期限を過ぎています</span>
+              <span
+                v-if="!hasRegisteredLatest && latestCamp.isRegistrationOpen"
+                class="font-weight-medium"
+                >合宿を表示する（参加受付中）</span
+              >
+              <span v-else-if="hasRegisteredLatest && !isLatestCampEnded" class="font-weight-medium"
+                >参加中の合宿を開く</span
+              >
+              <span
+                v-else-if="!hasRegisteredLatest && !isLatestCampEnded"
+                class="font-weight-medium"
+                >開催中の合宿を閲覧する</span
+              >
+              <span v-else class="font-weight-medium">終了した合宿を見る</span>
             </v-btn>
           </div>
         </v-expansion-panel-text>

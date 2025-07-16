@@ -8,7 +8,8 @@ import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
 import type { components } from '@/api/schema'
 import QuestionGroupPanel from '@/components/information/QuestionGroupPanel.vue'
-
+import RegisterCampButton from '@/components/information/RegisterCampButton.vue'
+import UnregisterCampButton from '@/components/information/UnregisterCampButton.vue'
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Dashboard = components['schemas']['DashboardResponse']
 
@@ -35,6 +36,10 @@ const getDashboard = async () => {
   return data
 }
 
+const isRegistered = computed(() => {
+  return campStore.hasRegisteredLatest
+})
+
 const questionGroups = ref<QuestionGroup[]>([])
 const dashboard = ref<Dashboard>()
 const isReady = ref(false)
@@ -44,10 +49,17 @@ onMounted(async () => {
   dashboard.value = await getDashboard()
   isReady.value = true
 })
+
+// 参加登録が可能な状態かどうかを判定
+const isRegisteredOpen = displayCamp.value.isRegistrationOpen
 </script>
 
 <template>
   <div :class="$style.container" v-if="questionGroups">
+    <div v-if="isRegisteredOpen">
+      <unregister-camp-button v-if="isRegistered" />
+      <register-camp-button v-else />
+    </div>
     <room-info v-if="dashboard?.room" :room="dashboard?.room" />
     <payment-info v-else :is-ready="isReady" :payment="dashboard?.payment" />
     <div :class="$style.heading">合宿オプション</div>
