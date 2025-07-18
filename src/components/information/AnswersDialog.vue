@@ -91,37 +91,37 @@ const closeBtnProps = {
     :transition="xs ? 'dialog-bottom-transition' : undefined"
     :max-width="xs ? undefined : 800"
   >
-    <template v-slot:activator="{ props: activatorProps }">
+    <template #activator="{ props: activatorProps }">
       <div :class="$style.button" v-bind="activatorProps">参加者の回答を見る</div>
     </template>
 
-    <template v-slot:default="{ isActive }">
-      <div class="bg-white h-100" v-if="xs">
+    <template #default="{ isActive }">
+      <div v-if="xs" class="bg-white h-100">
         <div :class="$style.heading">
-          <v-btn @click="isActive.value = false" v-bind="closeBtnProps" />
+          <v-btn v-bind="closeBtnProps" @click="isActive.value = false" />
         </div>
-        <v-expansion-panels variant="accordion" v-model="openPanel">
+        <v-expansion-panels v-model="openPanel" variant="accordion">
           <answers-dialog-content
             v-for="q in publicQuestions"
             :key="q.id"
             :question="q"
             :answers="traQIDsByAnswer[q.id]"
-            :isSelected="openPanel === publicQuestions.indexOf(q)"
+            :is-selected="openPanel === publicQuestions.indexOf(q)"
           />
         </v-expansion-panels>
       </div>
       <div v-else>
         <v-card>
           <div :class="$style.heading">
-            <v-btn @click="isActive.value = false" v-bind="closeBtnProps" />
+            <v-btn v-bind="closeBtnProps" @click="isActive.value = false" />
           </div>
-          <v-expansion-panels variant="accordion" v-model="openPanel">
+          <v-expansion-panels v-model="openPanel" variant="accordion">
             <answers-dialog-content
               v-for="q in publicQuestions"
               :key="q.id"
               :question="q"
               :answers="traQIDsByAnswer[q.id]"
-              :isSelected="openPanel === publicQuestions.indexOf(q)"
+              :is-selected="openPanel === publicQuestions.indexOf(q)"
             />
           </v-expansion-panels>
         </v-card>

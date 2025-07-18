@@ -8,10 +8,10 @@ defineProps<{ room?: Room }>()
 </script>
 
 <template>
-  <div :class="$style.container" v-if="room">
+  <div v-if="room" :class="$style.container">
     <div :class="$style.room">201</div>
     <div :class="$style.members">
-      <UserIcon
+      <user-icon
         v-for="member in room.members"
         :key="member.id"
         :user="member"

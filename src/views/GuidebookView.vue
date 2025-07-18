@@ -4,7 +4,7 @@
       <div v-if="smAndDown" :class="$style.sidebarMobile">
         <table-of-contents :headings="headings" />
       </div>
-      <markdown-preview :mdtext="displayCamp.guidebook" v-model:headings="headings" />
+      <markdown-preview v-model:headings="headings" :mdtext="displayCamp.guidebook" />
     </div>
     <div v-if="!smAndDown" :class="$style.sidebar">
       <table-of-contents :headings="headings" />

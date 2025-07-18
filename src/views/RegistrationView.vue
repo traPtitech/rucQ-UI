@@ -42,8 +42,8 @@ const openCamp = async (camp: Camp) => {
 </script>
 
 <template>
-  <background-pattern  variant="primary" />
-  <div :class="$style.container" v-if="latestCamp">
+  <background-pattern variant="primary" />
+  <div v-if="latestCamp" :class="$style.container">
     <img :src="`/logo/logo-white.svg`" :class="$style.logo" />
     <v-expansion-panels>
       <v-expansion-panel :class="$style.panel">
@@ -64,7 +64,7 @@ const openCamp = async (camp: Camp) => {
             <v-btn
               elevation="0"
               prepend-icon="mdi-arrow-right"
-              baseColor="transparent"
+              base-color="transparent"
               variant="flat"
               color="primary"
               :class="[$style.save, 'font-weight-bold']"
@@ -112,7 +112,7 @@ const openCamp = async (camp: Camp) => {
       </div>
     </div>
   </div>
-  <div :class="$style.container" v-else>
+  <div v-else :class="$style.container">
     <img :src="`/logo/logo-white.svg`" style="width: 200px" />
     <div>
       <v-alert type="error" :class="$style.alert">

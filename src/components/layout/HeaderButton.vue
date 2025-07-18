@@ -9,14 +9,14 @@ const { xs } = useDisplay()
 
 <template>
   <v-app-bar v-if="xs" elevation="2" color="white" density="comfortable" :class="$style.appBar">
-    <template v-slot:prepend>
+    <template #prepend>
       <img src="/icons/icon-transparent.svg" alt="rucQ Icon" :class="$style.icon" />
     </template>
     <v-app-bar-title class="text-primary">
       <span :class="$style.routeTitle">{{ route.name }}</span>
     </v-app-bar-title>
     <v-menu>
-      <template v-slot:activator="{ props: activatorProps }">
+      <template #activator="{ props: activatorProps }">
         <v-btn icon="mdi-dots-horizontal" v-bind="activatorProps" color="primary"></v-btn>
       </template>
       <header-button-list />
@@ -24,13 +24,13 @@ const { xs } = useDisplay()
   </v-app-bar>
   <div v-else :class="$style.button">
     <v-menu>
-      <template v-slot:activator="{ props: activatorProps }">
+      <template #activator="{ props: activatorProps }">
         <v-btn
           density="comfortable"
           icon="mdi-dots-horizontal"
           v-bind="activatorProps"
           color="white"
-          baseColor="white"
+          base-color="white"
           :class="`text-primary`"
         ></v-btn>
       </template>

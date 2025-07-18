@@ -6,7 +6,7 @@ const router = useRouter()
 
 <template>
   <v-list dense>
-    <v-list-item @click="router.push('/?back=true')" prepend-icon="mdi-arrow-right">
+    <v-list-item prepend-icon="mdi-arrow-right" @click="router.push('/?back=true')">
       トップページに戻る
     </v-list-item>
   </v-list>

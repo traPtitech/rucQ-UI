@@ -46,11 +46,18 @@ const navItems = [
 </script>
 
 <template>
-  <v-bottom-navigation v-if="xs" color="primary" v-model="currentPath" mandatory grow :class="$style.bottomNavigation">
+  <v-bottom-navigation
+    v-if="xs"
+    v-model="currentPath"
+    color="primary"
+    mandatory
+    grow
+    :class="$style.bottomNavigation"
+  >
     <v-btn
       v-for="item in navItems"
-      :value="fullPath(item.path)"
       :key="item.path"
+      :value="fullPath(item.path)"
       @click="router.push(fullPath(item.path))"
     >
       <v-icon
@@ -64,13 +71,13 @@ const navItems = [
   <v-navigation-drawer v-else width="270" color="primary" permanent :class="$style.drawer" app>
     <background-pattern style="z-index: -1" variant="primary" />
     <img src="/logo/logo-white.svg" alt="rucQ Icon" :class="$style.logo" />
-    <v-list dense v-model:selected="selectedItems" mandatory>
+    <v-list v-model:selected="selectedItems" dense mandatory>
       <v-list-item
         v-for="item in navItems"
-        :value="fullPath(item.path)"
         :key="item.path"
-        @click="router.push(fullPath(item.path))"
+        :value="fullPath(item.path)"
         color="white"
+        @click="router.push(fullPath(item.path))"
       >
         <div :class="$style.headerTab">
           <v-icon
@@ -78,12 +85,12 @@ const navItems = [
             class="mr-3"
             :icon="isActive(item.path) ? item.iconActive : item.icon"
           />
-          <UserIcon
+          <user-icon
             v-else
             :size="22"
             class="mr-3"
             :style="{ outline: `${isActive(item.path) ? 2 : 1}px solid white` }"
-          ></UserIcon>
+          ></user-icon>
           <span
             :class="$style.headerTitle"
             :style="{ fontWeight: isActive(item.path) ? 'bold' : 'normal' }"
