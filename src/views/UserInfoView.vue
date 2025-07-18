@@ -55,7 +55,7 @@ const isRegisteredOpen = displayCamp.value.isRegistrationOpen
 </script>
 
 <template>
-  <div :class="$style.container" v-if="questionGroups">
+  <div v-if="questionGroups" :class="$style.container">
     <div v-if="isRegisteredOpen">
       <unregister-camp-button v-if="isRegistered" />
       <register-camp-button v-else />
@@ -66,7 +66,7 @@ const isRegisteredOpen = displayCamp.value.isRegistrationOpen
     <div :class="$style.questionGroups">
       <masonry-wall :items="questionGroups" :column-width="300" :gap="16">
         <template #default="{ item: questionGroup }">
-          <question-group-panel :questionGroup="questionGroup" :camp="displayCamp" />
+          <question-group-panel :question-group="questionGroup" :camp="displayCamp" />
         </template>
       </masonry-wall>
     </div>

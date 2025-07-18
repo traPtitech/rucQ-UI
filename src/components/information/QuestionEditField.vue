@@ -13,8 +13,8 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
 <!-- prettier-ignore -->
 <template>
   <v-text-field
-    v-model="(value as string)"
     v-if="question.type === 'free_text'"
+    v-model="(value as string)"
     :label="question.title"
     :messages="[question.description ?? '']"
     :rules="[requiredRule]"
@@ -22,8 +22,8 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     variant="underlined"
   ></v-text-field>
   <v-number-input
-    v-model="(value as number)"
     v-if="question.type === 'free_number'"
+    v-model="(value as number)"
     :label="question.title"
     :messages="[question.description ?? '']"
     :rules="[requiredRule]"
@@ -32,8 +32,8 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     control-variant="hidden"
   ></v-number-input>
   <v-select
-    v-model="(value as number)"
     v-if="question.type === 'single'"
+    v-model="(value as number)"
     :label="question.title"
     :messages="[question.description ?? '']"
     :rules="[requiredRule]"
@@ -44,8 +44,8 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :item-title="(option) => option.content"
   ></v-select>
   <v-select
-    v-model="(value as number[])"
     v-if="question.type === 'multiple'"
+    v-model="(value as number[])"
     :label="question.title"
     :messages="[question.description ?? '']"
     :rules="[requiredRule]"

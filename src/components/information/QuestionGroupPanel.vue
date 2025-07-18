@@ -219,7 +219,7 @@ onMounted(refreshAnswersMap)
 
 <template>
   <v-card :color="inEditMode ? 'primary' : 'primaryLight'" elevation="0" :class="$style.card">
-    <template v-slot:title>
+    <template #title>
       <div :class="$style.title">
         <span :class="['font-weight-bold', `text-${inEditMode ? 'white' : 'primary'}`]">{{
           questionGroup.name
@@ -230,7 +230,7 @@ onMounted(refreshAnswersMap)
             density="comfortable"
             elevation="0"
             icon="mdi-close"
-            baseColor="transparent"
+            base-color="transparent"
             class="text-white"
             @click="quitEditMode"
           ></v-btn>
@@ -244,10 +244,10 @@ onMounted(refreshAnswersMap)
           density="comfortable"
           elevation="0"
           icon="mdi-square-edit-outline"
-          baseColor="transparent"
+          base-color="transparent"
           :class="isEditable ? ['text-primary'] : ['text-primary', $style.disabledEdit]"
-          @click="inEditMode = true"
           :disabled="!isEditable"
+          @click="inEditMode = true"
         ></v-btn>
       </div>
     </template>
@@ -255,7 +255,7 @@ onMounted(refreshAnswersMap)
       <markdown-preview :mdtext="questionGroup.description ?? ''" />
       <div :class="$style.editContent">
         <div v-for="(unit, index) in questionUnits" :key="index">
-          <div :class="$style.unitColumns" v-if="unit.size === 1">
+          <div v-if="unit.size === 1" :class="$style.unitColumns">
             <question-edit-field
               v-for="question in unit.questions"
               :key="question.id"
@@ -264,8 +264,8 @@ onMounted(refreshAnswersMap)
             ></question-edit-field>
           </div>
           <question-edit-field
-            v-else
             v-for="question in unit.questions"
+            v-else
             :key="question.id"
             v-model:value="answersMap[question.id].value"
             :question="question"
@@ -276,12 +276,12 @@ onMounted(refreshAnswersMap)
       <v-btn
         elevation="0"
         append-icon="mdi-check"
-        baseColor="transparent"
+        base-color="transparent"
         variant="flat"
         color="primary"
         :class="[$style.save, 'font-weight-bold']"
-        @click="sendAnswers"
         :disabled="!allChecked"
+        @click="sendAnswers"
       >
         <span class="font-weight-medium">保存</span>
       </v-btn>
@@ -289,7 +289,7 @@ onMounted(refreshAnswersMap)
     <v-card-text v-else class="bg-white pt-4">
       <div :class="$style.showContent">
         <div v-for="(unit, index) in questionUnits" :key="index">
-          <div :class="$style.unitColumns" v-if="unit.size === 1">
+          <div v-if="unit.size === 1" :class="$style.unitColumns">
             <question-show-field
               v-for="question in unit.questions"
               :key="question.id"
@@ -299,8 +299,8 @@ onMounted(refreshAnswersMap)
             />
           </div>
           <question-show-field
-            v-else
             v-for="question in unit.questions"
+            v-else
             :key="question.id"
             :question="question"
             :value="answersMap[question.id]?.value"
