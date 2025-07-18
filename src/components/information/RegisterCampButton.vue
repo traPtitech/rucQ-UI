@@ -6,13 +6,21 @@ import { useCampStore } from '@/store'
 const campStore = useCampStore()
 
 const dialog = ref(false)
+const shouldRegister = ref(false)
 
-const handleParticipate = async () => {
+const confirmRegistration = () => {
+  dialog.value = false
+  shouldRegister.value = true
+}
+
+const executeRegistration = async () => {
+  if (!shouldRegister.value) return
+
   try {
     await campStore.register(campStore.latestCamp.id)
   } catch (error) {
     console.error('参加登録の処理でエラーが発生しました:', error)
-  }
+  } 
 }
 </script>
 
@@ -35,7 +43,7 @@ const handleParticipate = async () => {
     </div>
   </v-card>
 
-  <v-dialog v-model="dialog" width="400" @after-leave="handleParticipate">
+  <v-dialog v-model="dialog" width="400" @after-leave="executeRegistration">
     <v-card>
       <v-card-title class="text-h6 font-weight-bold"> 合宿への参加確認 </v-card-title>
 
@@ -45,7 +53,9 @@ const handleParticipate = async () => {
 
       <v-card-actions class="pa-4 pt-2">
         <v-btn variant="text" class="text-none" @click="dialog = false"> キャンセル </v-btn>
-        <v-btn color="primary" class="text-none ml-2" @click="dialog = false"> 参加する </v-btn>
+        <v-btn color="primary" class="text-none ml-2" @click="confirmRegistration">
+          参加する
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
