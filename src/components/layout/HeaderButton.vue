@@ -47,7 +47,8 @@ const { xs } = useDisplay()
 
 .button {
   position: fixed;
-  top: 10px;
+  top: 25px;
+  transform: translateY(-50%);
   right: 10px;
   z-index: 3;
 }
