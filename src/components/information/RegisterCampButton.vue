@@ -15,12 +15,13 @@ const confirmRegistration = () => {
 
 const executeRegistration = async () => {
   if (!shouldRegister.value) return
+  shouldRegister.value = false
 
   try {
     await campStore.register(campStore.latestCamp.id)
   } catch (error) {
     console.error('参加登録の処理でエラーが発生しました:', error)
-  } 
+  }
 }
 </script>
 

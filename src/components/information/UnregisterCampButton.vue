@@ -15,12 +15,13 @@ const confirmUnregistration = () => {
 
 const executeUnregistration = async () => {
   if (!shouldUnregister.value) return
+  shouldUnregister.value = false
 
   try {
     await campStore.unregister(campStore.latestCamp.id)
   } catch (error) {
     console.error('参加取り消しの処理でエラーが発生しました:', error)
-  } 
+  }
 }
 </script>
 
