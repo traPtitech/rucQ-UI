@@ -70,7 +70,7 @@ const headings = ref<HeadingInfo[]>([])
 .sidebar {
   width: 280px;
   padding: 40px 16px;
-  max-height: calc(100vh - 80px);
+  height: 100%;
   overflow-y: auto;
   flex-shrink: 0;
   right: 0;
