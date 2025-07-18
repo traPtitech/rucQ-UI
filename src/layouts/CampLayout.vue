@@ -35,21 +35,19 @@ const campName = computed(() => displayCamp.value?.name)
 
 <template>
   <background-pattern variant="light" />
-  <v-app>
-    <header-button />
-    <page-navigation />
-    <v-main>
-      <div
-        v-if="isArchived"
-        :class="[$style.banner, xs ? $style.bannerMobile : $style.bannerDesktop]"
-        class="bg-primaryLight"
-      >
-        <v-icon>mdi-archive</v-icon>
-        <span>{{ campName }} はアーカイブ済みです</span>
-      </div>
-      <router-view :style="{ marginTop: routerViewMargin }" />
-    </v-main>
-  </v-app>
+  <header-button />
+  <page-navigation />
+  <v-main>
+    <div
+      v-if="isArchived"
+      :class="[$style.banner, xs ? $style.bannerMobile : $style.bannerDesktop]"
+      class="bg-primaryLight"
+    >
+      <v-icon>mdi-archive</v-icon>
+      <span>{{ campName }} はアーカイブ済みです</span>
+    </div>
+    <router-view :style="{ marginTop: routerViewMargin }" />
+  </v-main>
 </template>
 
 <style module>
@@ -62,6 +60,7 @@ const campName = computed(() => displayCamp.value?.name)
   padding: 12px 0;
   font-size: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1;
 }
 
 .bannerDesktop {
@@ -69,7 +68,6 @@ const campName = computed(() => displayCamp.value?.name)
   top: 0;
   left: 270px;
   right: 0;
-  z-index: 1000;
 }
 
 .bannerMobile {
@@ -77,6 +75,5 @@ const campName = computed(() => displayCamp.value?.name)
   top: 56px; /* v-app-barの高さ分下げる */
   left: 0;
   right: 0;
-  z-index: 10002;
 }
 </style>

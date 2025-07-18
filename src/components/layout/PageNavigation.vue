@@ -118,13 +118,11 @@ const navItems = [
 }
 
 .drawer {
-  z-index: 1001;
-  position: fixed !important;
   overflow: hidden;
+  border: none !important;
 }
 
 .bottomNavigation {
-  position: fixed !important;
   overflow: hidden;
 }
 </style>
