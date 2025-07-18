@@ -125,6 +125,7 @@ onMounted(async () => {
 <template>
   <div :class="$style.container">
     <div :class="$style.content">
+      <!-- eslint-disable-next-line vue/no-v-html -->
       <div v-html="htmltext" :class="$style.preview"></div>
     </div>
   </div>
