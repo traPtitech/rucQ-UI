@@ -45,7 +45,7 @@ const handleParticipate = async () => {
 
       <v-card-actions class="pa-4 pt-2">
         <v-btn variant="text" @click="dialog = false" class="text-none"> キャンセル </v-btn>
-        <v-btn color="primary" @click="dialog = false"   class="text-none ml-2"> 参加する </v-btn>
+        <v-btn color="primary" @click="dialog = false" class="text-none ml-2"> 参加する </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

@@ -46,9 +46,7 @@ const handleUnregister = async () => {
       <v-card-actions class="pa-4 pt-2">
         <v-spacer />
         <v-btn variant="text" @click="dialog = false" class="text-none"> キャンセル </v-btn>
-        <v-btn color="error" @click="dialog = false" class="text-none ml-2">
-          参加を取り消す
-        </v-btn>
+        <v-btn color="error" @click="dialog = false" class="text-none ml-2"> 参加を取り消す </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

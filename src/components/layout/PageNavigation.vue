@@ -46,7 +46,14 @@ const navItems = [
 </script>
 
 <template>
-  <v-bottom-navigation v-if="xs" color="primary" v-model="currentPath" mandatory grow :class="$style.bottomNavigation">
+  <v-bottom-navigation
+    v-if="xs"
+    color="primary"
+    v-model="currentPath"
+    mandatory
+    grow
+    :class="$style.bottomNavigation"
+  >
     <v-btn
       v-for="item in navItems"
       :value="fullPath(item.path)"

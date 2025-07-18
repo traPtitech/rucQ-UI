@@ -42,7 +42,7 @@ const openCamp = async (camp: Camp) => {
 </script>
 
 <template>
-  <background-pattern  variant="primary" />
+  <background-pattern variant="primary" />
   <div :class="$style.container" v-if="latestCamp">
     <img :src="`/logo/logo-white.svg`" :class="$style.logo" />
     <v-expansion-panels>
