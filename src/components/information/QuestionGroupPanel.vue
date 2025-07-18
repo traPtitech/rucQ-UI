@@ -7,6 +7,7 @@ import { useCampStore } from '@/store'
 import QuestionEditField from '@/components/information/QuestionEditField.vue'
 import QuestionShowField from '@/components/information/QuestionShowField.vue'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
+import AnswersDialog from '@/components/information/AnswersDialog.vue'
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Question = components['schemas']['QuestionResponse']
@@ -271,6 +272,7 @@ onMounted(refreshAnswersMap)
           ></question-edit-field>
         </div>
       </div>
+      <answers-dialog :question-group="props.questionGroup" />
       <v-btn
         elevation="0"
         append-icon="mdi-check"
@@ -344,7 +346,7 @@ onMounted(refreshAnswersMap)
 
 .save {
   width: 100%;
-  margin-top: 16px;
+  margin-top: 8px;
   font-weight: bold;
   font-size: 16px;
   letter-spacing: 2px;
