@@ -191,7 +191,7 @@ onMounted(async () => {
   margin: 0 0px 8px 0px !important;
   border-radius: 4px;
   max-height: 400px;
-  overflow: scroll;
+  overflow: auto;
   background-color: #222222 !important;
 }
 
