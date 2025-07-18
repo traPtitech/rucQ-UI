@@ -1,4 +1,9 @@
+<script setup lang="ts">
+import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
+</script>
+
 <template>
+  <background-pattern variant="primary" />
   <div :class="$style.container">
     <h1 :class="$style.title">Not Found</h1>
     <h2 :class="$style.path">{{ decodeURI($route.path) }}</h2>

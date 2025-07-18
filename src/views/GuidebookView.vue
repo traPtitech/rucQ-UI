@@ -43,15 +43,16 @@ const headings = ref<HeadingInfo[]>([])
   width: 100%;
   margin: 0 auto;
   max-width: 1000px;
-  height: 100vh;
+  height: 100%;
   display: flex;
+  position: relative; /* 背景より前面に配置 */
 }
 
 .content {
-  flex-grow: 1;
   height: 100%;
-  overflow: scroll;
+  overflow: hidden;
   padding: 40px 24px;
+  width: calc(100% - 280px);
 }
 
 .contentMobile {
@@ -72,5 +73,7 @@ const headings = ref<HeadingInfo[]>([])
   max-height: calc(100vh - 80px);
   overflow-y: auto;
   flex-shrink: 0;
+  right: 0;
+  position: fixed;
 }
 </style>
