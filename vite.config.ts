@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
         mode === 'staging'
           ? {
               '/api': {
-                target: 'https://rucq-dev.trap.show',
+                target: 'https://rucq-dev.trapti.tech',
                 changeOrigin: true,
               },
             }
