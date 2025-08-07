@@ -20,9 +20,9 @@
 
 ### リモートの Staging API を使う方法
 
-クライアントが Staging API (<https://rucq-dev.trap.show/api>) にアクセスできるようにします。traQ 認証を突破するために Cookie をコピーしてくる必要があります。
+クライアントが Staging API (<https://rucq-dev.trapti.tech/api>) にアクセスできるようにします。traQ 認証を突破するために Cookie をコピーしてくる必要があります。
 
-1. <https://rucq-dev.trap.show/api/me> にアクセスする
+1. <https://rucq-dev.trapti.tech/api/me> にアクセスする
 2. Cookie 一覧から `_forward_auth` の値を取得する
 3. `npm run dev:staging` を実行する
 4. <http://localhost:5173> にアクセスし、Devtools で Cookie をセットする
