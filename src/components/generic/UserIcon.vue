@@ -33,13 +33,16 @@ const handleClick = () => {
 // tooltipProps からマウスイベントを除外
 const getModifiedTooltipProps = (tooltipProps: Record<string, unknown>) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { onMouseenter, ...rest } = tooltipProps
+  const { onMouseenter, ...rest } = tooltipProps // ホバーでは表示させない
   return rest
 }
 </script>
 
 <template>
-  <v-tooltip v-if="idTooltip" v-model="showTooltip" :text="tooltipText" location="top">
+  <v-tooltip v-if="idTooltip" v-model="showTooltip" location="top">
+    <template #default>
+      <span class="text-white font-weight-medium">{{ tooltipText }}</span>
+    </template>
     <template #activator="{ props: tooltipProps }">
       <img
         :style="imageStyle"
@@ -51,3 +54,9 @@ const getModifiedTooltipProps = (tooltipProps: Record<string, unknown>) => {
   </v-tooltip>
   <img v-else :style="imageStyle" :src="`https://q.trap.jp/api/v3/public/icon/${userId}`" />
 </template>
+
+<style module>
+:global(.v-overlay__content) {
+  background-color: rgba(var(--v-theme-primary), 0.9) !important;
+}
+</style>
