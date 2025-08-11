@@ -6,19 +6,19 @@ type DurationEvent = components['schemas']['DurationEventResponse']
 type OfficialEvent = components['schemas']['OfficialEventResponse']
 type CampEvent = MomentEvent | DurationEvent | OfficialEvent
 
-type GridRow = { events: (CampEvent | null)[] } & (
+export type GridRow = { events: (CampEvent | null)[] } & (
   | { type: 'stamp'; time: Date }
   | { type: 'period'; timeStart: Date; timeEnd: Date }
 )
 
-type DurationEventPos = {
+export type DurationEventPos = {
   column: number
   startRow: number
   endRow: number
   event: DurationEvent | OfficialEvent
 }
 
-type MomentEventPos = {
+export type MomentEventPos = {
   // column は常に 0
   row: number
   event: MomentEvent
@@ -79,17 +79,15 @@ export class DayEventGrid {
   // グリッド行に期間のあるイベントを追加
   addDurationEvent(event: DurationEvent | OfficialEvent) {
     const startIndex = this._getStampIndex(getStartTime(event)) + 1 // 開始時刻の次の period 行から
-    const endIndex = this._getStampIndex(getEndTime(event)) - 1 // 終了時刻の前の period 行まで
+    const endIndex = this._getStampIndex(getEndTime(event)) // 終了時刻の前の period 行まで
 
-    const targetRows = this.rows.slice(startIndex, endIndex + 1)
+    const targetRows = this.rows.slice(startIndex, endIndex)
 
     // 最初の列から順に確認し、すべて null の列があればそこにイベントを追加
     for (let col = 0; ; col++) {
       if (
         targetRows.every((row) => {
-          while (col >= row.events.length) {
-            row.events.push(null) // 列が足りない場合は null を追加
-          }
+          while (col >= row.events.length) row.events.push(null)
           return row.events[col] === null
         })
       ) {
@@ -111,8 +109,10 @@ export class DayEventGrid {
     for (const row of this.rows) {
       if (row.events.some((event) => event !== null && event.type !== 'moment')) {
         currentGroup.push(row) // 期間イベントがある行は現在のグループに追加
-      } else if (currentGroup.length > 0) {
-        groups.push(this._exportGroup(currentGroup))
+      } else {
+        if (currentGroup.length > 0) {
+          groups.push(this._exportGroup(currentGroup))
+        }
         groups.push(this._exportGroup([row])) // 瞬間イベントの行も新しいグループとして追加
         currentGroup = []
       }
@@ -144,8 +144,9 @@ export class DayEventGrid {
             momentEvents.push({ row: rowIndex, event: event })
           } else {
             // 期間イベントの場合、開始行と終了行を特定
-            const startRowIndex = this._getStampIndex(getStartTime(event)) + 1
-            const endRowIndex = this._getStampIndex(getEndTime(event)) - 1
+            const groupIndex = this.rows.findIndex((r) => r === rows[0])
+            const startRowIndex = this._getStampIndex(getStartTime(event)) + 1 - groupIndex
+            const endRowIndex = this._getStampIndex(getEndTime(event)) - groupIndex
 
             durationEvents.push({
               column: colIndex,

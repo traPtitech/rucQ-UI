@@ -67,9 +67,21 @@ const arrangeEvents = (date: Date, events: CampEvent[], currentTime?: Date) => {
       grid.addMomentEvent(event)
     })
 
-  // 期間イベントをグリッドに追加
+  // 公式イベントをグリッドに追加
   events
-    .filter((event) => event.type !== 'moment')
+    .filter((event) => event.type === 'official')
+    .sort((a, b) => {
+      const startDelta = getStartTime(a).getTime() - getStartTime(b).getTime()
+      const endDelta = getEndTime(a).getTime() - getEndTime(b).getTime()
+      return startDelta !== 0 ? startDelta : endDelta
+    })
+    .forEach((event) => {
+      grid.addDurationEvent(event)
+    })
+
+  // 一般期間イベントをグリッドに追加
+  events
+    .filter((event) => event.type === 'duration')
     .sort((a, b) => {
       const startDelta = getStartTime(a).getTime() - getStartTime(b).getTime()
       const endDelta = getEndTime(a).getTime() - getEndTime(b).getTime()
