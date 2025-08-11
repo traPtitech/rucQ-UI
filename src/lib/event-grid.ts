@@ -104,15 +104,34 @@ export class DayEventGrid {
 
   // グリッドをエクスポート
   export(): EventGroup[] {
-    // 全体の列数を計算（全行の最大列数）
-    const totalColumns = Math.max(...this.rows.map((row) => row.events.length), 0)
+    const groups: EventGroup[] = []
+    let currentGroup: GridRow[] = []
 
+    // イベントの途切れ目でグループ分け
+    for (const row of this.rows) {
+      if (row.events.some((event) => event !== null && event.type !== 'moment')) {
+        currentGroup.push(row) // 期間イベントがある行は現在のグループに追加
+      } else if (currentGroup.length > 0) {
+        groups.push(this._exportGroup(currentGroup))
+        groups.push(this._exportGroup([row])) // 瞬間イベントの行も新しいグループとして追加
+        currentGroup = []
+      }
+    }
+
+    if (currentGroup.length > 0) {
+      groups.push(this._exportGroup(currentGroup))
+    }
+
+    return groups
+  }
+
+  _exportGroup(rows: GridRow[]): EventGroup {
     const durationEvents: DurationEventPos[] = []
     const momentEvents: MomentEventPos[] = []
     const prosessedEvents = new Set<CampEvent>()
 
-    for (let rowIndex = 0; rowIndex < this.rows.length; rowIndex++) {
-      const row = this.rows[rowIndex]
+    for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+      const row = rows[rowIndex]
 
       // 各行の各列を確認
       for (let colIndex = 0; colIndex < row.events.length; colIndex++) {
@@ -139,14 +158,11 @@ export class DayEventGrid {
       }
     }
 
-    // 単一の EventGroup として返す
-    return [
-      {
-        columns: totalColumns,
-        rows: this.rows,
-        durationEvents,
-        momentEvents,
-      },
-    ]
+    return {
+      columns: Math.max(...rows.map((row) => row.events.length)),
+      rows: rows,
+      durationEvents,
+      momentEvents,
+    }
   }
 }
