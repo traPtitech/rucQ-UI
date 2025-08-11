@@ -42,3 +42,12 @@ export const getDisplayDate = (date: Readonly<Date>) => {
     return getFullDayString(date) + ' ' + timeString
   }
 }
+
+// 与えられた日付の JST の Date オブジェクトを返す
+export const getJSTDate = (dateString: string): Date => {
+  const date = new Date(`${dateString}T00:00:00+09:00`)
+  if (isNaN(date.getTime())) {
+    throw new Error(`getJSTDate: 日時の設定が不正です: "${dateString}"`)
+  }
+  return date
+}
