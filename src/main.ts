@@ -24,6 +24,7 @@ const vuetify = createVuetify({
           primaryLight: '#FFE5C9',
           text: '#000000',
           patternOnPrimary: '#FF8200',
+          line: '#C0C0C0',
         },
       },
     },
