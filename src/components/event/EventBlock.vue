@@ -13,7 +13,7 @@ const getColor = (event: DurationEvent | OfficialEvent) => {
 <template>
   <div class="pa-1">
     <v-card link :color="getColor(event)" height="100%" variant="flat" class="pa-2">
-      <h3 class="font-weight-bold white text-break">{{ props.event.name }}</h3>
+      <h4 class="font-weight-bold white text-break">{{ props.event.name }}</h4>
       <h5 class="font-weight-medium white text-break">{{ props.event.location }}</h5>
     </v-card>
   </div>

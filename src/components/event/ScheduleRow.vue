@@ -8,6 +8,7 @@ const props = defineProps<{
   index: number
 }>()
 
+// 左端のタイムスタンプのスタイル
 const stampStyle = computed(() => {
   const baseStyle = {
     gridColumn: 1,
@@ -16,17 +17,19 @@ const stampStyle = computed(() => {
   }
 
   switch (props.row.stampAlign) {
-    case 'none':
+    case 'none': // タイムスタンプを表示しない
       return { ...baseStyle, display: 'flex', visibility: 'hidden' as const }
-    case 'start':
+    case 'start': // タイムスタンプを行の先頭に表示
       return { ...baseStyle, display: 'flex', alignItems: 'flex-start' }
-    default:
+    default: // タイムスタンプを行の中央に表示
       return { ...baseStyle, display: 'flex', alignItems: 'center' }
   }
 })
 
+// 瞬間イベントのタイトルのスタイル
 const momentStyle = computed(() => ({ gridRow: props.index + 1, gridColumn: 2 }))
 
+// 瞬間イベントがない行に引かれる点線のスタイル
 const lineStyle = computed(() => ({ gridRow: props.index + 1, gridColumn: '2 / -1' }))
 </script>
 
@@ -41,9 +44,9 @@ const lineStyle = computed(() => ({ gridRow: props.index + 1, gridColumn: '2 / -
     class="w-100 h-100 d-flex justify-start align-center"
     :style="momentStyle"
   >
-    <h5 :event="row.events[0]" :class="$style.momentText">
+    <h4 :event="row.events[0]" :class="$style.momentText">
       {{ row.events[0].name }}
-    </h5>
+    </h4>
   </div>
   <div v-else-if="row.stampAlign !== 'none'" :style="lineStyle">
     <div :class="$style.line"></div>
@@ -63,12 +66,6 @@ const lineStyle = computed(() => ({ gridRow: props.index + 1, gridColumn: '2 / -
   height: 0px;
   margin-top: -0.5px;
   border-bottom: 1px dashed rgb(var(--v-theme-line));
-}
-
-.event {
-  grid-column: 2;
-  display: flex;
-  align-items: 'center';
 }
 
 .momentText {
