@@ -164,7 +164,7 @@ export class DayEventGrid {
             durationEvents.push({
               column: colIndex,
               startRow: rows.findIndex((r) => r.events[colIndex] === event),
-              endRow: rows.findLastIndex((r) => r.events[colIndex] === event),
+              endRow: rows.findLastIndex((r) => r.events[colIndex] === event) + 1,
               event: event,
             })
           }
