@@ -67,6 +67,8 @@ const arrangeEvents = (date: Date, events: CampEvent[], currentTime?: Date) => {
       grid.addMomentEvent(event)
     })
 
+  grid.formatRows() // レンダリングの見た目を整える
+
   // 公式イベントをグリッドに追加
   events
     .filter((event) => event.type === 'official')
