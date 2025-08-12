@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import EventDialog from './EventDialog.vue'
 import type { GridRow } from '@/lib/event-grid'
 import { getTimeStringNoPad } from '@/lib/date'
 import { computed } from 'vue'
@@ -31,6 +32,13 @@ const momentStyle = computed(() => ({ gridRow: props.index + 1, gridColumn: 2 })
 
 // 瞬間イベントがない行に引かれる点線のスタイル
 const lineStyle = computed(() => ({ gridRow: props.index + 1, gridColumn: '2 / -1' }))
+
+// 存在すれば、行頭の瞬間イベントを取得
+const momentEvent = computed(() => {
+  if (!props.row.events[0]) return null
+  if (props.row.events[0].type !== 'moment') return null
+  return props.row.events[0]
+})
 </script>
 
 <template>
@@ -40,13 +48,20 @@ const lineStyle = computed(() => ({ gridRow: props.index + 1, gridColumn: '2 / -
     </div>
   </div>
   <div
-    v-if="row.events[0]?.type === 'moment'"
+    v-if="momentEvent"
     class="w-100 h-100 d-flex justify-start align-center"
     :style="momentStyle"
   >
-    <h4 :event="row.events[0]" :class="$style.momentText">
-      {{ row.events[0].name }}
-    </h4>
+    <v-dialog max-width="800">
+      <template #activator="{ props: activatorProps }">
+        <h4 :event="momentEvent" :class="$style.momentText" v-bind="activatorProps">
+          {{ momentEvent.name }}
+        </h4>
+      </template>
+      <template #default="{ isActive }">
+        <event-dialog :event="momentEvent" color="white" @close="isActive.value = false" />
+      </template>
+    </v-dialog>
   </div>
   <div v-else-if="row.stampAlign !== 'none'" :style="lineStyle">
     <div :class="$style.line"></div>
