@@ -60,7 +60,7 @@ export class DayEventGrid {
   }
 
   // レンダリングの見た目を整えるため、適宜空行を追加
-  formatRows() {
+  formatRows(durationStartSet: Set<number>, durationEndSet: Set<number>) {
     // タイムスタンプの表示の近接を避けるため、連続する瞬間イベントの終わり目に空の領域を挿入
     for (let i = this.rows.length - 1; i > 0; i--) {
       if (this.rows[i - 1].events.length === 1 && this.rows[i].events.length === 0) {
@@ -73,10 +73,28 @@ export class DayEventGrid {
       }
     }
 
+    // 隣り合う期間イベントの間に特定条件で空の領域を挿入
+    for (let i = this.rows.length - 1; i > 0; i--) {
+      // 手前の時刻から新たに期間イベントが始まる || 後ろの時刻でちょうど期間イベントが終わる
+      if (this.rows[i - 1].events.length === 1 && this.rows[i].events.length === 1) {
+        const prevIsDurationStart = durationStartSet.has(this.rows[i - 1].time.getTime())
+        const nextIsDurationEnd = durationEndSet.has(this.rows[i].time.getTime())
+
+        if (prevIsDurationStart || nextIsDurationEnd) {
+          this.rows.splice(i, 0, {
+            time: new Date(this.rows[i - 1].time), // 手前のタイムスタンプに合わせる
+            events: [],
+            minHeight: 'narrow',
+            stampAlign: 'none',
+          })
+        }
+      }
+    }
+
     // 先頭のタイムスタンプの表示位置を期間イベントに揃えるため、期間イベントなら先頭に空の領域を挿入
     if (this.rows.length > 0 && this.rows[0].events.length === 0) {
       this.rows.unshift({
-        time: new Date(this.rows[0].time),
+        time: new Date(0),
         events: [],
         minHeight: 'narrow',
         stampAlign: 'none',

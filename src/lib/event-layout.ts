@@ -67,7 +67,15 @@ const arrangeEvents = (date: Date, events: CampEvent[], currentTime?: Date) => {
       grid.addMomentEvent(event)
     })
 
-  grid.formatRows() // レンダリングの見た目を整える
+  // 期間イベントの開始 / 終了タイムスタンプの集合を作る
+  const durationStartSet = new Set<number>(
+    events.filter((e) => e.type !== 'moment').map((e) => getStartTime(e).getTime()),
+  )
+  const durationEndSet = new Set<number>(
+    events.filter((e) => e.type !== 'moment').map((e) => getEndTime(e).getTime()),
+  )
+
+  grid.formatRows(durationStartSet, durationEndSet) // レンダリングの見た目を整える
 
   // 公式イベントをグリッドに追加
   events
