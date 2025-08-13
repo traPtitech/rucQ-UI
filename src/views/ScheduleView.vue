@@ -5,6 +5,10 @@ import { computed, ref, onMounted } from 'vue'
 import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
 import { apiClient } from '@/api/apiClient'
+import { useDisplay } from 'vuetify'
+import EventEditor from '@/components/event/EventEditor.vue'
+
+const { smAndDown } = useDisplay()
 
 type CampEvent = components['schemas']['EventResponse']
 
@@ -31,5 +35,39 @@ onMounted(async () => {
 </script>
 
 <template>
-  <schedule-content :camp="displayCamp" :events="events" />
+  <div :class="$style.container">
+    <v-dialog fullscreen transition="dialog-bottom-transition">
+      <template #activator="{ props: activatorProps }">
+        <v-card
+          color="transparent"
+          variant="flat"
+          :class="$style.newEventMobile"
+          v-bind="activatorProps"
+        >
+          <div class="d-flex flex-column align-center justify-center h-100">
+            <v-icon icon="mdi-plus" size="60" />
+            <span class="font-weight-bold my-2">新規イベント作成</span>
+          </div>
+        </v-card>
+      </template>
+      <template #default="{ isActive }">
+        <event-editor :event="null" @close="isActive.value = false" />
+      </template>
+    </v-dialog>
+
+    <schedule-content :camp="displayCamp" :events="events" />
+  </div>
 </template>
+
+<style module>
+.container {
+  position: relative;
+  max-width: 800px;
+  margin: auto;
+  padding: 20px 10px;
+}
+
+.newEventMobile {
+  height: 120px;
+}
+</style>

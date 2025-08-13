@@ -58,8 +58,6 @@ const eventBlockStyle = (event: DurationEventPos) => ({
   overflow: hidden;
   width: 100%;
   margin: auto;
-  padding: 20px 10px;
-  max-width: 600px;
   position: relative;
 }
 
