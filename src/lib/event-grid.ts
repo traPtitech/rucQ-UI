@@ -165,7 +165,7 @@ export class DayEventGrid {
     const columns = Math.max(...rows.map((row) => row.events.length))
     const durationEvents: DurationEventPos[] = []
     const momentEvents: MomentEventPos[] = []
-    const prosessedEvents = new Set<CampEvent>()
+    const processedEvents = new Set<CampEvent>()
 
     for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
       const row = rows[rowIndex]
@@ -173,7 +173,7 @@ export class DayEventGrid {
       for (let colIndex = 0; colIndex < row.events.length; colIndex++) {
         const event = row.events[colIndex]
 
-        if (event && !prosessedEvents.has(event)) {
+        if (event && !processedEvents.has(event)) {
           if (event.type === 'moment') {
             // 瞬間イベントの場合、行を特定
             momentEvents.push({ row: rowIndex, event: event })
@@ -187,7 +187,7 @@ export class DayEventGrid {
             })
           }
 
-          prosessedEvents.add(event)
+          processedEvents.add(event)
         }
       }
     }
