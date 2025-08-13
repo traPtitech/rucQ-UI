@@ -25,6 +25,7 @@ const vuetify = createVuetify({
           text: '#000000',
           patternOnPrimary: '#FF8200',
           line: '#C0C0C0',
+          orange: '#FB8C00', // Vuetify の orange-darken-1
         },
       },
     },
