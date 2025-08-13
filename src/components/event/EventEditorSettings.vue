@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watchEffect, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { getDayStringNoPad } from '@/lib/date'
 import EventTimePick from './EventTimePick.vue'
 import EventDeleteDialog from './EventDeleteDialog.vue'
@@ -17,27 +17,14 @@ const props = defineProps<{ event: DurationEvent | null; camp: Camp }>()
 // イベントの設定
 const name = defineModel<string>('name')
 const location = defineModel<string>('location')
-const startTime = defineModel<Date>('start-time')
-const endTime = defineModel<Date>('end-time')
 const color = defineModel<DurationEvent['displayColor']>('color')
 
-const dayNum = ref(0)
+// Date 型で合わせると時刻未設定を表現できないため分割
+const dayNum = defineModel<number>('dayNum') // 開催日
+const startMinute = defineModel<number | undefined>('start-minute') // 開始時刻。0時からの分数
+const endMinute = defineModel<number | undefined>('end-minute') // 終了時刻。0時からの分数
 
-// dayNum が変化したときに、startTime と endTime の日付を更新
-watchEffect(() => {
-  if (!startTime.value || !endTime.value) return
-  const date = new Date(props.camp.dateStart)
-  date.setDate(date.getDate() + dayNum.value)
-
-  startTime.value.setFullYear(date.getFullYear())
-  startTime.value.setMonth(date.getMonth())
-  startTime.value.setDate(date.getDate())
-
-  endTime.value.setFullYear(date.getFullYear())
-  endTime.value.setMonth(date.getMonth())
-  endTime.value.setDate(date.getDate())
-})
-
+// 日付を表す文字列の配列
 const days = computed(() => {
   const date = new Date(props.camp.dateStart)
   const endDate = new Date(props.camp.dateEnd)
@@ -50,18 +37,32 @@ const days = computed(() => {
 })
 
 // 開始時刻のバリデーションルール
-const startTimeRule = (date: Date | undefined) => {
-  if (!date) return '開始時刻は必須です'
-  if (endTime.value && date >= endTime.value) return '終了時刻より前に設定してください'
+const startTimeRule = (time: number | undefined) => {
+  if (time === undefined) return '開始時刻は必須です'
+  if (endMinute.value && time >= endMinute.value) return '終了時刻以後です'
   return true
 }
 
 // 終了時刻のバリデーションルール
-const endTimeRule = (date: Date | undefined) => {
-  if (!date) return '終了時刻は必須です'
-  if (startTime.value && date <= startTime.value) return '開始時刻より後に設定してください'
+const endTimeRule = (time: number | undefined) => {
+  if (time === undefined) return '終了時刻は必須です'
+  if (startMinute.value && time <= startMinute.value) return '開始時刻以前です'
   return true
 }
+
+// 相手側が変わったら再検証させるための参照
+const startPickRef = ref<{ validate: () => Promise<string[] | undefined> } | null>(null)
+const endPickRef = ref<{ validate: () => Promise<string[] | undefined> } | null>(null)
+
+// お互いが変わったらフィールドを再検証
+watch(
+  () => endMinute.value,
+  () => startPickRef.value?.validate?.(),
+)
+watch(
+  () => startMinute.value,
+  () => endPickRef.value!.validate?.(),
+)
 </script>
 
 <template>
@@ -93,9 +94,21 @@ const endTimeRule = (date: Date | undefined) => {
       variant="underlined"
       required
     ></v-select>
-    <div class="d-flex ga-3">
-      <event-time-pick :color="color!" label="開始時刻" :time="startTime" :rule="startTimeRule" />
-      <event-time-pick :color="color!" label="終了時刻" :time="endTime" :rule="endTimeRule" />
+    <div :class="$style.timePicks">
+      <event-time-pick
+        ref="startPickRef"
+        v-model:minute="startMinute"
+        :color="color!"
+        label="開始時刻"
+        :rule="startTimeRule"
+      />
+      <event-time-pick
+        ref="endPickRef"
+        v-model:minute="endMinute"
+        :color="color!"
+        label="終了時刻"
+        :rule="endTimeRule"
+      />
     </div>
     <v-item-group v-model="color" class="d-flex justify-center" width="100%">
       <v-item v-for="(myColor, i) in colors" :key="i">
@@ -126,5 +139,11 @@ const endTimeRule = (date: Date | undefined) => {
 
 .card :global(.v-card-subtitle) {
   opacity: 1 !important;
+}
+
+.timePicks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 </style>

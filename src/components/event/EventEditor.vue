@@ -8,7 +8,7 @@ import { apiClient } from '@/api/apiClient'
 import { useCampStore, useUserStore } from '@/store'
 import { useRoute } from 'vue-router'
 import type { components } from '@/api/schema'
-import { dateToText } from '@/lib/date'
+import { dateToText, dateDiffInDaysJST, getJSTDate } from '@/lib/date'
 
 const route = useRoute()
 const campStore = useCampStore()
@@ -26,12 +26,12 @@ type DurationEvent = components['schemas']['DurationEventResponse']
 const props = defineProps<{ event: DurationEvent | null }>()
 
 const isValid = computed(() => {
+  // dayNum, color はデフォルトで値が設定されているため審査を省略
   if (!name.value) return false
   if (!location.value) return false
-  if (!startTime.value) return false
-  if (!endTime.value) return false
-  if (startTime.value.getTime() >= endTime.value.getTime()) return false
-  console.log(startTime.value, endTime.value)
+  if (!startMinute.value) return false
+  if (!endMinute.value) return false
+  if (startMinute.value >= endMinute.value) return false
   return true
 })
 
@@ -39,26 +39,36 @@ const isValid = computed(() => {
 const tab = ref<'options' | 'description'>('options')
 
 // イベントの設定項目
-const color = ref<DurationEvent['displayColor']>('orange')
 const name = ref('')
 const location = ref('')
-const startTime = ref<Date>()
-const endTime = ref<Date>()
+const color = ref<DurationEvent['displayColor']>('orange')
+const dayNum = ref<number>(1)
+const startMinute = ref<number | undefined>()
+const endMinute = ref<number | undefined>()
 const description = ref('')
 
 // イベントの作成と更新
 const saveEvent = async () => {
-  if (startTime.value === undefined || endTime.value === undefined) {
-    throw new Error('イベントの開始時間または終了時間が未設定です')
+  if (startMinute.value === undefined || endMinute.value === undefined) {
+    throw new Error('イベントの開始時間・終了時間のいずれかが未設定です')
   }
+
+  // dayNum, startMinute, endMinute を基に JST の Date を生成
+  const baseDate = getJSTDate(displayCamp.value.dateStart)
+  baseDate.setDate(baseDate.getDate() + (dayNum.value - 1))
+
+  const startTime = new Date(baseDate)
+  startTime.setHours(Math.floor(startMinute.value / 60), startMinute.value % 60, 0, 0)
+  const endTime = new Date(baseDate)
+  endTime.setHours(Math.floor(endMinute.value / 60), endMinute.value % 60, 0, 0)
 
   const buildEventBody = {
     type: 'duration' as const,
     name: name.value,
     description: description.value,
     location: location.value,
-    timeStart: dateToText(startTime.value),
-    timeEnd: dateToText(endTime.value),
+    timeStart: dateToText(startTime),
+    timeEnd: dateToText(endTime),
     displayColor: color.value,
     organizerId: userStore.user.id,
   }
@@ -85,20 +95,21 @@ const deleteEvent = async (event: DurationEvent) => {
   emit('refresh')
 }
 
-onMounted(async () => {
+onMounted(() => {
   if (props.event) {
     color.value = props.event.displayColor
     name.value = props.event.name
     location.value = props.event.location
-    startTime.value = new Date(props.event.timeStart)
-    endTime.value = new Date(props.event.timeEnd)
     description.value = props.event.description
-  } else {
-    // color, name, location, description は初期値通り
-    startTime.value = new Date(displayCamp.value.dateStart)
-    endTime.value = new Date(displayCamp.value.dateStart)
-    endTime.value.setDate(endTime.value.getDate() + 1)
-    endTime.value.setMinutes(endTime.value.getMinutes() - 1)
+
+    const startDate = new Date(props.event.timeStart)
+    startMinute.value = startDate.getHours() * 60 + startDate.getMinutes()
+    const endDate = new Date(props.event.timeEnd)
+    endMinute.value = endDate.getHours() * 60 + endDate.getMinutes()
+
+    const campStartDate = new Date(displayCamp.value.dateStart)
+    startDate.setHours(0, 0, 0, 0)
+    dayNum.value = dateDiffInDaysJST(campStartDate, startDate) + 1
   }
 })
 </script>
@@ -138,8 +149,9 @@ onMounted(async () => {
           <event-editor-settings
             v-model:name="name"
             v-model:location="location"
-            v-model:start-time="startTime"
-            v-model:end-time="endTime"
+            v-model:start-minute="startMinute"
+            v-model:end-minute="endMinute"
+            v-model:day-num="dayNum"
             v-model:color="color"
             :event="event"
             :camp="displayCamp"
@@ -154,8 +166,9 @@ onMounted(async () => {
         <event-editor-settings
           v-model:name="name"
           v-model:location="location"
-          v-model:start-time="startTime"
-          v-model:end-time="endTime"
+          v-model:start-minute="startMinute"
+          v-model:end-minute="endMinute"
+          v-model:day-num="dayNum"
           v-model:color="color"
           :event="event"
           :camp="displayCamp"
