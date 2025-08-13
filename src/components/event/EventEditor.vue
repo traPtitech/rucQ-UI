@@ -31,6 +31,7 @@ const isValid = computed(() => {
   // dayNum, color はデフォルトで値が設定されているため審査を省略
   if (!name.value) return false
   if (!location.value) return false
+  if (!organizerId.value) return false
   if (startMinute.value === undefined) return false
   if (endMinute.value === undefined) return false
   if (startMinute.value >= endMinute.value) return false
@@ -44,9 +45,12 @@ const tab = ref<'options' | 'description'>('options')
 const name = ref('')
 const location = ref('')
 const color = ref<DurationEvent['displayColor']>('orange')
+const organizerId = ref<string>('')
+
 const dayNum = ref<number>(0) // 0-indexed
 const startMinute = ref<number | undefined>()
 const endMinute = ref<number | undefined>()
+
 const description = ref('')
 
 // イベントの作成と更新
@@ -72,7 +76,7 @@ const saveEvent = async () => {
     timeStart: dateToText(startTime),
     timeEnd: dateToText(endTime),
     displayColor: color.value,
-    organizerId: userStore.user.id,
+    organizerId: organizerId.value,
   }
 
   if (props.event) {
@@ -106,6 +110,7 @@ onMounted(() => {
     name.value = props.event.name
     location.value = props.event.location
     description.value = props.event.description
+    organizerId.value = props.event.organizerId
 
     const startDate = new Date(props.event.timeStart)
     startMinute.value = startDate.getHours() * 60 + startDate.getMinutes()
@@ -115,6 +120,8 @@ onMounted(() => {
     const campStartDate = new Date(displayCamp.value.dateStart)
     startDate.setHours(0, 0, 0, 0)
     dayNum.value = dateDiffInDaysJST(campStartDate, startDate)
+  } else {
+    organizerId.value = userStore.user.id
   }
 })
 </script>
@@ -154,10 +161,11 @@ onMounted(() => {
           <event-editor-settings
             v-model:name="name"
             v-model:location="location"
+            v-model:color="color"
+            v-model:organizer-id="organizerId"
+            v-model:day-num="dayNum"
             v-model:start-minute="startMinute"
             v-model:end-minute="endMinute"
-            v-model:day-num="dayNum"
-            v-model:color="color"
             :event="event"
             :camp="displayCamp"
             @delete="deleteEvent"
@@ -171,10 +179,11 @@ onMounted(() => {
         <event-editor-settings
           v-model:name="name"
           v-model:location="location"
+          v-model:color="color"
+          v-model:organizer-id="organizerId"
+          v-model:day-num="dayNum"
           v-model:start-minute="startMinute"
           v-model:end-minute="endMinute"
-          v-model:day-num="dayNum"
-          v-model:color="color"
           :event="event"
           :camp="displayCamp"
           :class="$style.desktopSettings"

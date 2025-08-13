@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { getDayStringNoPad } from '@/lib/date'
 import EventTimePick from './EventTimePick.vue'
 import EventDeleteDialog from './EventDeleteDialog.vue'
 import type { components } from '@/api/schema'
+import { apiClient } from '@/api/apiClient'
+import UserIcon from '@/components/generic/UserIcon.vue'
 
 type DurationEvent = components['schemas']['DurationEventResponse']
 type EventColor = DurationEvent['displayColor']
@@ -19,6 +21,7 @@ const emit = defineEmits(['delete'])
 const name = defineModel<string>('name')
 const location = defineModel<string>('location')
 const color = defineModel<DurationEvent['displayColor']>('color')
+const organizerId = defineModel<string>('organizerId') // 主催者の ID
 
 // Date 型で合わせると時刻未設定を表現できないため分割
 const dayNum = defineModel<number>('dayNum') // 開催日。0-indexed
@@ -36,6 +39,19 @@ const days = computed(() => {
   }
   return days
 })
+
+// 合宿参加者の ID の配列
+const participantIds = ref<string[]>([])
+
+const getParticipants = async (camp: Camp) => {
+  const participants = await apiClient.GET('/api/camps/{campId}/participants', {
+    params: { path: { campId: camp.id } },
+  })
+  if (participants.error || !participants.data) {
+    throw new Error(`参加者情報を取得できません: ${participants.error}`)
+  }
+  return participants.data
+}
 
 // 開始時刻のバリデーションルール
 const startTimeRule = (time: number | undefined) => {
@@ -64,6 +80,14 @@ watch(
   () => startMinute.value,
   () => endPickRef.value!.validate?.(),
 )
+
+onMounted(async () => {
+  participantIds.value = (await getParticipants(props.camp)).map((p) => p.id)
+})
+
+const getListItemProps = (props: Record<string, unknown>) => {
+  return { ...props, title: '' } // デフォルトのタイトル表示を抑制し、手前にユーザーアイコンを差し込む
+}
 </script>
 
 <template>
@@ -89,7 +113,6 @@ watch(
       :items="days"
       item-value="id"
       item-title="name"
-      :rules="[(v) => v !== undefined || '開催日は必須です']"
       label="開催日"
       prepend-inner-icon="mdi-calendar-blank"
       variant="underlined"
@@ -111,6 +134,24 @@ watch(
         :rule="endTimeRule"
       />
     </div>
+    <v-autocomplete
+      v-model="organizerId"
+      :items="participantIds"
+      :rules="[(v) => !!v || '主催者は必須です']"
+      label="主催者"
+      prepend-inner-icon="mdi-crown-outline"
+      variant="underlined"
+      required
+    >
+      <template #item="{ props: itemProps, item }">
+        <v-list-item v-bind="getListItemProps(itemProps)">
+          <div class="d-flex align-center">
+            <user-icon :id="item.value" :size="24" class="mr-2" />
+            <v-list-item-title :class="$style.itemTitle">{{ item.value }}</v-list-item-title>
+          </div>
+        </v-list-item>
+      </template>
+    </v-autocomplete>
     <v-item-group v-model="color" class="d-flex justify-center" width="100%">
       <v-item v-for="(myColor, i) in colors" :key="i">
         <template #default="{}">
