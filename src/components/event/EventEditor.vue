@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import EventEditorSettings from './EventEditorSettings.vue'
 import MarkdownPlatform from '@/components/markdown/MarkdownPlatform.vue'
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, inject } from 'vue'
 import { useDisplay } from 'vuetify'
 const { smAndDown } = useDisplay()
 import { apiClient } from '@/api/apiClient'
@@ -14,12 +14,14 @@ const route = useRoute()
 const campStore = useCampStore()
 const userStore = useUserStore()
 
+// ScheduleView から refreshEvents 関数を取得
+const refreshEvents = inject<() => Promise<void>>('refresh')
+
 const displayCamp = computed(() => {
   return campStore.getCampByDisplayId(route.params.campname as string)
 })
 
-// TODO: refresh の実装
-const emit = defineEmits(['close', 'refresh'])
+const emit = defineEmits(['close'])
 
 // rucQ-UI で編集可能なのは DurationEvent のみ。他は rucQ-Admin で編集
 type DurationEvent = components['schemas']['DurationEventResponse']
@@ -84,15 +86,18 @@ const saveEvent = async () => {
       body: buildEventBody,
     })
   }
-  emit('refresh')
+  emit('close') // Editor ダイアログを閉じる
+  await refreshEvents?.()
 }
 
 // イベントの削除
-const deleteEvent = async (event: DurationEvent) => {
+const deleteEvent = async () => {
+  if (!props.event) return
   await apiClient.DELETE('/api/events/{eventId}', {
-    params: { path: { eventId: event.id } },
+    params: { path: { eventId: props.event.id } },
   })
-  emit('refresh')
+  emit('close') // Editor ダイアログを閉じる
+  await refreshEvents?.()
 }
 
 onMounted(() => {

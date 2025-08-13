@@ -5,10 +5,8 @@ import { computed, ref, onMounted } from 'vue'
 import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
 import { apiClient } from '@/api/apiClient'
-import { useDisplay } from 'vuetify'
+import { provide } from 'vue'
 import EventEditor from '@/components/event/EventEditor.vue'
-
-const { smAndDown } = useDisplay()
 
 type CampEvent = components['schemas']['EventResponse']
 
@@ -29,9 +27,12 @@ const getEvents = async () => {
   return data
 }
 
-onMounted(async () => {
+const refreshEvents = async () => {
   events.value = await getEvents()
-})
+}
+
+provide('refresh', refreshEvents)
+onMounted(refreshEvents)
 </script>
 
 <template>
@@ -54,7 +55,6 @@ onMounted(async () => {
         <event-editor :event="null" @close="isActive.value = false" />
       </template>
     </v-dialog>
-
     <schedule-content :camp="displayCamp" :events="events" />
   </div>
 </template>

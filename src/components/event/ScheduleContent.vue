@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { getDayStringNoPad } from '@/lib/date'
 import { getLayout } from '@/lib/event-layout'
 import EventBlock from '@/components/event/EventBlock.vue'
 import type { components } from '@/api/schema'
 import type { EventGroup, DurationEventPos } from '@/lib/event-grid'
+import EventEditor from './EventEditor.vue'
 import ScheduleRow from './ScheduleRow.vue'
 
 type CampEvent = components['schemas']['EventResponse']
+type DurationEvent = components['schemas']['DurationEventResponse']
 type Camp = components['schemas']['CampResponse']
 
 const props = defineProps<{
@@ -31,6 +33,15 @@ const eventBlockStyle = (event: DurationEventPos) => ({
   gridRow: `${event.startRow + 1} / ${event.endRow + 1}`,
   gridColumn: event.column + 2, // 1-indexed かつ 1 列目はタイムスタンプ用なので +2
 })
+
+const focusEvent = ref<DurationEvent | null>(null)
+const inEditMode = ref<boolean>(false)
+
+const enterEditMode = (event: CampEvent) => {
+  if (event.type !== 'duration') return
+  inEditMode.value = true
+  focusEvent.value = event
+}
 </script>
 
 <template>
@@ -42,14 +53,23 @@ const eventBlockStyle = (event: DurationEventPos) => ({
       <div v-for="(group, j) in day.eventGroups" :key="j" :style="eventGroupStyle(group)">
         <schedule-row v-for="(row, k) in group.rows" :key="k" :row="row" :index="k" />
         <event-block
-          v-for="(durationEvent, k) in group.durationEvents"
-          :key="k"
+          v-for="durationEvent in group.durationEvents"
+          :key="durationEvent.event.id"
           :event="durationEvent.event"
           :style="eventBlockStyle(durationEvent)"
+          @edit="() => enterEditMode(durationEvent.event)"
         />
       </div>
     </div>
   </div>
+  <v-dialog
+    v-model="inEditMode"
+    fullscreen
+    transition="dialog-bottom-transition"
+    @after-leave="focusEvent = null"
+  >
+    <event-editor :event="focusEvent" @close="inEditMode = false" />
+  </v-dialog>
 </template>
 
 <style module>

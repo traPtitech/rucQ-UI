@@ -13,6 +13,7 @@ type Camp = components['schemas']['CampResponse']
 const colors: EventColor[] = ['orange', 'green', 'red', 'blue', 'purple', 'pink']
 
 const props = defineProps<{ event: DurationEvent | null; camp: Camp }>()
+const emit = defineEmits(['delete'])
 
 // イベントの設定
 const name = defineModel<string>('name')
@@ -127,7 +128,7 @@ watch(
       </v-item>
     </v-item-group>
     <div class="mt-2">
-      <event-delete-dialog />
+      <event-delete-dialog @delete="emit('delete')" />
     </div>
   </div>
 </template>

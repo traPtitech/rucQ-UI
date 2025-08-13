@@ -3,11 +3,9 @@ import { computed } from 'vue'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { getTimeStringNoPad } from '@/lib/date'
-import EventEditor from './EventEditor.vue'
 import type { components } from '@/api/schema'
 
-// TODO: refresh を実装
-const emit = defineEmits(['close', 'refresh'])
+const emit = defineEmits(['edit', 'close'])
 
 type CampEvent = components['schemas']['EventResponse']
 const props = defineProps<{ event: CampEvent; color: string }>()
@@ -48,25 +46,15 @@ const planner = computed(() => {
           class="text-white"
           @click="emit('close')"
         ></v-btn>
-        <v-dialog v-if="event.type === 'duration'" fullscreen transition="dialog-bottom-transition">
-          <template #activator="{ props: activatorProps }">
-            <v-btn
-              density="comfortable"
-              elevation="0"
-              icon="mdi-square-edit-outline"
-              base-color="transparent"
-              class="text-white"
-              v-bind="activatorProps"
-            ></v-btn>
-          </template>
-          <template #default="{ isActive }">
-            <event-editor
-              :event="event"
-              @close="isActive.value = false"
-              @refresh="(emit('refresh'), (isActive.value = false))"
-            />
-          </template>
-        </v-dialog>
+        <v-btn
+          v-if="event.type === 'duration'"
+          density="comfortable"
+          elevation="0"
+          icon="mdi-square-edit-outline"
+          base-color="transparent"
+          class="text-white"
+          @click="emit('edit')"
+        ></v-btn>
       </div>
     </div>
     <div class="w-100 overflow-y-auto bg-white position-relative pa-4">

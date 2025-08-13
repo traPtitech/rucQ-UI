@@ -10,6 +10,8 @@ const props = defineProps<{ event: DurationEvent | OfficialEvent }>()
 const eventColor = computed(() => {
   return props.event.type === 'duration' ? props.event.displayColor : 'indigo'
 })
+
+const emit = defineEmits(['edit'])
 </script>
 
 <template>
@@ -22,7 +24,12 @@ const eventColor = computed(() => {
         </v-card>
       </template>
       <template #default="{ isActive }">
-        <event-dialog :event="event" :color="eventColor" @close="isActive.value = false" />
+        <event-dialog
+          :event="event"
+          :color="eventColor"
+          @close="isActive.value = false"
+          @edit="emit('edit')"
+        />
       </template>
     </v-dialog>
   </div>
