@@ -29,8 +29,8 @@ const isValid = computed(() => {
   // dayNum, color はデフォルトで値が設定されているため審査を省略
   if (!name.value) return false
   if (!location.value) return false
-  if (!startMinute.value) return false
-  if (!endMinute.value) return false
+  if (startMinute.value === undefined) return false
+  if (endMinute.value === undefined) return false
   if (startMinute.value >= endMinute.value) return false
   return true
 })
