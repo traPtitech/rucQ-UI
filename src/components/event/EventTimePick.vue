@@ -70,6 +70,7 @@ defineExpose({ validate })
         readonly
         v-bind="getDialogProps(activatorProps)"
         :rules="[() => rule(minute)]"
+        :class="$style.textField"
       ></v-text-field>
     </template>
     <template #default="{ isActive }">
@@ -89,3 +90,10 @@ defineExpose({ validate })
     </template>
   </v-dialog>
 </template>
+
+<style module>
+.textField :global(input),
+.textField :global(.v-field) {
+  cursor: pointer;
+}
+</style>

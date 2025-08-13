@@ -69,7 +69,7 @@ const enclose = (symbol: string) => {
       <div :class="$style.content">
         <!-- height: 100% は textarea 左脇の点線を伸ばすため -->
         <div :class="$style.headSpace"></div>
-        <div :class="[$style.border, `text-${props.color}`]"></div>
+        <div :class="[$style.border, `text-${props.color}`, $style.colorTransition]"></div>
         <div :class="$style.inputSpace">
           <!-- height: 100% は、textarea が画面内に完全に収まる場合も縦に引き伸ばすため -->
           <textarea
@@ -87,7 +87,7 @@ const enclose = (symbol: string) => {
               :class="$style.dummyLine"
             >
               <div :class="$style.lineNumber">
-                <p :class="`text-right text-${props.color}`">
+                <p :class="[`text-right text-${props.color}`, $style.colorTransition]">
                   {{ i + 1 }}
                 </p>
               </div>
@@ -129,6 +129,12 @@ const enclose = (symbol: string) => {
 </template>
 
 <style module>
+.colorTransition {
+  transition-property: color, background-color, border-color, fill, stroke;
+  transition-duration: 0.28s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .container {
   color: var(--color-text);
   width: 100%;

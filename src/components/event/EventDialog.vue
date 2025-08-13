@@ -29,7 +29,12 @@ const planner = computed(() => {
 
 <template>
   <v-card class="white">
-    <div :class="`d-flex align-center justify-space-between bg-${props.color}`">
+    <div
+      :class="[
+        `d-flex align-center justify-space-between bg-${props.color}`,
+        $style.colorTransition,
+      ]"
+    >
       <div class="pl-3" :class="$style.card">
         <span class="font-weight-bold text-h6">{{ event.name }}</span>
         <div :class="$style.card">
@@ -103,5 +108,11 @@ const planner = computed(() => {
 .bottom {
   height: 40px !important;
   flex-shrink: 0;
+}
+
+.colorTransition {
+  transition-property: color, background-color, border-color, fill, stroke;
+  transition-duration: 0.28s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 </style>

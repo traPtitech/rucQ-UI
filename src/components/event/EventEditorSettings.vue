@@ -127,7 +127,7 @@ watch(
         </template>
       </v-item>
     </v-item-group>
-    <div class="mt-2">
+    <div v-if="props.event" class="mt-2">
       <event-delete-dialog @delete="emit('delete')" />
     </div>
   </div>

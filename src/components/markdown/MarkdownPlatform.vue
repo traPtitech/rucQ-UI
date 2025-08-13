@@ -16,8 +16,9 @@ defineProps<{ color: string }>()
           density="comfortable"
           elevation="0"
           icon="mdi-eye-outline"
-          base-color="transparent"
-          :class="`text-${color} mb-3`"
+          variant="text"
+          :color="color"
+          :class="['mb-3', $style.colorTransition]"
           @click="isPreview = true"
         ></v-btn>
       </markdown-editor>
@@ -42,5 +43,11 @@ defineProps<{ color: string }>()
   position: absolute;
   top: 10px;
   right: 10px;
+}
+
+.colorTransition {
+  transition-property: color, background-color, border-color, fill, stroke;
+  transition-duration: 0.28s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 </style>
