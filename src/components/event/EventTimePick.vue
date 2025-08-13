@@ -23,7 +23,7 @@ const dummyTime = '25:00' // Vuetify 時刻選択でのダミー値。実際に�
 watch(
   () => timePick.value,
   () => {
-    if (!timePick.value || !minute.value) return
+    if (!timePick.value) return
     if (timePick.value === dummyTime) return
     const [h, m] = timePick.value.split(':').map(Number)
     minute.value = h * 60 + m

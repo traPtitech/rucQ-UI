@@ -42,7 +42,7 @@ const tab = ref<'options' | 'description'>('options')
 const name = ref('')
 const location = ref('')
 const color = ref<DurationEvent['displayColor']>('orange')
-const dayNum = ref<number>(1)
+const dayNum = ref<number>(0) // 0-indexed
 const startMinute = ref<number | undefined>()
 const endMinute = ref<number | undefined>()
 const description = ref('')
@@ -55,7 +55,7 @@ const saveEvent = async () => {
 
   // dayNum, startMinute, endMinute を基に JST の Date を生成
   const baseDate = getJSTDate(displayCamp.value.dateStart)
-  baseDate.setDate(baseDate.getDate() + (dayNum.value - 1))
+  baseDate.setDate(baseDate.getDate() + dayNum.value)
 
   const startTime = new Date(baseDate)
   startTime.setHours(Math.floor(startMinute.value / 60), startMinute.value % 60, 0, 0)
@@ -109,7 +109,7 @@ onMounted(() => {
 
     const campStartDate = new Date(displayCamp.value.dateStart)
     startDate.setHours(0, 0, 0, 0)
-    dayNum.value = dateDiffInDaysJST(campStartDate, startDate) + 1
+    dayNum.value = dateDiffInDaysJST(campStartDate, startDate)
   }
 })
 </script>

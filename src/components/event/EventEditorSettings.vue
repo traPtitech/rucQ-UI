@@ -20,7 +20,7 @@ const location = defineModel<string>('location')
 const color = defineModel<DurationEvent['displayColor']>('color')
 
 // Date 型で合わせると時刻未設定を表現できないため分割
-const dayNum = defineModel<number>('dayNum') // 開催日
+const dayNum = defineModel<number>('dayNum') // 開催日。0-indexed
 const startMinute = defineModel<number | undefined>('start-minute') // 開始時刻。0時からの分数
 const endMinute = defineModel<number | undefined>('end-minute') // 終了時刻。0時からの分数
 
