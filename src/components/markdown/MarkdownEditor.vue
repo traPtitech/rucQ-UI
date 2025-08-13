@@ -3,7 +3,7 @@ import { onMounted, ref, watch, nextTick } from 'vue'
 import { decorated } from '@/lib/editor-parse'
 const text = defineModel<string>('text')
 
-defineProps<{ color?: string | undefined }>()
+const props = defineProps<{ color?: string | undefined }>()
 
 const isComposing = ref(false)
 const textAll = ref('') // 変換中の部分を含めたテキスト全体
@@ -84,31 +84,12 @@ const enclose = (symbol: string) => {
 
 <template>
   <div :class="$style.container">
-    <div style="width: 100%; height: 100%; overflow-y: auto">
-      <div
-        style="
-          width: 100%;
-          height: 100%;
-          padding: 10px 0 10px 10px;
-          min-height: fit-content;
-          display: flex;
-          align-items: stretch;
-        "
-      >
+    <div :class="$style.scrollable">
+      <div :class="$style.content">
         <!-- height: 100% は textarea 左脇の点線を伸ばすため -->
-        <div style="padding-left: 26px; flex-shrink: 0"></div>
-        <div
-          :style="`flex-shrink: 0; border-left: 1px dashed var(--color-${color || 'theme'}); padding-right: 6px;`"
-        ></div>
-        <div
-          style="
-            width: calc(100% - 33px);
-            height: 100%;
-            min-height: fit-content;
-            flex-shrink: 1;
-            position: relative;
-          "
-        >
+        <div :class="$style.headSpace"></div>
+        <div :class="[$style.border, `text-${props.color}`]"></div>
+        <div :class="$style.inputSpace">
           <!-- height: 100% は、textarea が画面内に完全に収まる場合も縦に引き伸ばすため -->
           <textarea
             ref="ta"
@@ -125,10 +106,7 @@ const enclose = (symbol: string) => {
               :class="$style.dummyLine"
             >
               <div :class="$style.lineNumber">
-                <p
-                  :class="$style.lineNumberText"
-                  :style="`color: var(--color-${color || 'theme'})`"
-                >
+                <p :class="`text-right text-${props.color}`">
                   {{ i + 1 }}
                 </p>
               </div>
@@ -179,6 +157,40 @@ const enclose = (symbol: string) => {
   display: flex;
 }
 
+.scrollable {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.content {
+  width: 100%;
+  height: 100%;
+  padding: 10px 0 10px 10px;
+  min-height: fit-content;
+  display: flex;
+  align-items: stretch;
+}
+
+.headSpace {
+  padding-left: 26px;
+  flex-shrink: 0;
+}
+
+.border {
+  flex-shrink: 0;
+  border-left: 1px dashed;
+  padding-right: 6px;
+}
+
+.inputSpace {
+  width: calc(100% - 33px);
+  height: 100%;
+  min-height: fit-content;
+  flex-shrink: 1;
+  position: relative;
+}
+
 .dummy {
   top: 0px;
   width: 100%;
@@ -197,10 +209,6 @@ const enclose = (symbol: string) => {
   position: absolute;
   left: -42px;
   width: 30px;
-}
-
-.lineNumberText {
-  text-align: right;
 }
 
 .dummyLineText {

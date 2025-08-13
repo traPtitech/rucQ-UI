@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import MarkdownEditor from './MarkdownEditor.vue'
 import MarkdownPreview from './MarkdownPreview.vue'
-const text = defineModel<string>('text', { default: '' })
+const text = defineModel<string>('text')
 const isPreview = ref<boolean>(false)
 
 defineProps<{ color: string }>()
@@ -22,7 +22,8 @@ defineProps<{ color: string }>()
           @click="isPreview = true"
         ></v-btn>
       </markdown-editor>
-      <markdown-preview v-else :mdtext="text" style="height: 100%; width: 100%; padding: 0 8px">
+      <div v-else>
+        <markdown-preview :mdtext="text || ''" class="w-100 h-100 pa-4" />
         <div :class="$style.button">
           <v-btn
             density="comfortable"
@@ -32,7 +33,7 @@ defineProps<{ color: string }>()
             @click="isPreview = false"
           ></v-btn>
         </div>
-      </markdown-preview>
+      </div>
     </div>
   </div>
 </template>
