@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { components } from '@/api/schema'
-import { nextTick, ref, watch } from 'vue'
+import { nextTick, ref, watch, onMounted } from 'vue'
 import type { VTextField } from 'vuetify/components'
 import { VTimePicker } from 'vuetify/labs/VTimePicker'
 
@@ -19,7 +19,7 @@ const minute = defineModel<number | undefined>('minute')
 const timePick = ref('') // Vuetify 時刻選択用文字列。12:30 のような形式
 const dummyTime = '25:00' // Vuetify 時刻選択でのダミー値。実際には使用しない
 
-// timePick の値の更新を検知して time を更新
+// timePick の値の更新を検知して minute を更新
 watch(
   () => timePick.value,
   () => {
@@ -31,15 +31,15 @@ watch(
 )
 
 // timePick の初期値を minute から設定
-watch(
-  () => minute.value,
-  () => {
-    if (!minute.value) return
-    const h = Math.floor(minute.value / 60)
-    const m = minute.value % 60
-    timePick.value = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
-  },
-)
+const setTimePick = () => {
+  if (minute.value === undefined) return
+  const h = Math.floor(minute.value / 60)
+  const m = minute.value % 60
+  timePick.value = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+}
+
+watch(() => minute.value, setTimePick)
+onMounted(setTimePick)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getDialogProps = (props: Record<string, any>) => {

@@ -11,27 +11,8 @@ const underline = ref<{ start: number; end: number }>({ start: 0, end: 0 })
 
 const ta = ref<HTMLTextAreaElement>()
 
-// textarea における各値の仕様まとめ（以下 ta とは HTMLTextAreaElement のこと ↑ ）
-
-// ta.value.value
-// ... 変換中の部分を含め、ユーザーに見えるテキスト全体を表す。変換が発生しない英字の打ち込みでは text.value に一致する
-
-// text.value（textarea の v-model に設定されたリアクティブ変数）
-// ... 最後に変換が確定した時点でのテキスト全体を表す。変換中の操作は反映されない
-
-// ta.value.selectionStart & ta.value.selectionEnd
-// ... 変換中の部分あるいは範囲選択した部分を表す。何も選択せず打ち込んでいる最中は両方とも ta.value.value におけるカーソルの位置を表す
-
-// 自動変換機能（Mac 特有かも？）においては、日本語で打ち込んでいる最中は常に変換中の扱い（isComposing = true）になり、
-// 「selectionStart と selectionEnd がともに終端のカーソルの位置を指したまま」
-// 最後に更新された text.value から変更が加わった箇所全体に下線が引かれる
-// スペースキーなどを押して明示的に変換を開始すると selectionStart と selectionEnd が変換中の部分を反映する
-// すなわち selectionStart から selectionEnd までに下線を引くことにすると Mac における ta の自然な振る舞いに沿わない
-
-// 下線を引く部分は以下のように決める
-// 変換中じゃない場合は ta.value.value 上で selectionEnd ちょうどの 0 文字。変換中の場合 ↓
-// selectionStart !== selectionEnd の場合： そのまま selectionStart から selectionEnd まで
-// selectionStart === selectionEnd の場合： ta.value.value 上で selectionEnd 以前の ta.value.value.length - text.value.length 文字
+// ta.value.value: 変換を含む
+// text.value: 変換を含まない
 
 const handleInput = () => {
   if (!ta.value) return

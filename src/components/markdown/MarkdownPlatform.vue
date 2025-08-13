@@ -9,16 +9,15 @@ defineProps<{ color: string }>()
 </script>
 
 <template>
-  <div style="width: 100%; height: 100%">
-    <div style="width: 100%; height: 100%; position: absolute">
+  <div class="w-100 h-100 position-absolute">
+    <div class="w-100 h-100 overflow-auto">
       <markdown-editor v-if="!isPreview" v-model:text="text" :color="color">
         <v-btn
           density="comfortable"
           elevation="0"
           icon="mdi-eye-outline"
           base-color="transparent"
-          :class="`text-${color}`"
-          style="margin-bottom: 10px"
+          :class="`text-${color} mb-3`"
           @click="isPreview = true"
         ></v-btn>
       </markdown-editor>
