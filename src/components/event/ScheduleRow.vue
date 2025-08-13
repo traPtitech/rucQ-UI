@@ -13,17 +13,18 @@ const props = defineProps<{
 const stampStyle = computed(() => {
   const baseStyle = {
     gridColumn: 1,
+    display: 'flex',
     gridRow: props.index + 1,
     minHeight: `${props.row.minHeight === 'narrow' ? 12 : 24}px`,
   }
 
   switch (props.row.stampAlign) {
     case 'none': // タイムスタンプを表示しない
-      return { ...baseStyle, display: 'flex', visibility: 'hidden' as const }
+      return { ...baseStyle, visibility: 'hidden' as const }
     case 'start': // タイムスタンプを行の先頭に表示
-      return { ...baseStyle, display: 'flex', alignItems: 'flex-start' }
+      return { ...baseStyle, alignItems: 'flex-start' }
     default: // タイムスタンプを行の中央に表示
-      return { ...baseStyle, display: 'flex', alignItems: 'center' }
+      return { ...baseStyle, alignItems: 'center' }
   }
 })
 

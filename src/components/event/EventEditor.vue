@@ -1,24 +1,27 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
 import EventEditorSettings from './EventEditorSettings.vue'
+import MarkdownPlatform from '@/components/markdown/MarkdownPlatform.vue'
+import { ref, onMounted, computed } from 'vue'
 import { useDisplay } from 'vuetify'
 const { smAndDown } = useDisplay()
 import { apiClient } from '@/api/apiClient'
 import { useCampStore, useUserStore } from '@/store'
 import { useRoute } from 'vue-router'
-import MarkdownPlatform from '@/components/markdown/MarkdownPlatform.vue'
+import type { components } from '@/api/schema'
+import { dateToText } from '@/lib/date'
 
-const campStore = useCampStore()
 const route = useRoute()
+const campStore = useCampStore()
 const userStore = useUserStore()
 
 const displayCamp = computed(() => {
   return campStore.getCampByDisplayId(route.params.campname as string)
 })
 
+// TODO: refresh の実装
 const emit = defineEmits(['close', 'refresh'])
 
-import type { components } from '@/api/schema'
+// rucQ-UI で編集可能なのは DurationEvent のみ。他は rucQ-Admin で編集
 type DurationEvent = components['schemas']['DurationEventResponse']
 const props = defineProps<{ event: DurationEvent | null }>()
 
@@ -27,59 +30,57 @@ const isValid = computed(() => {
   if (!location.value) return false
   if (!startTime.value) return false
   if (!endTime.value) return false
+  if (startTime.value.getTime() >= endTime.value.getTime()) return false
+  console.log(startTime.value, endTime.value)
   return true
 })
 
-const tab = ref('')
-const color = ref<'orange' | 'green' | 'red' | 'blue' | 'purple' | 'pink'>('orange')
+// 縦長の画面のとき、選択中のタブ
+const tab = ref<'options' | 'description'>('options')
+
+// イベントの設定項目
+const color = ref<DurationEvent['displayColor']>('orange')
 const name = ref('')
 const location = ref('')
 const startTime = ref<Date>()
 const endTime = ref<Date>()
 const description = ref('')
 
-const dateToText = (date: Date) => {
-  const isoString = new Date(date.getTime() + 9 * 60 * 60 * 1000).toISOString()
-  return isoString.replace('Z', '+09:00') // 日本時間
-}
+// イベントの作成と更新
+const saveEvent = async () => {
+  if (startTime.value === undefined || endTime.value === undefined) {
+    throw new Error('イベントの開始時間または終了時間が未設定です')
+  }
 
-const createEvent = async () => {
-  await apiClient.POST('/api/camps/{campId}/events', {
-    params: { path: { campId: displayCamp.value.id } },
-    body: {
-      type: 'duration',
-      name: name.value,
-      description: description.value,
-      location: location.value,
-      timeStart: dateToText(startTime.value!),
-      timeEnd: dateToText(endTime.value!),
-      displayColor: color.value,
-      organizerId: userStore.user.id,
-    },
-  })
+  const buildEventBody = {
+    type: 'duration' as const,
+    name: name.value,
+    description: description.value,
+    location: location.value,
+    timeStart: dateToText(startTime.value),
+    timeEnd: dateToText(endTime.value),
+    displayColor: color.value,
+    organizerId: userStore.user.id,
+  }
+
+  if (props.event) {
+    await apiClient.PUT('/api/events/{eventId}', {
+      params: { path: { eventId: props.event.id } },
+      body: buildEventBody,
+    })
+  } else {
+    await apiClient.POST('/api/camps/{campId}/events', {
+      params: { path: { campId: displayCamp.value.id } },
+      body: buildEventBody,
+    })
+  }
   emit('refresh')
 }
 
-const editEvent = async () => {
-  await apiClient.PUT('/api/events/{eventId}', {
-    params: { path: { eventId: props.event!.id } },
-    body: {
-      type: 'duration',
-      name: name.value,
-      description: description.value,
-      location: location.value,
-      timeStart: dateToText(startTime.value!),
-      timeEnd: dateToText(endTime.value!),
-      displayColor: color.value,
-      organizerId: userStore.user.id,
-    },
-  })
-  emit('refresh')
-}
-
-const deleteEvent = async () => {
+// イベントの削除
+const deleteEvent = async (event: DurationEvent) => {
   await apiClient.DELETE('/api/events/{eventId}', {
-    params: { path: { eventId: props.event!.id } },
+    params: { path: { eventId: event.id } },
   })
   emit('refresh')
 }
@@ -93,10 +94,11 @@ onMounted(async () => {
     endTime.value = new Date(props.event.timeEnd)
     description.value = props.event.description
   } else {
+    // color, name, location, description は初期値通り
     startTime.value = new Date(displayCamp.value.dateStart)
     endTime.value = new Date(displayCamp.value.dateStart)
-    endTime.value.setHours(endTime.value.getHours() + 23)
-    endTime.value.setMinutes(endTime.value.getMinutes() + 59)
+    endTime.value.setDate(endTime.value.getDate() + 1)
+    endTime.value.setMinutes(endTime.value.getMinutes() - 1)
   }
 })
 </script>
@@ -104,13 +106,12 @@ onMounted(async () => {
 <template>
   <div class="h-100">
     <v-sheet class="h-100 bg-white d-flex flex-column position-relative">
-      <div style="display: flex; align-items: center; justify-content: space-between">
+      <div class="d-flex justify-space-between align-center">
         <v-btn
           density="comfortable"
           elevation="0"
           icon="mdi-close"
-          class="text-black"
-          style="margin: 10px"
+          class="text-black ma-2"
           @click="emit('close')"
         ></v-btn>
         <v-btn
@@ -119,18 +120,21 @@ onMounted(async () => {
           variant="flat"
           :color="color"
           :disabled="!isValid"
-          style="font-size: 16px; margin: 10px"
-          @click="props.event ? editEvent() : createEvent()"
+          :class="$style.saveButton"
+          @click="saveEvent"
           >{{ props.event ? '更新' : '作成' }}</v-btn
         >
       </div>
       <v-tabs v-if="smAndDown" v-model="tab" :class="`flex-shrink-0 text-${color}`">
-        <v-tab value="設定" width="50%"><span style="font-weight: bold">設 定</span></v-tab>
-        <v-tab value="概要" width="50%"><span style="font-weight: bold">概 要</span></v-tab>
+        <v-tab value="options" width="50%">
+          <span :class="$style.tabTitle">設定</span>
+        </v-tab>
+        <v-tab value="description" width="50%">
+          <span :class="$style.tabTitle">概要</span>
+        </v-tab>
       </v-tabs>
-
-      <v-tabs-window v-if="smAndDown" v-model="tab" style="height: 100%; flex-shrink: 1">
-        <v-tabs-window-item value="設定" style="height: 100%; padding: 20px">
+      <v-tabs-window v-if="smAndDown" v-model="tab" class="h-100 flex-shrink-1">
+        <v-tabs-window-item value="options" class="h-100 pa-5">
           <event-editor-settings
             v-model:name="name"
             v-model:location="location"
@@ -142,13 +146,11 @@ onMounted(async () => {
             @delete="deleteEvent"
           />
         </v-tabs-window-item>
-
-        <v-tabs-window-item value="概要" style="height: 100%">
-          <markdown-platform v-model:text="description" :color="color"></markdown-platform>
+        <v-tabs-window-item value="description" class="h-100">
+          <markdown-platform v-model:text="description" :color="color" />
         </v-tabs-window-item>
       </v-tabs-window>
-
-      <div v-else style="display: flex; width: 100%; height: 100%">
+      <div v-else class="d-flex w-100 h-100">
         <event-editor-settings
           v-model:name="name"
           v-model:location="location"
@@ -157,13 +159,33 @@ onMounted(async () => {
           v-model:color="color"
           :event="event"
           :camp="displayCamp"
-          style="width: 400px; height: 100%; padding: 20px; flex-grow: 0"
+          :class="$style.desktopSettings"
           @delete="deleteEvent"
         />
-        <div style="width: 100%; height: 100%; position: relative">
-          <markdown-platform v-model:text="description" :color="color"></markdown-platform>
+        <div class="w-100 h-100 position-relative">
+          <markdown-platform v-model:text="description" :color="color" />
         </div>
       </div>
     </v-sheet>
   </div>
 </template>
+
+<style module>
+.saveButton {
+  font-size: 16px;
+  margin: 8px;
+}
+
+.tabTitle {
+  font-weight: bold;
+  letter-spacing: 0.5em;
+}
+
+.desktopSettings {
+  width: 400px;
+  height: 100%;
+  padding: 20px;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+</style>

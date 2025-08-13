@@ -16,15 +16,17 @@ const props = defineProps<{
 }>()
 
 const daysWithEventGroups = computed(() => {
-  console.log(getLayout(props.events, props.camp))
   return getLayout(props.events, props.camp)
 })
 
+// イベントグループ（時間的重なりを持つイベントのまとまり）のスタイル
 const eventGroupStyle = (eventGroup: EventGroup) => ({
   display: 'grid',
   gridTemplateColumns: `42px repeat(${Math.max(eventGroup.columns, 1)}, 1fr)`,
+  // 42px はタイムスタンプ用の固定列幅
 })
 
+// 単一のイベントブロックのスタイル
 const eventBlockStyle = (event: DurationEventPos) => ({
   gridRow: `${event.startRow + 1} / ${event.endRow + 1}`,
   gridColumn: event.column + 2, // 1-indexed かつ 1 列目はタイムスタンプ用なので +2

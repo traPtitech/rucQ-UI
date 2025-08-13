@@ -27,15 +27,3 @@ const eventColor = computed(() => {
     </v-dialog>
   </div>
 </template>
-
-<style module>
-.momentText {
-  font-weight: 500;
-  padding-left: 4px;
-  cursor: pointer;
-}
-
-.momentText:hover {
-  text-decoration: underline;
-}
-</style>

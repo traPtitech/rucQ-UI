@@ -6,44 +6,39 @@ import { getTimeStringNoPad } from '@/lib/date'
 import EventEditor from './EventEditor.vue'
 import type { components } from '@/api/schema'
 
+// TODO: refresh を実装
 const emit = defineEmits(['close', 'refresh'])
 
 type CampEvent = components['schemas']['EventResponse']
 const props = defineProps<{ event: CampEvent; color: string }>()
 
+// イベントの時刻に関する文字列
 const timeInfo = computed(() => {
   if (props.event.type === 'moment') {
     return getTimeStringNoPad(new Date(props.event.time))
   } else {
-    return (
-      getTimeStringNoPad(new Date(props.event.timeStart)) +
-      ' - ' +
-      getTimeStringNoPad(new Date(props.event.timeEnd))
-    )
+    const startTime = getTimeStringNoPad(new Date(props.event.timeStart))
+    const endTime = getTimeStringNoPad(new Date(props.event.timeEnd))
+    return `${startTime} - ${endTime}`
   }
 })
 
+// イベントの企画者。自主企画期間イベント（= duration）以外は traP とする
 const planner = computed(() => {
-  if (props.event.type === 'duration') {
-    return props.event.organizerId
-  } else {
-    return 'traP'
-  }
+  return props.event.type === 'duration' ? props.event.organizerId : 'traP'
 })
 </script>
 
 <template>
   <v-card class="white">
     <div :class="`d-flex align-center justify-space-between bg-${props.color}`">
-      <v-card rounded="0" elevation="0" :color="props.color" :class="$style.card">
-        <template #title>
-          <span class="font-weight-bold">{{ event.name }}</span>
-        </template>
-        <template #subtitle>
+      <div class="pl-3" :class="$style.card">
+        <span class="font-weight-bold text-h6">{{ event.name }}</span>
+        <div :class="$style.card">
           <span :class="$style.timeInfo">{{ timeInfo }}</span>
           <span :class="$style.location">{{ event.location }}</span>
-        </template>
-      </v-card>
+        </div>
+      </div>
       <div class="d-flex flex-column pa-1" :class="$style.buttons">
         <v-btn
           density="comfortable"
@@ -74,7 +69,7 @@ const planner = computed(() => {
         </v-dialog>
       </div>
     </div>
-    <div class="w-100 overflow-y-auto bg-white position-relative pa-3">
+    <div class="w-100 overflow-y-auto bg-white position-relative pa-4">
       <markdown-preview :mdtext="props.event.description" />
     </div>
     <div
@@ -88,8 +83,10 @@ const planner = computed(() => {
 </template>
 
 <style module>
-.card :global(.v-card-subtitle) {
-  opacity: 1 !important;
+.card {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .timeInfo {

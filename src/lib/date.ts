@@ -51,3 +51,9 @@ export const getJSTDate = (dateString: string): Date => {
   }
   return date
 }
+
+// 日付を日本時間の ISO 8601 形式の文字列に変換
+export const dateToText = (date: Date) => {
+  const isoString = new Date(date.getTime() + 9 * 60 * 60 * 1000).toISOString()
+  return isoString.replace('Z', '+09:00') // 日本時間
+}
