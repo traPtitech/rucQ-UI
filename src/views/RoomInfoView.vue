@@ -3,11 +3,12 @@ import { computed, onMounted, ref } from 'vue'
 import { apiClient } from '@/api/apiClient'
 import type { components } from '@/api/schema'
 import UserIcon from '@/components/generic/UserIcon.vue'
-import { useCampStore } from '@/store'
+import { useCampStore, useUserStore } from '@/store'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const campStore = useCampStore()
+const userStore = useUserStore()
 
 const displayCamp = computed(() => {
   return campStore.getCampByDisplayId(route.params.campname as string)
@@ -25,6 +26,10 @@ const getRoomGroups = async () => {
   return data
 }
 
+const isMyRoom = (room: components['schemas']['RoomResponse']) => {
+  return room.members.some((member) => member.id === userStore.user.id)
+}
+
 onMounted(async () => {
   roomGroups.value = await getRoomGroups()
 })
@@ -32,27 +37,52 @@ onMounted(async () => {
 
 <template>
   <div :class="$style.container">
-    <div v-for="group in roomGroups" :key="group.id">
-      <div :class="$style.floorName">{{ group.name }}</div>
+    <div v-for="group in roomGroups" :key="group.id" class="d-flex flex-column align-center">
+      <div :class="$style.floorName">
+        <span :class="$style.floorNameText">{{ group.name }}</span>
+      </div>
       <div :class="$style.roomGrid">
-        <div v-for="room in group.rooms" :key="room.id">
-          <v-card elevation="0" color="primaryLight" class="ma-2 pa-2">
+        <v-card
+          v-for="room in group.rooms"
+          :key="room.id"
+          elevation="0"
+          :color="isMyRoom(room) ? 'primary' : 'primaryLight'"
+          class="ma-2 pa-2"
+          :class="$style.card"
+        >
+          <div class="h-100 position-relative d-flex flex-column justify-center">
             <v-card-title class="text-center pa-0">
-              <span :class="$style.roomName">
+              <span
+                :class="$style.roomName"
+                :style="{ color: isMyRoom(room) ? 'white' : 'rgb(var(--v-theme-primary))' }"
+              >
                 {{ room.name }}
               </span>
             </v-card-title>
-            <div class="w-100 d-flex flex-wrap justify-center">
+            <div
+              v-if="isMyRoom(room)"
+              class="w-100 h-100 d-flex flex-wrap justify-center align-center"
+            >
+              <user-icon :id="userStore.user.id" :size="26" class="ma-1" :class="$style.userIcon" />
+              <user-icon
+                v-for="user in room.members.filter((u) => u.id !== userStore.user.id)"
+                :id="user.id"
+                :key="user.id"
+                :size="26"
+                class="ma-1"
+              />
+            </div>
+            <div v-else class="w-100 h-100 d-flex flex-wrap justify-center align-center">
               <user-icon
                 v-for="user in room.members"
                 :id="user.id"
                 :key="user.id"
-                :size="30"
+                :size="26"
                 class="ma-1"
               />
             </div>
-          </v-card>
-        </div>
+          </div>
+        </v-card>
       </div>
     </div>
   </div>
@@ -61,46 +91,49 @@ onMounted(async () => {
 <style module>
 .container {
   position: relative;
-  max-width: 800px;
-  margin: 16px auto;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.card {
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1) !important;
+  margin: 0 4px;
+  transition: none !important;
 }
 
 .floorName {
-  width: 200px;
-  font-weight: bold;
-  font-size: 20px;
-  border-bottom: 1px solid black;
-  margin-left: 16px;
-}
-
-.roomName {
-  font-weight: 900;
-  font-size: 20px;
-  color: rgb(var(--v-theme-primary));
-}
-
-.link {
-  display: block;
-  width: 100%;
+  width: 240px;
   text-align: center;
-  color: rgb(var(--v-theme-primary));
-  margin-bottom: 4;
+  padding-top: 16px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid black;
+}
+
+.floorNameText {
+  font-weight: bold;
+  font-size: 16px;
+  letter-spacing: 0.1em;
+  margin-right: -0.1em;
 }
 
 .roomGrid {
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   margin: 8px;
 }
 
-.link:hover {
-  text-decoration: underline;
+.roomName {
+  font-family: 'Reddit Sans';
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  margin-right: -0.1em;
 }
 
-.roomName {
-  font-weight: 900;
-  font-size: 24px;
-  letter-spacing: 0.5em;
-  color: rgb(var(--v-theme-primary));
+.userIcon {
+  box-sizing: content-box;
+  border: 2px solid white;
 }
 </style>
