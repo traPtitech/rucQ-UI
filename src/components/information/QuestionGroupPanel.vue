@@ -329,7 +329,7 @@ onMounted(refreshAnswersMap)
   align-items: center;
   justify-content: space-between;
   font-size: 18px;
-  letter-spacing: 2px;
+  letter-spacing: 0.1em;
   width: 100%;
 }
 
@@ -338,7 +338,7 @@ onMounted(refreshAnswersMap)
   margin-right: 6px;
   font-size: 16px;
   font-weight: bold;
-  letter-spacing: 0px;
+  letter-spacing: 0;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -349,7 +349,7 @@ onMounted(refreshAnswersMap)
   margin-top: 8px;
   font-weight: bold;
   font-size: 16px;
-  letter-spacing: 2px;
+  letter-spacing: 0.1em;
 }
 
 .editContent {
