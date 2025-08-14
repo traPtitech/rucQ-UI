@@ -153,8 +153,8 @@ A: 屋外活動は室内プログラムに変更となります。
         isDraft: false,
         isRegistrationOpen: true,
         isPaymentOpen: true,
-        dateStart: '2025-08-01',
-        dateEnd: '2025-08-10',
+        dateStart: '2100-09-01',
+        dateEnd: '2100-09-10', // 未来の日付に変更して、アーカイブ済み表示を避ける
       },
     ])
   }),
