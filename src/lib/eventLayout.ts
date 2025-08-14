@@ -1,6 +1,6 @@
 import type { components } from '@/api/schema'
-import { DayEventGrid, type EventGroup } from '@/lib/event-grid'
-import { getStartTime, getEndTime } from '@/lib/event-lib'
+import { DayEventGrid, type EventGroup } from '@/lib/eventGrid'
+import { getStartTime, getEndTime } from '@/lib/eventLib'
 import { getJSTDate } from '@/lib/date'
 
 type Camp = components['schemas']['CampResponse']
