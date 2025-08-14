@@ -4,10 +4,10 @@ import QuestionEditField from '@/components/information/QuestionEditField.vue'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import AnswersDialog from '@/components/information/AnswersDialog.vue'
 import { computed } from 'vue'
-import { getQuestionUnits } from '@/lib/questionUnits'
 import { getDayString } from '@/lib/date'
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
+type Question = components['schemas']['QuestionResponse']
 
 type AnswerData = { id?: number; value?: number | string | number[] }
 
@@ -16,6 +16,10 @@ const props = defineProps<{
   answersMap: Record<number, AnswerData>
   allChecked: boolean
   isAnswered: boolean
+  getQuestionUnits: (questions: Question[]) => {
+    size: 1 | 2
+    questions: Question[]
+  }[]
 }>()
 
 const emit = defineEmits<{
@@ -29,7 +33,7 @@ const emit = defineEmits<{
   ]
 }>()
 
-const questionUnits = computed(() => getQuestionUnits(props.questionGroup.questions))
+const questionUnits = computed(() => props.getQuestionUnits(props.questionGroup.questions))
 
 // 各設問の v-model 用 computed（親に更新を委譲）
 const answerModel = (questionId: number) =>

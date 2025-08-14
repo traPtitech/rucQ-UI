@@ -2,9 +2,9 @@
 import type { components } from '@/api/schema'
 import QuestionShowField from '@/components/information/QuestionShowField.vue'
 import { computed } from 'vue'
-import { getQuestionUnits } from '@/lib/questionUnits'
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
+type Question = components['schemas']['QuestionResponse']
 
 type AnswerData = { id?: number; value?: number | string | number[] }
 
@@ -13,10 +13,14 @@ const props = defineProps<{
   answersMap: Record<number, AnswerData>
   isReady: boolean
   isEditable: boolean
+  getQuestionUnits: (questions: Question[]) => {
+    size: 1 | 2
+    questions: Question[]
+  }[]
 }>()
 const emit = defineEmits<{ edit: [] }>()
 
-const questionUnits = computed(() => getQuestionUnits(props.questionGroup.questions))
+const questionUnits = computed(() => props.getQuestionUnits(props.questionGroup.questions))
 </script>
 
 <template>
