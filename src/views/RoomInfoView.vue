@@ -93,7 +93,7 @@ onMounted(async () => {
   position: relative;
   max-width: 600px;
   margin: 0 auto;
-  padding: 32px 0;
+  padding: 32px 8px;
 }
 
 .card {
