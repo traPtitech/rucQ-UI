@@ -4,8 +4,21 @@ import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { getTimeStringNoPad } from '@/lib/date'
 import type { components } from '@/api/schema'
+import { useCampStore } from '@/store'
+import { useRoute } from 'vue-router'
 
 const emit = defineEmits(['edit', 'close'])
+
+const campStore = useCampStore()
+const route = useRoute()
+
+const displayCamp = computed(() => {
+  return campStore.getCampByDisplayId(route.params.campname as string)
+})
+
+const isOperable = computed(() => {
+  return campStore.isOperable(displayCamp.value)
+})
 
 type CampEvent = components['schemas']['EventResponse']
 const props = defineProps<{ event: CampEvent; color: string }>()
@@ -52,7 +65,7 @@ const planner = computed(() => {
           @click="emit('close')"
         ></v-btn>
         <v-btn
-          v-if="event.type === 'duration'"
+          v-if="isOperable && event.type === 'duration'"
           density="comfortable"
           elevation="0"
           icon="mdi-square-edit-outline"

@@ -17,6 +17,10 @@ const displayCamp = computed(() => {
   return campStore.getCampByDisplayId(route.params.campname as string)
 })
 
+const isOperable = computed(() => {
+  return campStore.isOperable(displayCamp.value)
+})
+
 const events = ref<CampEvent[]>([])
 
 const getEvents = async () => {
@@ -37,7 +41,7 @@ onMounted(refreshEvents)
 
 <template>
   <div :class="$style.container">
-    <v-dialog fullscreen transition="dialog-bottom-transition">
+    <v-dialog v-if="isOperable" fullscreen transition="dialog-bottom-transition">
       <template #activator="{ props: activatorProps }">
         <v-card
           color="transparent"
