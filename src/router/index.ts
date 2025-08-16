@@ -21,7 +21,7 @@ const router = createRouter({
         {
           path: 'schedule',
           name: 'スケジュール',
-          component: () => import('@/views/WorkInProgressView.vue'),
+          component: () => import('@/views/ScheduleView.vue'),
         },
         {
           path: 'info',

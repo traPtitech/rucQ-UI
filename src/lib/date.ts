@@ -42,3 +42,25 @@ export const getDisplayDate = (date: Readonly<Date>) => {
     return getFullDayString(date) + ' ' + timeString
   }
 }
+
+// 与えられた日付の JST の Date オブジェクトを返す
+export const getJSTDate = (dateString: string): Date => {
+  const date = new Date(`${dateString}T00:00:00+09:00`)
+  if (isNaN(date.getTime())) {
+    throw new Error(`getJSTDate: 日時の設定が不正です: "${dateString}"`)
+  }
+  return date
+}
+
+// 日付を日本時間の ISO 8601 形式の文字列に変換
+export const dateToText = (date: Date) => {
+  const isoString = new Date(date.getTime() + 9 * 60 * 60 * 1000).toISOString()
+  return isoString.replace('Z', '+09:00') // 日本時間
+}
+
+// 2つの日付の差を日数で返す
+export const dateDiffInDaysJST = (startDate: Date, endDate: Date): number => {
+  const msPerDay = 1000 * 60 * 60 * 24
+  const toJstDay = (d: Date) => Math.floor((d.getTime() + 9 * 60 * 60 * 1000) / msPerDay)
+  return toJstDay(endDate) - toJstDay(startDate)
+}
