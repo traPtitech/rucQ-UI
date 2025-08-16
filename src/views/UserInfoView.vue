@@ -78,7 +78,8 @@ const isRegisteredOpen = displayCamp.value.isRegistrationOpen
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 20px;
-  letter-spacing: 2px;
+  letter-spacing: 0.1em;
+  margin-right: -0.1em;
   text-align: center;
 }
 
