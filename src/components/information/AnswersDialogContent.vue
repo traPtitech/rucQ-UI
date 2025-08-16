@@ -47,7 +47,7 @@ defineProps<{
             <td>
               <div :class="$style.cell">
                 <div v-for="id in ids" :key="id" :class="$style.userIcon">
-                  <user-icon :id="id" :size="25" />
+                  <user-icon :id="id" :size="25" id-tooltip />
                 </div>
               </div>
             </td>
