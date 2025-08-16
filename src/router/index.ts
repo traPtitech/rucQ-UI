@@ -31,7 +31,7 @@ const router = createRouter({
         {
           path: 'rooms',
           name: '部屋情報',
-          component: () => import('@/views/WorkInProgressView.vue'),
+          component: () => import('@/views/RoomInfoView.vue'),
         },
       ],
     },
