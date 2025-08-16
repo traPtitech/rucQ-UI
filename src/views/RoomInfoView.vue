@@ -36,60 +36,74 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div :class="$style.container">
-    <div v-for="group in roomGroups" :key="group.id" class="d-flex flex-column align-center">
-      <div :class="$style.floorName">
-        <span :class="$style.floorNameText">{{ group.name }}</span>
-      </div>
-      <div :class="$style.roomGrid">
-        <v-card
-          v-for="room in group.rooms"
-          :key="room.id"
-          elevation="0"
-          :color="isMyRoom(room) ? 'primary' : 'primaryLight'"
-          class="ma-2 pa-2"
-          :class="$style.card"
-        >
-          <div class="h-100 position-relative d-flex flex-column justify-center">
-            <v-card-title class="text-center pa-0">
-              <span
-                :class="$style.roomName"
-                :style="{ color: isMyRoom(room) ? 'white' : 'rgb(var(--v-theme-primary))' }"
+  <div class="position-relative w-100 h-100">
+    <div
+      v-if="roomGroups.length === 0"
+      class="d-flex flex-column align-center justify-center w-100 h-100"
+    >
+      <v-icon size="64" class="mb-2" icon="mdi-view-grid" />
+      <h3 class="font-weight-bold">{{ displayCamp.name }}の部屋割は未定です</h3>
+    </div>
+    <div v-else :class="$style.content">
+      <div v-for="group in roomGroups" :key="group.id" class="d-flex flex-column align-center">
+        <div :class="$style.floorName">
+          <span :class="$style.floorNameText">{{ group.name }}</span>
+        </div>
+        <div :class="$style.roomGrid">
+          <v-card
+            v-for="room in group.rooms"
+            :key="room.id"
+            elevation="0"
+            :color="isMyRoom(room) ? 'primary' : 'primaryLight'"
+            class="ma-2 pa-2"
+            :class="$style.card"
+          >
+            <div class="h-100 position-relative d-flex flex-column justify-center">
+              <v-card-title class="text-center pa-0">
+                <span
+                  :class="$style.roomName"
+                  :style="{ color: isMyRoom(room) ? 'white' : 'rgb(var(--v-theme-primary))' }"
+                >
+                  {{ room.name }}
+                </span>
+              </v-card-title>
+              <div
+                v-if="isMyRoom(room)"
+                class="w-100 h-100 d-flex flex-wrap justify-center align-center"
               >
-                {{ room.name }}
-              </span>
-            </v-card-title>
-            <div
-              v-if="isMyRoom(room)"
-              class="w-100 h-100 d-flex flex-wrap justify-center align-center"
-            >
-              <user-icon :id="userStore.user.id" :size="26" class="ma-1" :class="$style.userIcon" />
-              <user-icon
-                v-for="user in room.members.filter((u) => u.id !== userStore.user.id)"
-                :id="user.id"
-                :key="user.id"
-                :size="26"
-                class="ma-1"
-              />
+                <user-icon
+                  :id="userStore.user.id"
+                  :size="26"
+                  class="ma-1"
+                  :class="$style.userIcon"
+                />
+                <user-icon
+                  v-for="user in room.members.filter((u) => u.id !== userStore.user.id)"
+                  :id="user.id"
+                  :key="user.id"
+                  :size="26"
+                  class="ma-1"
+                />
+              </div>
+              <div v-else class="w-100 h-100 d-flex flex-wrap justify-center align-center">
+                <user-icon
+                  v-for="user in room.members"
+                  :id="user.id"
+                  :key="user.id"
+                  :size="26"
+                  class="ma-1"
+                />
+              </div>
             </div>
-            <div v-else class="w-100 h-100 d-flex flex-wrap justify-center align-center">
-              <user-icon
-                v-for="user in room.members"
-                :id="user.id"
-                :key="user.id"
-                :size="26"
-                class="ma-1"
-              />
-            </div>
-          </div>
-        </v-card>
+          </v-card>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style module>
-.container {
+.content {
   position: relative;
   max-width: 600px;
   margin: 0 auto;
