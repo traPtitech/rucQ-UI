@@ -2,7 +2,6 @@
 import type { components } from '@/api/schema'
 import { nextTick, ref, watch, onMounted } from 'vue'
 import type { VTextField } from 'vuetify/components'
-import { VTimePicker } from 'vuetify/labs/VTimePicker'
 
 type DurationEvent = components['schemas']['DurationEventResponse']
 type EventColor = DurationEvent['displayColor']
