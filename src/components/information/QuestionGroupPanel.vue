@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import type { components } from '@/api/schema'
-import { getDayString } from '@/lib/date'
 import { apiClient } from '@/api/apiClient'
 import { ref, computed, onMounted, reactive, toRaw } from 'vue'
 import { useCampStore } from '@/store'
-import QuestionEditField from '@/components/information/QuestionEditField.vue'
-import QuestionShowField from '@/components/information/QuestionShowField.vue'
-import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
-import AnswersDialog from '@/components/information/AnswersDialog.vue'
+import QuestionGroupEditor from '@/components/information/QuestionGroupEditor.vue'
+import QuestionGroupViewer from '@/components/information/QuestionGroupViewer.vue'
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Question = components['schemas']['QuestionResponse']
@@ -24,7 +21,7 @@ const inEditMode = ref(false) // 編集モードであるか
 const isAnswered = ref(false) // すでに一度回答を送信したことがあるか
 const isReady = ref(false) // 質問のデータが読み込まれたか
 
-// 表示中の合宿が編集可能かどうか
+// 表示中の合宿が（未来の合宿かつ参加登録済みであるかの意味で）編集可能かどうか
 const isOperable = computed(() => campStore.isOperable(props.camp))
 
 const getMyAnswers = async () => {
@@ -96,6 +93,37 @@ const refreshAnswersMap = async () => {
   isReady.value = true
 }
 
+// 質問配列を 1 列 / 2 列ユニットに整形する純粋関数
+const getQuestionUnits = (questions: Question[]): Array<{ size: 1 | 2; questions: Question[] }> => {
+  const units: { size: 1 | 2; questions: Question[] }[] = []
+  for (const question of questions) {
+    if (question.type === 'free_text' || question.type === 'multiple') {
+      units.push({ size: 2, questions: [question] })
+    } else {
+      if (units.length === 0 || units[units.length - 1].size === 2) {
+        units.push({ size: 1, questions: [question] })
+      } else {
+        units[units.length - 1].questions.push(question)
+      }
+    }
+  }
+
+  // size 1 のユニットが奇数個のときは最後の 1 つを 2 列にして余白を埋める
+  for (let i = 0; i < units.length; i++) {
+    if (units[i].size === 1 && units[i].questions.length % 2 === 1) {
+      const q = units[i].questions.pop()!
+      units.splice(i + 1, 0, { size: 2, questions: [q] })
+      if (units[i].questions.length === 0) {
+        units.splice(i, 1)
+      } else {
+        i++
+      }
+    }
+  }
+
+  return units
+}
+
 // すべての質問に適切な回答が与えられているか
 const allChecked = computed(() => {
   let result = true
@@ -109,7 +137,7 @@ const allChecked = computed(() => {
   return result
 })
 
-// isOpen が true の質問が 1 つ以上存在するか。もし false ならばそもそも編集モードに入れない
+// 回答受付中の質問が 1 つ以上存在するか。もし false ならばそもそも編集モードに入れない
 const isEditable = computed(
   () => isOperable.value && props.questionGroup.questions.some((q) => q.isOpen),
 )
@@ -153,7 +181,7 @@ const sendAnswers = async () => {
   }
 
   if (isAnswered.value) {
-    // 変更された回答のPUTリクエストを並列で実行
+    // 変更された回答の PUT リクエストを並列で実行
     const updatePromises = props.questionGroup.questions
       .filter((question: Question) => isAnswerChanged(question.id))
       .map(async (question) => {
@@ -183,197 +211,28 @@ const sendAnswers = async () => {
   await quitEditMode()
 }
 
-// 質問を見やすく並べるための構造化
-const questionUnits = computed(() => {
-  const units: { size: 1 | 2; questions: Question[] }[] = []
-  for (const question of props.questionGroup.questions) {
-    if (question.type === 'free_text' || question.type === 'multiple') {
-      units.push({ size: 2, questions: [question] }) // 常に横幅いっぱいに表示
-    } else {
-      if (units.length === 0 || units[units.length - 1].size === 2) {
-        units.push({ size: 1, questions: [question] })
-      } else {
-        units[units.length - 1].questions.push(question)
-      }
-    }
-  }
-
-  // size 1 の unit の質問が奇数個ならば、最後の質問を size 2 の unit として独立させて余白を埋める
-  for (let i = 0; i < units.length; i++) {
-    if (units[i].size === 1 && units[i].questions.length % 2 === 1) {
-      const question = units[i].questions.pop() as Question
-      units.splice(i + 1, 0, { size: 2, questions: [question] })
-      if (units[i].questions.length === 0) {
-        units.splice(i, 1)
-      } else {
-        i++
-      }
-    }
-  }
-
-  return units
-})
-
 onMounted(refreshAnswersMap)
 </script>
 
 <template>
-  <v-card :color="inEditMode ? 'primary' : 'primaryLight'" elevation="0" :class="$style.card">
-    <template #title>
-      <div :class="$style.title">
-        <span :class="['font-weight-bold', `text-${inEditMode ? 'white' : 'primary'}`]">{{
-          questionGroup.name
-        }}</span>
-        <div v-if="inEditMode">
-          <v-btn
-            v-if="isAnswered"
-            density="comfortable"
-            elevation="0"
-            icon="mdi-close"
-            base-color="transparent"
-            class="text-white"
-            @click="quitEditMode"
-          ></v-btn>
-          <div v-else :class="$style.deadline">
-            {{ getDayString(new Date(questionGroup.due)) }}
-            <v-icon icon="mdi-calendar-clock" :class="$style.timeIcon"></v-icon>
-          </div>
-        </div>
-        <v-btn
-          v-else
-          density="comfortable"
-          elevation="0"
-          icon="mdi-square-edit-outline"
-          base-color="transparent"
-          :class="isEditable ? ['text-primary'] : ['text-primary', $style.disabledEdit]"
-          :disabled="!isEditable"
-          @click="inEditMode = true"
-        ></v-btn>
-      </div>
-    </template>
-    <v-card-text v-if="inEditMode" class="bg-white pt-4">
-      <markdown-preview :mdtext="questionGroup.description ?? ''" />
-      <div :class="$style.editContent">
-        <div v-for="(unit, index) in questionUnits" :key="index">
-          <div v-if="unit.size === 1" :class="$style.unitColumns">
-            <question-edit-field
-              v-for="question in unit.questions"
-              :key="question.id"
-              v-model:value="answersMap[question.id].value"
-              :question="question"
-            ></question-edit-field>
-          </div>
-          <question-edit-field
-            v-for="question in unit.questions"
-            v-else
-            :key="question.id"
-            v-model:value="answersMap[question.id].value"
-            :question="question"
-          ></question-edit-field>
-        </div>
-      </div>
-      <answers-dialog :question-group="props.questionGroup" />
-      <v-btn
-        elevation="0"
-        append-icon="mdi-check"
-        base-color="transparent"
-        variant="flat"
-        color="primary"
-        :class="[$style.save, 'font-weight-bold']"
-        :disabled="!allChecked"
-        @click="sendAnswers"
-      >
-        <span class="font-weight-medium">保存</span>
-      </v-btn>
-    </v-card-text>
-    <v-card-text v-else class="bg-white pt-4">
-      <div :class="$style.showContent">
-        <div v-for="(unit, index) in questionUnits" :key="index">
-          <div v-if="unit.size === 1" :class="$style.unitColumns">
-            <question-show-field
-              v-for="question in unit.questions"
-              :key="question.id"
-              :question="question"
-              :value="answersMap[question.id]?.value"
-              :is-ready="isReady"
-            />
-          </div>
-          <question-show-field
-            v-for="question in unit.questions"
-            v-else
-            :key="question.id"
-            :question="question"
-            :value="answersMap[question.id]?.value"
-            :is-ready="isReady"
-          />
-        </div>
-      </div>
-    </v-card-text>
-  </v-card>
+  <question-group-editor
+    v-if="inEditMode"
+    :question-group="props.questionGroup"
+    :answers-map="answersMap"
+    :all-checked="allChecked"
+    :is-answered="isAnswered"
+    :get-question-units="getQuestionUnits"
+    @update:answer="({ questionId, value }) => (answersMap[questionId].value = value)"
+    @save="sendAnswers"
+    @close="quitEditMode"
+  />
+  <question-group-viewer
+    v-else
+    :question-group="props.questionGroup"
+    :answers-map="answersMap"
+    :is-ready="isReady"
+    :is-editable="isEditable"
+    :get-question-units="getQuestionUnits"
+    @edit="inEditMode = true"
+  />
 </template>
-
-<style module>
-.card {
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1) !important;
-  margin: 0 4px;
-  transition: none !important;
-}
-
-.card :global(.v-card-item) {
-  height: 40px !important;
-  padding-right: 4px !important;
-}
-
-.title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 18px;
-  letter-spacing: 2px;
-  width: 100%;
-}
-
-.deadline {
-  font-family: 'Reddit Sans';
-  margin-right: 6px;
-  font-size: 16px;
-  font-weight: bold;
-  letter-spacing: 0px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.save {
-  width: 100%;
-  margin-top: 8px;
-  font-weight: bold;
-  font-size: 16px;
-  letter-spacing: 2px;
-}
-
-.editContent {
-  margin-top: 8px;
-}
-
-.showContent {
-  margin-bottom: -16px;
-}
-
-.unitColumns {
-  width: 100%;
-  display: flex;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 16px;
-  align-items: flex-start;
-}
-
-.disabledEdit {
-  opacity: 0.5 !important;
-}
-
-.disabledEdit :global(.v-btn__overlay) {
-  background-color: transparent !important;
-}
-</style>
