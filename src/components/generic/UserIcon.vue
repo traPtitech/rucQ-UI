@@ -49,7 +49,7 @@ const getModifiedTooltipProps = (tooltipProps: Record<string, unknown>) => {
 </template>
 
 <style module>
-:global(.v-overlay__content) {
+:global(.v-tooltip .v-overlay__content) {
   background-color: rgba(var(--v-theme-primary), 0.9) !important;
 }
 </style>
