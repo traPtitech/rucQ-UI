@@ -61,7 +61,6 @@ const planner = computed(() => {
           elevation="0"
           icon="mdi-close"
           base-color="transparent"
-          class="text-white"
           @click="emit('close')"
         ></v-btn>
         <v-btn
@@ -70,7 +69,6 @@ const planner = computed(() => {
           elevation="0"
           icon="mdi-square-edit-outline"
           base-color="transparent"
-          class="text-white"
           @click="emit('edit')"
         ></v-btn>
       </div>
