@@ -11,8 +11,8 @@ type DurationEvent = components['schemas']['DurationEventResponse']
 type EventColor = DurationEvent['displayColor']
 type Camp = components['schemas']['CampResponse']
 
-// 型から色の配列を定義することはできないため、手動で定義
-const colors: EventColor[] = ['orange', 'green', 'red', 'blue', 'purple', 'pink']
+import { EVENT_COLORS } from '@/lib/eventColors'
+const colors: EventColor[] = EVENT_COLORS
 
 const props = defineProps<{ event: DurationEvent | null; camp: Camp }>()
 const emit = defineEmits(['delete'])
