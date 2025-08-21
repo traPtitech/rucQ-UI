@@ -9,6 +9,7 @@ import { useCampStore, useUserStore } from '@/store'
 import { useRoute } from 'vue-router'
 import type { components } from '@/api/schema'
 import { dateToText, dateDiffInDaysJST, getJSTDate } from '@/lib/date'
+import { EVENT_COLORS } from '@/lib/eventColors'
 
 const route = useRoute()
 const campStore = useCampStore()
@@ -122,6 +123,7 @@ onMounted(() => {
     dayNum.value = dateDiffInDaysJST(campStartDate, startDate)
   } else {
     organizerId.value = userStore.user.id
+    color.value = EVENT_COLORS[Math.floor(Math.random() * EVENT_COLORS.length)] // 色をランダムで初期化
   }
 })
 </script>
