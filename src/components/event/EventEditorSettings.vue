@@ -6,13 +6,10 @@ import EventDeleteDialog from './EventDeleteDialog.vue'
 import type { components } from '@/api/schema'
 import { apiClient } from '@/api/apiClient'
 import UserIcon from '@/components/generic/UserIcon.vue'
+import { EVENT_COLORS } from '@/lib/eventColors'
 
 type DurationEvent = components['schemas']['DurationEventResponse']
-type EventColor = DurationEvent['displayColor']
 type Camp = components['schemas']['CampResponse']
-
-import { EVENT_COLORS } from '@/lib/eventColors'
-const colors: EventColor[] = EVENT_COLORS
 
 const props = defineProps<{ event: DurationEvent | null; camp: Camp }>()
 const emit = defineEmits(['delete'])
@@ -153,7 +150,7 @@ const getListItemProps = (props: Record<string, unknown>) => {
       </template>
     </v-autocomplete>
     <v-item-group v-model="color" class="d-flex justify-center" width="100%">
-      <v-item v-for="(myColor, i) in colors" :key="i">
+      <v-item v-for="(myColor, i) in EVENT_COLORS" :key="i">
         <template #default="{}">
           <v-btn
             :variant="color === myColor ? 'elevated' : 'tonal'"
