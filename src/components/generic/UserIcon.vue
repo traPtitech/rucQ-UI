@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useUserStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, useAttrs } from 'vue'
 
 const { user } = storeToRefs(useUserStore())
 const props = defineProps<{ id?: string; size?: number; idTooltip?: boolean }>()
 // idTooltip ... クリック時に Tooltip で ID を表示するかどうか
+
+const $attrs = useAttrs() // $attrs を取得
 
 const showTooltip = ref(false)
 
@@ -39,13 +41,18 @@ const getModifiedTooltipProps = (tooltipProps: Record<string, unknown>) => {
     </template>
     <template #activator="{ props: tooltipProps }">
       <img
+        v-bind="{ ...$attrs, ...getModifiedTooltipProps(tooltipProps) }"
         :style="imageStyle"
         :src="`https://q.trap.jp/api/v3/public/icon/${userId}`"
-        v-bind="getModifiedTooltipProps(tooltipProps)"
       />
     </template>
   </v-tooltip>
-  <img v-else :style="imageStyle" :src="`https://q.trap.jp/api/v3/public/icon/${userId}`" />
+  <img
+    v-else
+    v-bind="$attrs"
+    :style="imageStyle"
+    :src="`https://q.trap.jp/api/v3/public/icon/${userId}`"
+  />
 </template>
 
 <style module>
