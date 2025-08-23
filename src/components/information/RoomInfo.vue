@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import type { components } from '@/api/schema'
 import UserIcon from '@/components/generic/UserIcon.vue'
+import { useUserStore } from '@/store'
 
 type Room = components['schemas']['RoomResponse']
+
+const userStore = useUserStore()
 
 defineProps<{ room?: Room }>()
 </script>
@@ -11,12 +14,14 @@ defineProps<{ room?: Room }>()
   <div v-if="room" :class="$style.container">
     <div :class="$style.room">201</div>
     <div :class="$style.members">
+      <user-icon :id="userStore.user.id" :size="32" class="mx-1" id-tooltip />
       <user-icon
-        v-for="member in room.members"
+        v-for="member in room.members.filter((u) => u.id !== userStore.user.id)"
         :id="member.id"
         :key="member.id"
         :size="32"
-        :class="$style.icon"
+        class="mx-1"
+        id-tooltip
       />
     </div>
   </div>
@@ -42,9 +47,5 @@ defineProps<{ room?: Room }>()
 .members {
   display: flex;
   margin-top: 8px;
-}
-
-.icon {
-  margin: 0 5px;
 }
 </style>
