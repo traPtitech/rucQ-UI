@@ -13,8 +13,8 @@ defineProps<{ room?: Room }>()
     <div :class="$style.members">
       <user-icon
         v-for="member in room.members"
+        :id="member.id"
         :key="member.id"
-        :user="member"
         :size="32"
         :class="$style.icon"
       />
