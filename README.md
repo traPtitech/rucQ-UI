@@ -32,3 +32,13 @@
 ### API スキーマの更新
 
 API の型定義 [schema.d.ts](./src/api/schema.d.ts) はバックエンド [rucQ](https://github.com/traPtitech/rucQ) の openapi.yaml から自動生成されます。もし openapi.yaml に更新があれば、`npm run generate:api` を実行して schema.d.ts を再生成してください。
+
+## リリース
+
+現状は以下の手順でやっています
+
+1. main から `release/v1.X.X` という名前でブランチを生やす
+2. その中で package.json のバージョンを書き換えて `npm install` を実行（自動で package-lock.json も書き換わる）
+3. 以上を `release v1.X.X` という名前でコミット
+4. main に対して PR を出してマージ
+5. GitHub の UI 上でリリースを打つ。Generate release notes ボタンを押してリリース概要を自動生成
