@@ -35,7 +35,7 @@ const getModifiedTooltipProps = (tooltipProps: Record<string, unknown>) => {
 </script>
 
 <template>
-  <v-tooltip v-if="idTooltip" v-model="showTooltip" location="top" open-on-click>
+  <v-tooltip v-if="idTooltip" v-model="showTooltip" location="top">
     <template #default>
       <span class="text-white font-weight-medium">{{ tooltipText }}</span>
     </template>
@@ -44,6 +44,7 @@ const getModifiedTooltipProps = (tooltipProps: Record<string, unknown>) => {
         v-bind="{ ...$attrs, ...getModifiedTooltipProps(tooltipProps) }"
         :style="imageStyle"
         :src="`https://q.trap.jp/api/v3/public/icon/${userId}`"
+        @click="showTooltip = !showTooltip"
       />
     </template>
   </v-tooltip>
