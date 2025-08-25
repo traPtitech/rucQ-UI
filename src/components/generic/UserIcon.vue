@@ -41,6 +41,7 @@ const getModifiedTooltipProps = (tooltipProps: Record<string, unknown>) => {
     </template>
     <template #activator="{ props: tooltipProps }">
       <img
+        tabindex="0"
         v-bind="{ ...$attrs, ...getModifiedTooltipProps(tooltipProps) }"
         :style="imageStyle"
         :src="`https://q.trap.jp/api/v3/public/icon/${userId}`"
