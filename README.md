@@ -42,3 +42,5 @@ API の型定義 [schema.d.ts](./src/api/schema.d.ts) はバックエンド [ruc
 3. 以上を `release v1.X.X` という名前でコミット
 4. main に対して PR を出してマージ
 5. GitHub の UI 上でリリースを打つ。Generate release notes ボタンを押してリリース概要を自動生成
+6. [manifest](https://github.com/traPtitech/manifest/pulls) からリリース用の PR（自動で立てられる）を探す
+7. 自分にレビューをリクエストし、Approve、マージ
