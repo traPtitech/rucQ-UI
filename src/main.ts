@@ -8,6 +8,9 @@ import './styles/main.scss'
 
 const app = createApp(App)
 const pinia = createPinia()
+import { VueQueryPlugin } from '@tanstack/vue-query'
+import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
+import { queryClient } from './lib/queryClient'
 
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
@@ -35,6 +38,11 @@ const vuetify = createVuetify({
 
 app.use(pinia)
 app.use(vuetify)
+app.use(VueQueryPlugin, { queryClient })
+
+if (import.meta.env.DEV) {  // 開発時だけ
+  app.component('VueQueryDevtools', VueQueryDevtools)
+}
 
 import { useUserStore, useCampStore } from './store'
 
