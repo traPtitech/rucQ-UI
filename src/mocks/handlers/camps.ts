@@ -29,14 +29,14 @@ export const campsHandlers = [
       {
         id: 3,
         displayId: 'camp25_summer',
-        name: '2025年度 夏合宿',
+        name: '2125年度 夏合宿',
         guidebook: `！！このデータはダミーです！！
 
-# 2025年度 夏合宿のしおり
+# 2125年度 夏合宿のしおり
 
 ## 合宿概要
 
-**開催期間**: 2025年8月1日（金）〜 8月10日（日）
+**開催期間**: 2125年8月1日（金）〜 8月10日（日）
 **会場**: 山中湖研修センター
 **参加費**: 一般 50,000円 / 学生 35,000円
 
@@ -153,8 +153,9 @@ A: 屋外活動は室内プログラムに変更となります。
         isDraft: false,
         isRegistrationOpen: true,
         isPaymentOpen: true,
-        dateStart: '2025-08-01',
-        dateEnd: '2025-08-04',
+
+        dateStart: '2125-08-01',
+        dateEnd: '2125-08-04',
       },
     ])
   }),
