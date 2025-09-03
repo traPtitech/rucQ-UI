@@ -9,7 +9,7 @@ export const questionsHandlers = [
         name: 'スキー',
         description:
           'スキー・スノボをする人のための質問です。\n借りるものを全て選んで保存してください(https://www.google.com/)。',
-        due: '2023-10-01T12:00:00Z',
+        due: '2125-07-30T12:00:00Z',
         questions: [
           {
             id: 3,
@@ -118,7 +118,7 @@ export const questionsHandlers = [
         id: 2,
         name: 'バス',
         description: 'バスに乗る？',
-        due: '2023-10-01T12:00:00Z',
+        due: '2125-07-30T12:00:00Z',
         questions: [
           {
             id: 1,
@@ -137,7 +137,7 @@ export const questionsHandlers = [
         id: 3,
         name: 'その他',
         description: 'その他の質問です。',
-        due: '2023-10-01T12:00:00Z',
+        due: '2125-07-30T12:00:00Z',
         questions: [
           {
             id: 13,
