@@ -8,8 +8,8 @@ import { apiClient } from '@/api/apiClient'
 import { useCampStore, useUserStore } from '@/store'
 import { useRoute } from 'vue-router'
 import type { components } from '@/api/schema'
-import { dateToText, dateDiffInDaysJST, getJSTDate } from '@/lib/date'
-import { EVENT_COLORS } from '@/lib/eventColors'
+import { dateToText, dateDiffInDaysJST, getJSTDate } from '@/utility/date'
+import { EVENT_COLORS } from '@/utility/eventColors'
 
 const route = useRoute()
 const campStore = useCampStore()
