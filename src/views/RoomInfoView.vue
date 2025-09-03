@@ -33,7 +33,7 @@ const {
       : ['camps', 'detail', 'room-groups', 'disabled'],
   ),
   enabled: computed(() => Boolean(displayCamp.value)),
-  staleTime: 20_000, // 3h
+  staleTime: 3 * 60 * 60_000, // 3h
 
   queryFn: async () => {
     const { data, error } = await apiClient.GET('/api/camps/{campId}/room-groups', {
