@@ -3,6 +3,10 @@ import UserIcon from '@/components/generic/UserIcon.vue'
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useDisplay } from 'vuetify'
+import { useUserStore } from '@/store'
+import { storeToRefs } from 'pinia'
+const { user } = storeToRefs(useUserStore())
+
 
 import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
 
@@ -65,7 +69,7 @@ const navItems = [
         size="24"
         :icon="isActive(item.path) ? item.iconActive : item.icon"
       />
-      <user-icon v-else :size="24" />
+      <user-icon v-else  :id="user.id" :size="24" />
     </v-btn>
   </v-bottom-navigation>
   <v-navigation-drawer v-else width="270" color="primary" permanent :class="$style.drawer" app>
@@ -87,6 +91,7 @@ const navItems = [
           />
           <user-icon
             v-else
+            :id="user.id"
             :size="22"
             class="mr-3"
             :style="{ outline: `${isActive(item.path) ? 2 : 1}px solid white` }"

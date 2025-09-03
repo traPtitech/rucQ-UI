@@ -1,53 +1,41 @@
 <script setup lang="ts">
-import { useUserStore } from '@/store'
-import { storeToRefs } from 'pinia'
 import { computed, ref, useAttrs } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 import { iconKeys } from '@/api/queries/keys'
-const { user } = storeToRefs(useUserStore())
-const props = defineProps<{ id?: string; size?: number; idTooltip?: boolean }>()
+
+const props = defineProps<{ id: string; size: number; idTooltip?: boolean }>()
 // idTooltip ... クリック時に Tooltip で ID を表示するかどうか
 
 const $attrs = useAttrs() // $attrs を取得
 
 const showTooltip = ref(false)
 
-const imageStyle = computed(
-  () =>
-    ({
-      width: `${props.size}px`,
-      height: `${props.size}px`,
-      objectFit: 'contain',
-      borderRadius: `${props.size || 0}px`,
-      display: 'block',
-      cursor: props.idTooltip ? 'pointer' : 'default',
-    }) as const,
-)
+const imageStyle = {
+  width: `${props.size}px`,
+  height: `${props.size}px`,
+  objectFit: 'contain' as const,
+  borderRadius: `${props.size || 0}px`,
+  display: 'block',
+  cursor: props.idTooltip ? 'pointer' : 'default',
+}
 
-const userId = computed(() => props.id || user.value?.id)
-const hasUserId = computed(() => Boolean(userId.value))
-const directUrl = computed(() =>
-  userId.value ? `https://q.trap.jp/api/v3/public/icon/${userId.value}` : undefined,
-)
+const directUrl = `https://q.trap.jp/api/v3/public/icon/${props.id}`
 
 const {
   data: cachedIconUrl,
   isLoading,
   isFetching,
   isError,
-} = useQuery<string | undefined, Error>({
-  queryKey: computed(() => (hasUserId.value ? iconKeys.user(userId.value) : iconKeys.all)),
-  enabled: hasUserId,
+} = useQuery<string, Error>({
+  queryKey: iconKeys.user(props.id),
   staleTime: 24 * 60 * 60_000, // 24h
   gcTime: 24 * 60 * 60_000, // 24h
   retry: 0,
-  // 直リンクをプレースホルダーとして即表示（リロード時でもスケルトンを避ける）
-  placeholderData: () => directUrl.value,
-  // データURLで保存する（blob URLはリロードで無効化されるため）
+  // データURLで保存する
   queryFn: async () => {
-    const url = directUrl.value as string
-    const res = await fetch(url, { credentials: 'omit', cache: 'default' })
+    const res = await fetch(directUrl)
     if (!res.ok) throw new Error(`アイコンを取得できませんでした: ${res.status}`)
+
     const blob = await res.blob()
     const dataUrl = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader()
@@ -60,10 +48,10 @@ const {
 })
 
 const showSkeleton = computed(
-  () => !hasUserId.value || !cachedIconUrl.value || isLoading.value || isFetching.value || isError.value,
+  () => !cachedIconUrl.value || isLoading.value || isFetching.value || isError.value,
 )
 
-const tooltipText = computed(() => `@${userId.value}`)
+const tooltipText = `@${props.id}`
 
 // tooltipProps から onMouseenter イベントを除外（onMouseleave イベントは維持）
 const getModifiedTooltipProps = (tooltipProps: Record<string, unknown>) => {
