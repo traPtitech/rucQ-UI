@@ -1,48 +1,29 @@
 import { createApp } from 'vue'
-import router from './router'
+import router from '@/router'
 import { createPinia } from 'pinia'
-import { createVuetify } from 'vuetify'
+import { VueQueryPlugin } from '@tanstack/vue-query'
+import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
+import { queryClient } from '@/lib/queryClient'
+import { vuetify } from '@/lib/vuetify'
+import 'vuetify/styles'
+import '@mdi/font/css/materialdesignicons.css'
+
 import App from './App.vue'
 
 import './styles/main.scss'
 
 const app = createApp(App)
 const pinia = createPinia()
-import { VueQueryPlugin } from '@tanstack/vue-query'
-import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
-import { queryClient } from './lib/queryClient'
 
-import 'vuetify/styles'
-import '@mdi/font/css/materialdesignicons.css'
-const vuetify = createVuetify({
-  theme: {
-    defaultTheme: 'light',
-    themes: {
-      light: {
-        colors: {
-          background: '#f6f6f6',
-          surface: '#ffffff',
-          primary: '#ff7300',
-          secondary: '#444444',
-          primaryLight: '#FFE5C9',
-          text: '#000000',
-          patternOnPrimary: '#FF8200',
-          line: '#C0C0C0',
-          orange: '#FB8C00', // Vuetify の orange-darken-1
-          pink: '#FF80AB', // Vuetify の pink-accent-1
-        },
-      },
-    },
-  },
-})
+
+if (import.meta.env.DEV) {
+  // 開発時だけ用いるtanstack queryのdevtools
+  app.component('VueQueryDevtools', VueQueryDevtools)
+}
 
 app.use(pinia)
 app.use(vuetify)
 app.use(VueQueryPlugin, { queryClient })
-
-if (import.meta.env.DEV) {  // 開発時だけ
-  app.component('VueQueryDevtools', VueQueryDevtools)
-}
 
 import { useUserStore, useCampStore } from './store'
 
