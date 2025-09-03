@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import EventEditorSettings from './EventEditorSettings.vue'
 import MarkdownPlatform from '@/components/markdown/MarkdownPlatform.vue'
-import { ref, onMounted, computed, inject } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useDisplay } from 'vuetify'
 const { smAndDown } = useDisplay()
 import { apiClient } from '@/api/apiClient'
@@ -10,13 +10,15 @@ import { useRoute } from 'vue-router'
 import type { components } from '@/api/schema'
 import { dateToText, dateDiffInDaysJST, getJSTDate } from '@/utility/date'
 import { EVENT_COLORS } from '@/utility/eventColors'
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
+
+import { qk } from '@/api/queries/keys'
 
 const route = useRoute()
 const campStore = useCampStore()
 const userStore = useUserStore()
 
-// ScheduleView から refreshEvents 関数を取得
-const refreshEvents = inject<() => Promise<void>>('refresh')
+const queryClient = useQueryClient()
 
 const displayCamp = computed(() => {
   return campStore.getCampByDisplayId(route.params.campname as string)
@@ -80,29 +82,15 @@ const saveEvent = async () => {
     organizerId: organizerId.value,
   }
 
-  if (props.event) {
-    await apiClient.PUT('/api/events/{eventId}', {
-      params: { path: { eventId: props.event.id } },
-      body: buildEventBody,
-    })
-  } else {
-    await apiClient.POST('/api/camps/{campId}/events', {
-      params: { path: { campId: displayCamp.value.id } },
-      body: buildEventBody,
-    })
-  }
+  await upsertEventMutation.mutateAsync(buildEventBody)
   emit('close') // Editor ダイアログを閉じる
-  await refreshEvents?.()
 }
 
 // イベントの削除
 const deleteEvent = async () => {
   if (!props.event) return
-  await apiClient.DELETE('/api/events/{eventId}', {
-    params: { path: { eventId: props.event.id } },
-  })
+  await deleteEventMutation.mutateAsync()
   emit('close') // Editor ダイアログを閉じる
-  await refreshEvents?.()
 }
 
 onMounted(() => {
@@ -126,6 +114,51 @@ onMounted(() => {
     color.value = EVENT_COLORS[Math.floor(Math.random() * EVENT_COLORS.length)] // 色をランダムで初期化
   }
 })
+
+// Mutations
+const upsertEventMutation = useMutation({
+  mutationFn: async (body: {
+    type: 'duration'
+    name: string
+    description: string
+    location: string
+    timeStart: string
+    timeEnd: string
+    displayColor: components['schemas']['DurationEventResponse']['displayColor']
+    organizerId: string
+  }) => {
+    if (props.event) {
+      const { error } = await apiClient.PUT('/api/events/{eventId}', {
+        params: { path: { eventId: props.event.id } },
+        body,
+      })
+      if (error) throw error
+    } else {
+      const { error } = await apiClient.POST('/api/camps/{campId}/events', {
+        params: { path: { campId: displayCamp.value.id } },
+        body,
+      })
+      if (error) throw error
+    }
+  },
+  onSuccess: async () => {
+    await queryClient.invalidateQueries({ queryKey: qk.camps.events(displayCamp.value.id) })
+  },
+})
+
+const deleteEventMutation = useMutation({
+  mutationFn: async () => {
+    if (!props.event) return
+    const { error } = await apiClient.DELETE('/api/events/{eventId}', {
+      params: { path: { eventId: props.event.id } },
+    })
+    if (error) throw error
+  },
+  onSuccess: async () => {
+    await queryClient.invalidateQueries({ queryKey: qk.camps.events(displayCamp.value.id) })
+  },
+})
+
 </script>
 
 <template>
