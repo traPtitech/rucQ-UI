@@ -13,6 +13,7 @@ export const campKeys = {
 
   participants: (id: number) => ['camps', 'detail', id, 'participants'] as const,
   events: (id: number) => ['camps', 'detail', id, 'events'] as const,
+  roomGroups: (id: number) => ['camps', 'detail', id, 'room-groups'] as const,
 }
 
 // Icon-related keys
@@ -26,4 +27,3 @@ export const qk = {
   camps: campKeys,
   icons: iconKeys,
 }
-
