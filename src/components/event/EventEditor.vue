@@ -158,7 +158,6 @@ const deleteEventMutation = useMutation({
     await queryClient.invalidateQueries({ queryKey: qk.camps.events(displayCamp.value.id) })
   },
 })
-
 </script>
 
 <template>

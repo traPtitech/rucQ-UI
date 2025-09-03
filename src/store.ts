@@ -22,7 +22,7 @@ export const useUserStore = defineStore('user', () => {
         return data
       },
       staleTime: Infinity,
-      gcTime : Infinity
+      gcTime: Infinity,
     })
     user.value = data
   }
@@ -53,9 +53,7 @@ export const useCampStore = defineStore('camp', () => {
         }
         return data
           .filter((camp) => !camp.isDraft)
-          .sort(
-            (a, b) => new Date(b.dateStart).getTime() - new Date(a.dateStart).getTime(),
-          )
+          .sort((a, b) => new Date(b.dateStart).getTime() - new Date(a.dateStart).getTime())
       },
     })
 
@@ -67,18 +65,20 @@ export const useCampStore = defineStore('camp', () => {
       return
     }
 
-    const participants = await queryClient.ensureQueryData<components['schemas']['UserResponse'][]>({
-      queryKey: qk.camps.participants(latestCamp.value.id),
-      queryFn: async () => {
-        const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
-          params: { path: { campId: latestCamp.value!.id } },
-        })
-        if (error || !data) {
-          throw new Error(`合宿参加者情報を取得できません: ${error}`)
-        }
-        return data
+    const participants = await queryClient.ensureQueryData<components['schemas']['UserResponse'][]>(
+      {
+        queryKey: qk.camps.participants(latestCamp.value.id),
+        queryFn: async () => {
+          const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
+            params: { path: { campId: latestCamp.value!.id } },
+          })
+          if (error || !data) {
+            throw new Error(`合宿参加者情報を取得できません: ${error}`)
+          }
+          return data
+        },
       },
-    })
+    )
     hasRegisteredLatest.value = participants.some((user) => user.id === me.id)
   }
 

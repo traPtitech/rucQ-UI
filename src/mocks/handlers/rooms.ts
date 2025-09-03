@@ -65,7 +65,11 @@ export const roomsHandlers = [
           { id: 12, name: '306', members: [{ id: 'BN256', isStaff: true }] },
           { id: 13, name: '307', members: [{ id: 'ch4tla', isStaff: true }] },
           { id: 14, name: '308', members: [{ id: 'clcrEX', isStaff: true }] },
-          { id: 15, name: '309', members: [{ id: 'Cooooooooooooooooooooooooooooody', isStaff: true }] },
+          {
+            id: 15,
+            name: '309',
+            members: [{ id: 'Cooooooooooooooooooooooooooooody', isStaff: true }],
+          },
         ],
       },
       {

@@ -15,7 +15,6 @@ import './styles/main.scss'
 const app = createApp(App)
 const pinia = createPinia()
 
-
 if (import.meta.env.DEV) {
   // 開発時だけ用いるtanstack queryのdevtools, キャッシュの中身が見れる
   app.component('VueQueryDevtools', VueQueryDevtools)

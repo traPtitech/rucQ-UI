@@ -1,4 +1,4 @@
-import {  QueryClient } from '@tanstack/vue-query'
+import { QueryClient } from '@tanstack/vue-query'
 import { persistQueryClient } from '@tanstack/query-persist-client-core'
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import localforage from 'localforage'

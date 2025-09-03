@@ -8,8 +8,8 @@ export const campKeys = {
   lists: () => ['camps', 'list'] as const,
   list: (filters?: string) => ['camps', 'list', filters ?? null] as const,
 
-  details: () => ['camps', 'detail'] as const ,
-  detail: (id: number) => ['camps', 'detail', id] as const ,
+  details: () => ['camps', 'detail'] as const,
+  detail: (id: number) => ['camps', 'detail', id] as const,
 
   participants: (id: number) => ['camps', 'detail', id, 'participants'] as const,
   events: (id: number) => ['camps', 'detail', id, 'events'] as const,

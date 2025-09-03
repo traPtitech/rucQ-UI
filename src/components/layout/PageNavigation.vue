@@ -7,7 +7,6 @@ import { useUserStore } from '@/store'
 import { storeToRefs } from 'pinia'
 const { user } = storeToRefs(useUserStore())
 
-
 import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
 
 const { xs } = useDisplay()
@@ -69,7 +68,7 @@ const navItems = [
         size="24"
         :icon="isActive(item.path) ? item.iconActive : item.icon"
       />
-      <user-icon v-else  :id="user.id" :size="24" />
+      <user-icon v-else :id="user.id" :size="24" />
     </v-btn>
   </v-bottom-navigation>
   <v-navigation-drawer v-else width="270" color="primary" permanent :class="$style.drawer" app>
