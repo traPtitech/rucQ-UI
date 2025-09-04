@@ -92,7 +92,7 @@ const closeBtnProps = {
     :max-width="xs ? undefined : 800"
   >
     <template #activator="{ props: activatorProps }">
-      <div style="display: flex; justify-content: flex-end;">
+      <div style="display: flex; justify-content: flex-end">
         <div :class="$style.button" v-bind="activatorProps">参加者の回答を見る</div>
       </div>
     </template>
@@ -142,7 +142,7 @@ const closeBtnProps = {
 .button {
   margin-top: 10px;
   font-size: 12px;
-  padding:4px;
+  padding: 4px;
   display: inline-block;
   font-weight: 400;
   color: #0066ff;

@@ -62,9 +62,7 @@ const questionUnits = computed(() => props.getQuestionUnits(props.questionGroup.
           />
         </div>
       </div>
-      <answer-dialog
-        :question-group="props.questionGroup"
-      />
+      <answer-dialog :question-group="props.questionGroup" />
     </v-card-text>
   </v-card>
 </template>
