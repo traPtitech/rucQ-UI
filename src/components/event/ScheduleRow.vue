@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import EventDialog from './EventDialog.vue'
-import type { GridRow } from '@/lib/eventGrid'
-import { getTimeStringNoPad } from '@/lib/date'
+import type { GridRow } from '@/utility/eventGrid'
+import { getTimeStringNoPad } from '@/utility/date'
 import { computed } from 'vue'
 
 const props = defineProps<{

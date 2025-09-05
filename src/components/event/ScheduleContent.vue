@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { getDayStringNoPad } from '@/lib/date'
-import { getLayout } from '@/lib/eventLayout'
+import { getDayStringNoPad } from '@/utility/date'
+import { getLayout } from '@/utility/eventLayout'
 import EventBlock from '@/components/event/EventBlock.vue'
 import type { components } from '@/api/schema'
-import type { EventGroup, DurationEventPos } from '@/lib/eventGrid'
+import type { EventGroup, DurationEventPos } from '@/utility/eventGrid'
 import EventEditor from './EventEditor.vue'
 import ScheduleRow from './ScheduleRow.vue'
 

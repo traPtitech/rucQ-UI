@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import UserIcon from '@/components/generic/UserIcon.vue'
-import { getTimeStringNoPad } from '@/lib/date'
+import { getTimeStringNoPad } from '@/utility/date'
 import type { components } from '@/api/schema'
 import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'

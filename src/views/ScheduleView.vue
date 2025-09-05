@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import ScheduleContent from '@/components/event/ScheduleContent.vue'
 import type { components } from '@/api/schema'
-import { computed, ref, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
 import { apiClient } from '@/api/apiClient'
-import { provide } from 'vue'
 import EventEditor from '@/components/event/EventEditor.vue'
+import { useQuery } from '@tanstack/vue-query'
+import { qk } from '@/api/queries/keys'
 
 type CampEvent = components['schemas']['EventResponse']
 
@@ -21,22 +22,22 @@ const isOperable = computed(() => {
   return campStore.isOperable(displayCamp.value)
 })
 
-const events = ref<CampEvent[]>([])
-
-const getEvents = async () => {
-  const { data, error } = await apiClient.GET('/api/camps/{campId}/events', {
-    params: { path: { campId: displayCamp.value.id } },
-  })
-  if (error || !data) throw error ?? new Error('Failed to fetch events')
-  return data
-}
-
-const refreshEvents = async () => {
-  events.value = await getEvents()
-}
-
-provide('refresh', refreshEvents)
-onMounted(refreshEvents)
+const { data: events } = useQuery<CampEvent[], Error>({
+  queryKey: computed(() =>
+    displayCamp.value
+      ? qk.camps.events(displayCamp.value.id)
+      : ['camps', 'detail', 'events', 'disabled'],
+  ),
+  enabled: computed(() => Boolean(displayCamp.value)),
+  staleTime: 60 * 60 * 1000, // 1h
+  queryFn: async () => {
+    const { data, error } = await apiClient.GET('/api/camps/{campId}/events', {
+      params: { path: { campId: displayCamp.value!.id } },
+    })
+    if (error || !data) throw error ?? new Error('Failed to fetch events')
+    return data
+  },
+})
 </script>
 
 <template>
@@ -59,7 +60,7 @@ onMounted(refreshEvents)
         <event-editor :event="null" @close="isActive.value = false" />
       </template>
     </v-dialog>
-    <schedule-content :camp="displayCamp" :events="events" />
+    <schedule-content :camp="displayCamp" :events="events || []" />
   </div>
 </template>
 
