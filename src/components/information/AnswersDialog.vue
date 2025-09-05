@@ -142,7 +142,7 @@ const closeBtnProps = {
 .button {
   margin-top: 10px;
   font-size: 12px;
-  padding: 4px;
+  padding: 4px 0px;
   display: inline-block;
   font-weight: 400;
   color: #0066ff;
