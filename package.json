@@ -49,6 +49,7 @@
     "@vue/tsconfig": "^0.7.0",
     "eslint": "^9.14.0",
     "eslint-define-config": "^2.1.0",
+    "eslint-plugin-security": "^3.0.1",
     "eslint-plugin-vue": "^9.30.0",
     "material-design-icons-iconfont": "^6.7.0",
     "npm-run-all2": "^7.0.2",

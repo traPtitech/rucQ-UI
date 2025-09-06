@@ -3,6 +3,7 @@ import js from '@eslint/js'
 import tseslint from 'typescript-eslint'
 import pluginVue from 'eslint-plugin-vue'
 import eslintConfigPrettier from 'eslint-config-prettier'
+import pluginSecurity from 'eslint-plugin-security'
 
 export default defineConfig([
   {
@@ -12,6 +13,7 @@ export default defineConfig([
   js.configs.recommended,
   ...tseslint.configs.recommended,
   ...pluginVue.configs['flat/recommended'],
+  pluginSecurity.configs.recommended,
 
   {
     files: ['**/*.vue'],
