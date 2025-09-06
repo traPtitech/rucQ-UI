@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { computed, ref, useAttrs } from 'vue'
+import { computed, onBeforeUnmount, ref, useAttrs } from 'vue'
 
 const { user } = storeToRefs(useUserStore())
 const props = defineProps<{ id?: string; size?: number; idTooltip?: boolean }>()
@@ -10,6 +10,7 @@ const props = defineProps<{ id?: string; size?: number; idTooltip?: boolean }>()
 const attrs = useAttrs()
 
 const showTooltip = ref(false)
+const hoverTimer = ref<number | null>(null)
 const iconRef = ref<HTMLElement | undefined>()
 
 const imageStyle = computed(
@@ -26,6 +27,36 @@ const imageStyle = computed(
 
 const userId = computed(() => props.id || user.value?.id)
 const tooltipText = computed(() => `@${userId.value}`)
+
+const clearHoverTimer = () => {
+  if (hoverTimer.value !== null) {
+    window.clearTimeout(hoverTimer.value)
+    hoverTimer.value = null
+  }
+}
+
+const onMouseEnter = () => {
+  if (!props.idTooltip) return
+  clearHoverTimer()
+  // 1 秒間マウスのカーソルをかざし続けたら Tooltip を表示
+  hoverTimer.value = window.setTimeout(() => {
+    showTooltip.value = true
+  }, 1000)
+}
+
+const onMouseLeave = () => {
+  clearHoverTimer()
+  showTooltip.value = false
+}
+
+const onClick = () => {
+  clearHoverTimer()
+  showTooltip.value = !showTooltip.value
+}
+
+onBeforeUnmount(() => {
+  clearHoverTimer()
+})
 </script>
 
 <template>
@@ -35,8 +66,9 @@ const tooltipText = computed(() => `@${userId.value}`)
     v-bind="attrs"
     :style="imageStyle"
     :src="`https://q.trap.jp/api/v3/public/icon/${userId}`"
-    @click="showTooltip = !showTooltip"
-    @onMouseleave="showTooltip = false"
+    @click="onClick"
+    @mouseenter="onMouseEnter"
+    @mouseleave="onMouseLeave"
   />
   <v-tooltip
     v-if="idTooltip"
