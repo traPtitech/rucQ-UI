@@ -5,6 +5,9 @@ import { ref, computed, onMounted, reactive, toRaw } from 'vue'
 import { useCampStore } from '@/store'
 import QuestionGroupEditor from '@/components/information/QuestionGroupEditor.vue'
 import QuestionGroupViewer from '@/components/information/QuestionGroupViewer.vue'
+import { useMutation } from '@tanstack/vue-query'
+import { queryClient } from '@/lib/queryClient'
+import { qk } from '@/api/queries/keys'
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Question = components['schemas']['QuestionResponse']
@@ -25,10 +28,21 @@ const isReady = ref(false) // 質問のデータが読み込まれたか
 const isOperable = computed(() => campStore.isOperable(props.camp))
 
 const getMyAnswers = async () => {
-  const { data, error } = await apiClient.GET('/api/me/question-groups/{questionGroupId}/answers', {
-    params: { path: { campId: props.camp.id, questionGroupId: props.questionGroup.id } },
+  // クエリキーを定義し、fetchQuery で取得
+  const key = qk.me.questionGroupAnswers(props.questionGroup.id)
+  const data = await queryClient.fetchQuery({
+    queryKey: key,
+    queryFn: async () => {
+      const { data, error } = await apiClient.GET(
+        '/api/me/question-groups/{questionGroupId}/answers',
+        {
+          params: { path: { questionGroupId: props.questionGroup.id } },
+        },
+      )
+      if (error || !data) throw error ?? new Error('Failed to fetch answers')
+      return data
+    },  
   })
-  if (error || !data) throw error ?? new Error('Failed to fetch answers')
   return data
 }
 
@@ -162,54 +176,55 @@ const quitEditMode = async () => {
 }
 
 // 回答の更新
-const sendAnswers = async () => {
-  const getAnswerBody = (question: Question, value: string | number | number[]) => {
-    switch (question.type) {
-      case 'free_text':
-        return { questionId: question.id, type: question.type, content: value as string } as const
-      case 'free_number':
-        return { questionId: question.id, type: question.type, content: value as number } as const
-      case 'single':
-        return { questionId: question.id, type: question.type, optionId: value as number } as const
-      case 'multiple':
-        return {
-          questionId: question.id,
-          type: question.type,
-          optionIds: value as number[],
-        } as const
-    }
+const getAnswerBody = (question: Question, value: string | number | number[]) => {
+  switch (question.type) {
+    case 'free_text':
+      return { questionId: question.id, type: question.type, content: value as string } as const
+    case 'free_number':
+      return { questionId: question.id, type: question.type, content: value as number } as const
+    case 'single':
+      return { questionId: question.id, type: question.type, optionId: value as number } as const
+    case 'multiple':
+      return {
+        questionId: question.id,
+        type: question.type,
+        optionIds: value as number[],
+      } as const
   }
-
-  if (isAnswered.value) {
-    // 変更された回答の PUT リクエストを並列で実行
-    const updatePromises = props.questionGroup.questions
-      .filter((question: Question) => isAnswerChanged(question.id))
-      .map(async (question) => {
-        const answer = answersMap[question.id]
-        const resp = await apiClient.PUT('/api/answers/{answerId}', {
-          params: { path: { answerId: answer.id! } },
-          body: getAnswerBody(question, answer.value!),
-        })
-        const { error } = resp
-
-        if (error) throw error
-      })
-
-    await Promise.all(updatePromises)
-  } else {
-    // 初回回答の場合、全回答を POST で送信
-    const { error } = await apiClient.POST('/api/question-groups/{questionGroupId}/answers', {
-      params: { path: { questionGroupId: props.questionGroup.id } },
-      body: props.questionGroup.questions.map((question: Question) =>
-        getAnswerBody(question, answersMap[question.id].value!),
-      ),
-    })
-
-    if (error) throw error
-  }
-
-  await quitEditMode()
 }
+
+// 回答の更新
+const saveAnswersMutation = useMutation({
+  mutationFn: async () => {
+    if (isAnswered.value) {
+      // 変更された回答の PUT を並列実行
+      const updatePromises = props.questionGroup.questions
+        .filter((question: Question) => isAnswerChanged(question.id))
+        .map(async (question) => {
+          const answer = answersMap[question.id]
+          const resp = await apiClient.PUT('/api/answers/{answerId}', {
+            params: { path: { answerId: answer.id! } },
+            body: getAnswerBody(question, answer.value!),
+          })
+          const { error } = resp
+          if (error) throw error
+        })
+      await Promise.all(updatePromises)
+    } else {
+      // 初回回答: 全回答を POST で送信
+      const { error } = await apiClient.POST('/api/question-groups/{questionGroupId}/answers', {
+        params: { path: { questionGroupId: props.questionGroup.id } },
+        body: props.questionGroup.questions.map((question: Question) =>
+          getAnswerBody(question, answersMap[question.id].value!),
+        ),
+      })
+      if (error) throw error
+    }
+  },
+  onSuccess: async () => {
+    await quitEditMode()
+  },
+})
 
 onMounted(refreshAnswersMap)
 </script>
@@ -223,7 +238,7 @@ onMounted(refreshAnswersMap)
     :is-answered="isAnswered"
     :get-question-units="getQuestionUnits"
     @update:answer="({ questionId, value }) => (answersMap[questionId].value = value)"
-    @save="sendAnswers"
+    @save="saveAnswersMutation.mutateAsync()"
     @close="quitEditMode"
   />
   <question-group-viewer

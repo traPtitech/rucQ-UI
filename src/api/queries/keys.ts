@@ -1,5 +1,7 @@
 export const meKeys = {
   all: ['me'] as const,
+  questionGroupAnswers: (questionGroupId: number) =>
+    ['me', 'question-groups', questionGroupId, 'answers'] as const,
 }
 
 export const campKeys = {
@@ -14,6 +16,8 @@ export const campKeys = {
   participants: (id: number) => ['camps', 'detail', id, 'participants'] as const,
   events: (id: number) => ['camps', 'detail', id, 'events'] as const,
   roomGroups: (id: number) => ['camps', 'detail', id, 'room-groups'] as const,
+  questionGroups: (id: number) => ['camps', 'detail', id, 'question-groups'] as const,
+  dashboard: (id: number) => ['camps', 'detail', id, 'dashboard'] as const,
 }
 
 // Icon-related keys
