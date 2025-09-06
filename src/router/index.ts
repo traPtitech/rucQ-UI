@@ -10,6 +10,11 @@ const router = createRouter({
       component: () => import('@/views/RegistrationView.vue'),
     },
     {
+      path: '/:campname/rollcall/:rollcallId',
+      name: '点呼',
+      component: () => import('@/views/RollCallView.vue'),
+    },
+    {
       path: '/:campname',
       component: () => import('@/layouts/CampLayout.vue'),
       children: [
