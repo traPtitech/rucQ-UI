@@ -1,4 +1,4 @@
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, type Ref } from 'vue'
 import { apiClient } from '@/api/apiClient'
 import type { components } from '@/api/schema'
 
@@ -36,7 +36,7 @@ const listenRollCallReactions = (
 }
 
 // 点呼リアクションの送受信を行う composable
-export function useRollCallStream(rollcall: RollCall, userId: string) {
+export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: string) {
   const reactions = ref<RollCallReaction[]>([])
   const stopStream = ref<() => void>()
 
@@ -45,8 +45,9 @@ export function useRollCallStream(rollcall: RollCall, userId: string) {
 
   // すでに存在するリアクション一覧を取得
   const fetchReactions = async () => {
+    if (!rollcall.value) throw new Error('rollcall is not set')
     const { data, error } = await apiClient.GET('/api/roll-calls/{rollCallId}/reactions', {
-      params: { path: { rollCallId: rollcall.id } },
+      params: { path: { rollCallId: rollcall.value.id } },
     })
     if (error || !data) throw error ?? new Error('Failed to fetch reactions')
     return data
@@ -81,9 +82,9 @@ export function useRollCallStream(rollcall: RollCall, userId: string) {
 
   // 未回答、回答済みは選択肢ごとにユーザーを集計
   const grouped = computed(() => {
-    if (!rollcall)
+    if (!rollcall.value)
       return { unanswered: [] as string[], options: [] as { name: string; ids: string[] }[] }
-    const options = rollcall.options.map((name) => ({ name, ids: [] as string[] }))
+    const options = rollcall.value.options.map((name) => ({ name, ids: [] as string[] }))
     const answered = new Set<string>()
     for (const r of reactions.value) {
       const o = options.find((opt) => opt.name === r.content)
@@ -92,21 +93,21 @@ export function useRollCallStream(rollcall: RollCall, userId: string) {
         answered.add(r.userId)
       }
     }
-    const unanswered = rollcall.subjects.filter((id) => !answered.has(id))
+    const unanswered = rollcall.value.subjects.filter((id) => !answered.has(id))
     return { unanswered, options }
   })
 
   // リアクション送信・更新
   const chooseOption = async (content: string) => {
-    if (!rollcall) return
-    if (!rollcall.subjects.includes(userId)) return
+    if (!rollcall.value) return
+    if (!rollcall.value.subjects.includes(userId)) return
     if (myReaction.value && myReaction.value.content === content) return
 
     try {
       if (!myReaction.value) {
         // まだリアクションがない場合は新規作成
         const { data, error } = await apiClient.POST('/api/roll-calls/{rollCallId}/reactions', {
-          params: { path: { rollCallId: rollcall.id } },
+          params: { path: { rollCallId: rollcall.value.id } },
           body: { content },
         })
         if (error || !data) throw error ?? new Error('failed to post reaction')
@@ -126,11 +127,15 @@ export function useRollCallStream(rollcall: RollCall, userId: string) {
     }
   }
 
-  onMounted(async () => {
+  // 明示初期化（ライフサイクルに依存しない）
+  const init = async () => {
+    if (!rollcall.value) throw new Error('rollcall is not set')
+    console.log('Start roll call stream for', rollcall.value.id)
+
     // 先に SSE を開始し、初期化中はイベントをバッファ
     let initializing = true
     const buffer: RollCallReactionEvent[] = []
-    stopStream.value = listenRollCallReactions(rollcall.id, (ev) => {
+    stopStream.value = listenRollCallReactions(rollcall.value.id, (ev) => {
       if (initializing) buffer.push(ev)
       else applyEvent(ev)
     })
@@ -138,6 +143,7 @@ export function useRollCallStream(rollcall: RollCall, userId: string) {
     // 既存のリアクション一覧を取得
     try {
       reactions.value = await fetchReactions()
+      console.log('Fetched reactions:', reactions.value)
     } catch (e) {
       console.error(e)
     }
@@ -147,9 +153,9 @@ export function useRollCallStream(rollcall: RollCall, userId: string) {
     const buffered = buffer.splice(0, buffer.length)
     initializing = false
     for (const ev of buffered) applyEvent(ev)
-  })
+  }
 
-  onBeforeUnmount(() => stopStream.value?.())
+  const stop = () => stopStream.value?.()
 
-  return { reactions, myReaction, grouped, chooseOption }
+  return { reactions, myReaction, grouped, chooseOption, init, stop }
 }

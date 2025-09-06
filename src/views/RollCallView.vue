@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCampStore, useUserStore } from '@/store'
 import { apiClient } from '@/api/apiClient'
@@ -7,7 +7,6 @@ import type { components } from '@/api/schema'
 import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
 import UserResponse from '@/components/rollcall/UserResponse.vue'
 import { useRollCallStream } from '@/lib/rollCallStream'
-import { shallowRef } from 'vue'
 
 type RollCall = components['schemas']['RollCallResponse']
 
@@ -16,8 +15,9 @@ const campStore = useCampStore()
 const userStore = useUserStore()
 
 const rollcall = ref<RollCall>()
-
-const stream = shallowRef<ReturnType<typeof useRollCallStream>>()
+const stream = useRollCallStream(rollcall, userStore.user.id)
+const { grouped, myReaction, chooseOption, init, stop } = stream
+// grouped: 点呼の選択肢ごとにユーザー ID をまとめたオブジェクト
 
 // 点呼情報を取得
 const getRollCall = async () => {
@@ -42,7 +42,11 @@ onMounted(async () => {
   if (!rollcall.value) return
 
   // stream/composable を初期化
-  stream.value = useRollCallStream(rollcall.value, userStore.user.id)
+  await init()
+})
+
+onBeforeUnmount(() => {
+  stop()
 })
 </script>
 
@@ -57,9 +61,9 @@ onMounted(async () => {
       <div :class="$style.description">{{ rollcall?.description }}</div>
       <div :class="$style.unanswered">
         <user-response
-          v-if="rollcall && stream"
+          v-if="rollcall"
           title="未回答"
-          :user-ids="stream.grouped.value.unanswered"
+          :user-ids="grouped.unanswered"
           :text-color="isSubject ? 'white' : 'black'"
         />
       </div>
@@ -75,20 +79,20 @@ onMounted(async () => {
     </div>
     <div :class="$style.body">
       <v-card
-        v-for="opt in stream?.grouped.value.options"
+        v-for="opt in grouped.options"
         :key="opt.name"
         variant="flat"
         :class="$style.shadow"
         class="mb-5 border border-primary border-opacity-100"
-        :color="stream?.myReaction.value?.content === opt.name ? 'primary' : 'white'"
+        :color="myReaction?.content === opt.name ? 'primary' : 'white'"
         :ripple="isSubject"
-        @click="stream?.chooseOption(opt.name)"
+        @click="chooseOption(opt.name)"
       >
         <v-card-text class="py-3">
           <user-response
             :title="opt.name"
             :user-ids="opt.ids"
-            :text-color="stream?.myReaction.value?.content === opt.name ? 'white' : 'black'"
+            :text-color="myReaction?.content === opt.name ? 'white' : 'black'"
           />
         </v-card-text>
       </v-card>
