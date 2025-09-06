@@ -2,10 +2,6 @@
 import { ref } from 'vue'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { useCampStore } from '@/store'
-import { useUserStore } from '@/store'
-import { storeToRefs } from 'pinia'
-
-const { user } = storeToRefs(useUserStore())
 
 const campStore = useCampStore()
 
@@ -32,7 +28,7 @@ const executeRegistration = async () => {
 <template>
   <v-card :class="$style.container">
     <div :class="$style.header">
-      <user-icon :id="user.id" :size="28" />
+      <user-icon :size="28" />
       <h3 class="text-h6 font-weight-bold">合宿への参加</h3>
     </div>
 

@@ -45,13 +45,14 @@ const dashboard = ref<Dashboard>()
 const isReady = ref(false)
 
 onMounted(async () => {
+  if (!displayCamp.value) return
   questionGroups.value = await getQuestionGroups()
   dashboard.value = await getDashboard()
   isReady.value = true
 })
 
 // 参加登録が可能な状態かどうかを判定
-const isRegisteredOpen = displayCamp.value.isRegistrationOpen
+const isRegisteredOpen = computed(() => displayCamp.value?.isRegistrationOpen ?? false)
 </script>
 
 <template>

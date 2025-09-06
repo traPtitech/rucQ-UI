@@ -14,7 +14,7 @@ defineProps<{ room?: Room }>()
   <div v-if="room" :class="$style.container">
     <div :class="$style.room">201</div>
     <div :class="$style.members">
-      <user-icon :id="userStore.user.id" :size="32" class="mx-1" id-tooltip />
+      <user-icon :size="32" class="mx-1" id-tooltip />
       <user-icon
         v-for="member in room.members.filter((u) => u.id !== userStore.user.id)"
         :id="member.id"

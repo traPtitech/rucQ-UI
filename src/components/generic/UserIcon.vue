@@ -2,9 +2,11 @@
 import { computed, ref, useAttrs } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 import { iconKeys } from '@/api/queries/keys'
+import { useUserStore } from '@/store'
 
-const props = defineProps<{ id: string; size: number; idTooltip?: boolean }>()
+const props = defineProps<{ id?: string; size: number; idTooltip?: boolean }>()
 // idTooltip ... クリック時に Tooltip で ID を表示するかどうか
+const userId = props.id ?? useUserStore().user.id // id が指定されていない場合は自分のアイコンを表示
 
 const $attrs = useAttrs() // $attrs を取得
 
@@ -19,7 +21,7 @@ const imageStyle = {
   cursor: props.idTooltip ? 'pointer' : 'default',
 }
 
-const directUrl = `https://q.trap.jp/api/v3/public/icon/${props.id}`
+const directUrl = `https://q.trap.jp/api/v3/public/icon/${userId}`
 
 const {
   data: cachedIconUrl,
@@ -27,7 +29,7 @@ const {
   isFetching,
   isError,
 } = useQuery<string, Error>({
-  queryKey: iconKeys.user(props.id),
+  queryKey: iconKeys.user(userId),
   staleTime: 24 * 60 * 60_000, // 24h
   gcTime: 24 * 60 * 60_000, // 24h
   retry: 0,
@@ -51,7 +53,7 @@ const showSkeleton = computed(
   () => !cachedIconUrl.value || isLoading.value || isFetching.value || isError.value,
 )
 
-const tooltipText = `@${props.id}`
+const tooltipText = `@${userId}`
 
 // tooltipProps から onMouseenter イベントを除外（onMouseleave イベントは維持）
 const getModifiedTooltipProps = (tooltipProps: Record<string, unknown>) => {

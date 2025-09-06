@@ -89,12 +89,7 @@ const {
                 v-if="isMyRoom(room)"
                 class="w-100 h-100 d-flex flex-wrap justify-center align-center"
               >
-                <user-icon
-                  :id="userStore.user.id"
-                  :size="26"
-                  class="ma-1"
-                  :class="$style.userIcon"
-                />
+                <user-icon :size="26" class="ma-1" :class="$style.userIcon" />
                 <user-icon
                   v-for="user in room.members.filter((u) => u.id !== userStore.user.id)"
                   :id="user.id"
