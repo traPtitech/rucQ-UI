@@ -97,6 +97,21 @@ export const useCampStore = defineStore('camp', () => {
     })
     if (error) throw error
     hasRegisteredLatest.value = true
+    // 参加登録後は参加者リストを即時更新
+    const participantsKey = qk.camps.participants(campId)
+
+    await queryClient.fetchQuery({
+      queryKey: participantsKey,
+      queryFn: async () => {
+        const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
+          params: { path: { campId } },
+        })
+        if (error || !data) {
+          throw new Error(`合宿参加者情報を取得できません: ${error}`)
+        }
+        return data
+      },
+    })
   }
 
   const unregister = async (campId: number) => {
@@ -105,6 +120,21 @@ export const useCampStore = defineStore('camp', () => {
     })
     if (error) throw error
     hasRegisteredLatest.value = false
+    // 参加取り消し後は参加者リストを即時更新
+    const participantsKey = qk.camps.participants(campId)
+    
+    await queryClient.fetchQuery({
+      queryKey: participantsKey,
+      queryFn: async () => {
+        const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
+          params: { path: { campId } },
+        })
+        if (error || !data) {
+          throw new Error(`合宿参加者情報を取得できません: ${error}`)
+        }
+        return data
+      },
+    })
   }
 
   // 指定した合宿がユーザーにとって操作可能かどうかを判定
