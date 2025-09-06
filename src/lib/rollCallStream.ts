@@ -49,7 +49,34 @@ export function useRollCallStream(rollcall: RollCall, userId: string) {
       params: { path: { rollCallId: rollcall.id } },
     })
     if (error || !data) throw error ?? new Error('Failed to fetch reactions')
-    reactions.value = data
+    return data
+  }
+
+  // SSE イベントを現在の状態に反映するヘルパー
+  const applyEvent = (ev: RollCallReactionEvent) => {
+    switch (ev.type) {
+      case 'created': {
+        const idx = reactions.value.findIndex((r) => r.id === ev.id)
+        const entry = { id: ev.id, userId: ev.userId, content: ev.content }
+        if (idx >= 0) reactions.value[idx] = entry
+        else reactions.value.push(entry as RollCallReaction)
+        break
+      }
+      case 'updated': {
+        const idx = reactions.value.findIndex((r) => r.id === ev.id)
+        if (idx >= 0)
+          reactions.value[idx] = {
+            id: ev.id,
+            userId: ev.userId,
+            content: ev.content,
+          } as RollCallReaction
+        break
+      }
+      case 'deleted': {
+        reactions.value = reactions.value.filter((r) => r.id !== ev.id)
+        break
+      }
+    }
   }
 
   // 未回答、回答済みは選択肢ごとにユーザーを集計
@@ -100,27 +127,26 @@ export function useRollCallStream(rollcall: RollCall, userId: string) {
   }
 
   onMounted(async () => {
-    await fetchReactions()
+    // 先に SSE を開始し、初期化中はイベントをバッファ
+    let initializing = true
+    const buffer: RollCallReactionEvent[] = []
     stopStream.value = listenRollCallReactions(rollcall.id, (ev) => {
-      switch (ev.type) {
-        case 'created': {
-          const idx = reactions.value.findIndex((r) => r.id === ev.id)
-          const entry = { id: ev.id, userId: ev.userId, content: ev.content }
-          if (idx >= 0) reactions.value[idx] = entry
-          else reactions.value.push(entry)
-          break
-        }
-        case 'updated': {
-          const idx = reactions.value.findIndex((r) => r.id === ev.id)
-          if (idx >= 0) reactions.value[idx] = { id: ev.id, userId: ev.userId, content: ev.content }
-          break
-        }
-        case 'deleted': {
-          reactions.value = reactions.value.filter((r) => r.id !== ev.id)
-          break
-        }
-      }
+      if (initializing) buffer.push(ev)
+      else applyEvent(ev)
     })
+
+    // 既存のリアクション一覧を取得
+    try {
+      reactions.value = await fetchReactions()
+    } catch (e) {
+      console.error(e)
+    }
+
+    // バッファを反映してライブ運用に切り替え
+    // buffer は SSE ハンドラのクロージャで参照されている長命な変数なので明示的に splice で空にする
+    const buffered = buffer.splice(0, buffer.length)
+    initializing = false
+    for (const ev of buffered) applyEvent(ev)
   })
 
   onBeforeUnmount(() => stopStream.value?.())
