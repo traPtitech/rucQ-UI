@@ -7,7 +7,7 @@ import localforage from 'localforage'
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      gcTime: 24 * 60 * 60 * 1000, // 24h
+      gcTime: Infinity, // 24h
       staleTime: 60 * 60 * 1000, // 1h
     },
   },
@@ -20,6 +20,6 @@ const asyncPersister = createAsyncStoragePersister({
 persistQueryClient({
   queryClient,
   persister: asyncPersister,
-  maxAge: 24 * 60 * 60 * 1000, // キャッシュの寿命
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 永続化キャッシュの寿命
   buster: 'v1', // APIやスキーマが変わったら更新
 })
