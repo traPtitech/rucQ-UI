@@ -30,6 +30,6 @@ coverage
 
 *.tsbuildinfo
 
-# .env
+.env
 
 dev-dist/

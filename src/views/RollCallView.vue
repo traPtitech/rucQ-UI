@@ -48,6 +48,9 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   stop()
 })
+
+// traQ チャンネルの URL（環境変数からパスを参照）
+const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.VITE_CHANNEL_PATH}`)
 </script>
 
 <template>
@@ -68,7 +71,13 @@ onBeforeUnmount(() => {
         />
       </div>
       <div class="d-flex justify-center mt-2">
-        <v-btn variant="flat" :class="$style.shadow">
+        <v-btn
+          variant="flat"
+          :class="$style.shadow"
+          :href="channelUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <div class="d-flex align-center">
             <img src="/src/assets/traq.svg" alt="traQ" height="20" class="mr-1" />
             <div :class="$style.buttonText">traQ で連絡する</div>
