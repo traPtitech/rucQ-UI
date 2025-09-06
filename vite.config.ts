@@ -54,6 +54,8 @@ export default defineConfig(({ mode }) => {
           'apple-touch-icon.png',
           'android-chrome-192x192.png',
           'android-chrome-512x512.png',
+          'android-chrome-192x192-maskable.png',
+          'android-chrome-512x512-maskable.png',
           'icon-transparent.svg',
           'logo.svg',
           'logo-bg.svg',
