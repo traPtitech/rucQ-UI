@@ -7,7 +7,7 @@ import localforage from 'localforage'
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      gcTime: Infinity, // 24h
+      gcTime: 7 * 24 * 60 * 60 * 1000, // 1週間
       staleTime: 60 * 60 * 1000, // 1h
     },
   },
