@@ -11,7 +11,7 @@ const props = defineProps<{
   textColor?: string
 }>()
 
-const displayCount = 6
+const MAX_VISIBLE_USER_COUNT = 6
 
 // userIds に自分の ID が含まれているかどうか
 const isMyReaction = computed(() => props.userIds.includes(userStore.user.id))
@@ -29,7 +29,7 @@ const orderedUserIds = computed(() => {
     <div :class="$style.title">{{ title ?? '' }}</div>
     <div :class="$style.iconRow">
       <user-icon
-        v-for="id in orderedUserIds.slice(0, displayCount)"
+        v-for="id in orderedUserIds.slice(0, MAX_VISIBLE_USER_COUNT)"
         :id="id"
         :key="id"
         id-tooltip
@@ -39,7 +39,7 @@ const orderedUserIds = computed(() => {
       <v-dialog max-width="800">
         <template #activator="{ props: activatorProps }">
           <v-btn
-            v-if="userIds.length > displayCount"
+            v-if="userIds.length > MAX_VISIBLE_USER_COUNT"
             density="comfortable"
             elevation="0"
             variant="text"

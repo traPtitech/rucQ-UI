@@ -7,6 +7,8 @@ const { user } = storeToRefs(useUserStore())
 const props = defineProps<{ id?: string; size?: number; idTooltip?: boolean }>()
 // idTooltip ... クリック時に Tooltip で ID を表示するかどうか
 
+const TOOLTIP_HOVER_DELAY = 1000 // ホバーから Tooltip 表示までの遅延時間（ミリ秒）
+
 const attrs = useAttrs()
 
 const showTooltip = ref(false)
@@ -41,7 +43,7 @@ const onMouseEnter = () => {
   // 1 秒間マウスのカーソルをかざし続けたら Tooltip を表示
   hoverTimer.value = window.setTimeout(() => {
     showTooltip.value = true
-  }, 1000)
+  }, TOOLTIP_HOVER_DELAY)
 }
 
 const onMouseLeave = () => {
