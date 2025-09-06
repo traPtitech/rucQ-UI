@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { onMounted, ref, computed, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCampStore, useUserStore } from '@/store'
 import { apiClient } from '@/api/apiClient'
 import type { components } from '@/api/schema'
 import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
 import UserResponse from '@/components/rollcall/UserResponse.vue'
-import { listenRollCallReactions } from '@/lib/rollCallStream'
+import { useRollCallStream } from '@/lib/rollCallStream'
+import { shallowRef } from 'vue'
 
 type RollCall = components['schemas']['RollCallResponse']
 
@@ -15,12 +16,10 @@ const campStore = useCampStore()
 const userStore = useUserStore()
 
 const rollcall = ref<RollCall>()
-const reactions = ref<components['schemas']['RollCallReactionResponse'][]>([])
-const stopStream = ref<() => void>()
 
-// 自分の送信済みリアクション
-const myReaction = computed(() => reactions.value.find((r) => r.userId === userStore.user.id))
+const stream = shallowRef<ReturnType<typeof useRollCallStream>>()
 
+// 点呼情報を取得
 const getRollCall = async () => {
   const camp = campStore.getCampByDisplayId(route.params.campname as string)
 
@@ -31,85 +30,20 @@ const getRollCall = async () => {
   return data.find((r) => r.id.toString() === route.params.rollcallId)
 }
 
-const fetchReactions = async (rollCallId: number) => {
-  const { data, error } = await apiClient.GET('/api/roll-calls/{rollCallId}/reactions', {
-    params: { path: { rollCallId } },
-  })
-  if (error || !data) throw error ?? new Error('Failed to fetch reactions')
-  reactions.value = data
-}
-
-// 自分が点呼の対象かどうか
+// ユーザーが点呼の対象かどうか
 const isSubject = computed(() => {
   if (!rollcall.value || !userStore.user) return false
   return rollcall.value.subjects.includes(userStore.user.id)
 })
 
 onMounted(async () => {
+  // 点呼情報取得
   rollcall.value = await getRollCall()
   if (!rollcall.value) return
-  await fetchReactions(rollcall.value.id)
 
-  // SSE購読
-  stopStream.value = listenRollCallReactions(rollcall.value.id, (ev) => {
-    if (ev.type === 'created') {
-      const idx = reactions.value.findIndex((r) => r.id === ev.id)
-      if (idx >= 0) reactions.value[idx] = { id: ev.id, userId: ev.userId, content: ev.content }
-      else reactions.value.push({ id: ev.id, userId: ev.userId, content: ev.content })
-    } else if (ev.type === 'updated') {
-      const idx = reactions.value.findIndex((r) => r.id === ev.id)
-      if (idx >= 0) reactions.value[idx] = { id: ev.id, userId: ev.userId, content: ev.content }
-    } else if (ev.type === 'deleted') {
-      reactions.value = reactions.value.filter((r) => r.id !== ev.id)
-    }
-  })
+  // stream/composable を初期化
+  stream.value = useRollCallStream(rollcall.value, userStore.user.id)
 })
-
-onBeforeUnmount(() => stopStream.value?.())
-
-// 表示集計
-const grouped = computed(() => {
-  if (!rollcall.value)
-    return { unanswered: [] as string[], options: [] as { name: string; ids: string[] }[] }
-  const options = rollcall.value.options.map((name) => ({ name, ids: [] as string[] }))
-  const answered = new Set<string>()
-  for (const r of reactions.value) {
-    const o = options.find((opt) => opt.name === r.content)
-    if (o) {
-      o.ids.push(r.userId)
-      answered.add(r.userId)
-    }
-  }
-  const unanswered = rollcall.value.subjects.filter((id) => !answered.has(id))
-  return { unanswered, options }
-})
-
-// リアクション送信・更新
-const chooseOption = async (content: string) => {
-  if (!rollcall.value) return
-  if (!isSubject.value) return
-  if (myReaction.value && myReaction.value.content === content) return
-  try {
-    if (!myReaction.value) {
-      const { data, error } = await apiClient.POST('/api/roll-calls/{rollCallId}/reactions', {
-        params: { path: { rollCallId: rollcall.value.id } },
-        body: { content },
-      })
-      if (error || !data) throw error ?? new Error('failed to post reaction')
-      reactions.value.push(data)
-    } else {
-      const { data, error } = await apiClient.PUT('/api/reactions/{reactionId}', {
-        params: { path: { reactionId: myReaction.value.id } },
-        body: { content },
-      })
-      if (error || !data) throw error ?? new Error('failed to update reaction')
-      const idx = reactions.value.findIndex((r) => r.id === data.id)
-      if (idx >= 0) reactions.value[idx] = data
-    }
-  } catch (e) {
-    console.error(e)
-  }
-}
 </script>
 
 <template>
@@ -123,9 +57,9 @@ const chooseOption = async (content: string) => {
       <div :class="$style.description">{{ rollcall?.description }}</div>
       <div :class="$style.unanswered">
         <user-response
-          v-if="rollcall"
+          v-if="rollcall && stream"
           title="未回答"
-          :user-ids="grouped.unanswered"
+          :user-ids="stream.grouped.value.unanswered"
           :text-color="isSubject ? 'white' : 'black'"
         />
       </div>
@@ -141,20 +75,20 @@ const chooseOption = async (content: string) => {
     </div>
     <div :class="$style.body">
       <v-card
-        v-for="opt in grouped.options"
+        v-for="opt in stream?.grouped.value.options"
         :key="opt.name"
         variant="flat"
         :class="$style.shadow"
         class="mb-5 border border-primary border-opacity-100"
-        :color="myReaction?.content === opt.name ? 'primary' : 'white'"
+        :color="stream?.myReaction.value?.content === opt.name ? 'primary' : 'white'"
         :ripple="isSubject"
-        @click="chooseOption(opt.name)"
+        @click="stream?.chooseOption(opt.name)"
       >
         <v-card-text class="py-3">
           <user-response
             :title="opt.name"
             :user-ids="opt.ids"
-            :text-color="myReaction?.content === opt.name ? 'white' : 'black'"
+            :text-color="stream?.myReaction.value?.content === opt.name ? 'white' : 'black'"
           />
         </v-card-text>
       </v-card>
