@@ -91,6 +91,46 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/admin/camps/{campId}/participants': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * ユーザーを合宿に参加させる（管理者用）
+     * @description 参加登録受付中かどうかに関わらず、ユーザーを合宿に参加させます。対象のユーザーにtraQのDMで通知します。
+     */
+    post: operations['adminAddCampParticipant']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/camps/{campId}/participants/{userId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /**
+     * ユーザーの参加を取り消す（管理者用）
+     * @description 参加登録受付中かどうかに関わらず、ユーザーの合宿参加を取り消します。対象のユーザーにtraQのDMで通知します。
+     */
+    delete: operations['adminRemoveCampParticipant']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/camps/{campId}/events': {
     parameters: {
       query?: never
@@ -313,8 +353,37 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    /** 質問の回答を取得（管理者用） */
+    /**
+     * 質問の回答を取得（管理者用）
+     * @description 質問に対する回答一覧を取得します。
+     *     参加登録を解除したユーザーの回答は含まれません。
+     *
+     */
     get: operations['adminGetAnswers']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/question-groups/{questionGroupId}/answers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * 質問グループに対する回答一覧を取得（管理者用）
+     * @description 質問グループに対する回答一覧を取得します。
+     *     userIdパラメータが指定された場合は特定のユーザーの回答のみを取得し、
+     *     指定されなかった場合は全ユーザーの回答を取得します。
+     *     参加登録を解除したユーザーの回答は含まれません。
+     *
+     */
+    get: operations['adminGetAnswersForQuestionGroup']
     put?: never
     post?: never
     delete?: never
@@ -330,7 +399,12 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    /** 質問の回答一覧を取得 */
+    /**
+     * 質問の回答一覧を取得
+     * @description 質問に対する回答一覧を取得します。
+     *     参加登録を解除したユーザーの回答は含まれません。
+     *
+     */
     get: operations['getAnswers']
     put?: never
     post?: never
@@ -347,7 +421,12 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    /** ある質問グループに対する自分の回答を取得 */
+    /**
+     * ある質問グループに対する自分の回答を取得
+     * @description ある質問グループに対する自分の回答を取得します。
+     *     参加登録を解除した場合でも回答は取得できます。
+     *
+     */
     get: operations['getMyAnswers']
     put?: never
     post?: never
@@ -371,6 +450,23 @@ export interface paths {
      * @description 質問グループに対する回答を作成します。複数の質問に対する回答を一度に送信できます。
      */
     post: operations['postAnswers']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/admin/users/{userId}/answers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** ユーザーの回答を作成（管理者用） */
+    post: operations['adminPostAnswer']
     delete?: never
     options?: never
     head?: never
@@ -402,7 +498,10 @@ export interface paths {
       cookie?: never
     }
     get?: never
-    /** 管理者が回答を更新 */
+    /**
+     * 管理者が回答を更新
+     * @description QuestionのisOpenがfalseの場合でも回答を更新できます。更新するとユーザーにtraQでDMが送信されます。
+     */
     put: operations['adminPutAnswer']
     post?: never
     delete?: never
@@ -592,8 +691,7 @@ export interface paths {
       cookie?: never
     }
     get?: never
-    /** 画像を更新（管理者用） */
-    put: operations['adminPutImage']
+    put?: never
     post?: never
     /** 画像を削除（管理者用） */
     delete: operations['adminDeleteImage']
@@ -834,6 +932,7 @@ export interface components {
       description?: string
       isPublic: boolean
       isOpen: boolean
+      isRequired?: boolean
     }
     PostQuestionRequest:
       | components['schemas']['FreeTextQuestionRequest']
@@ -845,6 +944,14 @@ export interface components {
       | components['schemas']['FreeNumberQuestionRequest']
       | components['schemas']['PutSingleChoiceQuestionRequest']
       | components['schemas']['PutMultipleChoiceQuestionRequest']
+    QuestionResponseBase: {
+      id: number
+      title: string
+      description?: string
+      isPublic: boolean
+      isOpen: boolean
+      isRequired: boolean
+    }
     QuestionResponse:
       | components['schemas']['FreeTextQuestionResponse']
       | components['schemas']['FreeNumberQuestionResponse']
@@ -854,27 +961,17 @@ export interface components {
       /** @enum {string} */
       type: 'free_text'
     }
-    FreeTextQuestionResponse: {
-      id: number
-      title: string
-      description?: string
+    FreeTextQuestionResponse: components['schemas']['QuestionResponseBase'] & {
       /** @enum {string} */
       type: 'free_text'
-      isPublic: boolean
-      isOpen: boolean
     }
     FreeNumberQuestionRequest: components['schemas']['QuestionRequestBase'] & {
       /** @enum {string} */
       type: 'free_number'
     }
-    FreeNumberQuestionResponse: {
-      id: number
-      title: string
-      description?: string
+    FreeNumberQuestionResponse: components['schemas']['QuestionResponseBase'] & {
       /** @enum {string} */
       type: 'free_number'
-      isPublic: boolean
-      isOpen: boolean
     }
     PostSingleChoiceQuestionRequest: components['schemas']['QuestionRequestBase'] & {
       /** @enum {string} */
@@ -886,14 +983,9 @@ export interface components {
       type: 'single'
       options: components['schemas']['PutOptionRequest'][]
     }
-    SingleChoiceQuestionResponse: {
-      id: number
-      title: string
-      description?: string
+    SingleChoiceQuestionResponse: components['schemas']['QuestionResponseBase'] & {
       /** @enum {string} */
       type: 'single'
-      isPublic: boolean
-      isOpen: boolean
       options: components['schemas']['OptionResponse'][]
     }
     PostMultipleChoiceQuestionRequest: components['schemas']['QuestionRequestBase'] & {
@@ -906,14 +998,9 @@ export interface components {
       type: 'multiple'
       options: components['schemas']['PutOptionRequest'][]
     }
-    MultipleChoiceQuestionResponse: {
-      id: number
-      title: string
-      description?: string
+    MultipleChoiceQuestionResponse: components['schemas']['QuestionResponseBase'] & {
       /** @enum {string} */
       type: 'multiple'
-      isPublic: boolean
-      isOpen: boolean
       options: components['schemas']['OptionResponse'][]
     }
     PostOptionRequest: {
@@ -1046,8 +1133,37 @@ export interface components {
       userId: string
       content: string
     }
+    RollCallReactionEventBase: {
+      id: number
+      userId: string
+    }
+    RollCallReactionCreatedEvent: components['schemas']['RollCallReactionEventBase'] & {
+      /** @enum {string} */
+      type: 'created'
+      content: string
+    }
+    RollCallReactionUpdatedEvent: components['schemas']['RollCallReactionEventBase'] & {
+      /** @enum {string} */
+      type: 'updated'
+      content: string
+    }
+    RollCallReactionDeletedEvent: components['schemas']['RollCallReactionEventBase'] & {
+      /** @enum {string} */
+      type: 'deleted'
+    }
+    RollCallReactionEvent:
+      | components['schemas']['RollCallReactionCreatedEvent']
+      | components['schemas']['RollCallReactionUpdatedEvent']
+      | components['schemas']['RollCallReactionDeletedEvent']
   }
   responses: {
+    /** @description Accepted */
+    Accepted: {
+      headers: {
+        [name: string]: unknown
+      }
+      content?: never
+    }
     /** @description No Content */
     NoContent: {
       headers: {
@@ -1117,7 +1233,7 @@ export interface components {
     'X-Forwarded-User': string
     /** @description User ID */
     UserId: string
-    /** @description User ID */
+    /** @description User ID（省略時は全ユーザーの回答を取得） */
     UserIdInQuery: string
     /** @description 合宿ID */
     CampId: number
@@ -1324,6 +1440,57 @@ export interface operations {
           'application/json': components['schemas']['UserResponse'][]
         }
       }
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminAddCampParticipant: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          userId: string
+        }
+      }
+    }
+    responses: {
+      204: components['responses']['NoContent']
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminRemoveCampParticipant: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+        /** @description User ID */
+        userId: components['parameters']['UserId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      204: components['responses']['NoContent']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
       500: components['responses']['InternalServerError']
     }
   }
@@ -1594,7 +1761,7 @@ export interface operations {
       }
     }
     responses: {
-      204: components['responses']['NoContent']
+      202: components['responses']['Accepted']
       400: components['responses']['BadRequest']
       403: components['responses']['Forbidden']
       404: components['responses']['NotFound']
@@ -1807,7 +1974,7 @@ export interface operations {
   adminGetAnswers: {
     parameters: {
       query?: {
-        /** @description User ID */
+        /** @description User ID（省略時は全ユーザーの回答を取得） */
         userId?: components['parameters']['UserIdInQuery']
       }
       header?: {
@@ -1832,6 +1999,38 @@ export interface operations {
         }
       }
       403: components['responses']['Forbidden']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminGetAnswersForQuestionGroup: {
+    parameters: {
+      query?: {
+        /** @description User ID（省略時は全ユーザーの回答を取得） */
+        userId?: components['parameters']['UserIdInQuery']
+      }
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 質問グループのID */
+        questionGroupId: components['parameters']['QuestionGroupId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AnswerResponse'][]
+        }
+      }
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
       500: components['responses']['InternalServerError']
     }
   }
@@ -1917,6 +2116,40 @@ export interface operations {
         }
       }
       400: components['responses']['BadRequest']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  adminPostAnswer: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description User ID */
+        userId: components['parameters']['UserId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AnswerRequest']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AnswerResponse']
+        }
+      }
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
       404: components['responses']['NotFound']
       500: components['responses']['InternalServerError']
     }
@@ -2106,6 +2339,7 @@ export interface operations {
           'application/json': components['schemas']['RoomGroupResponse'][]
         }
       }
+      404: components['responses']['NotFound']
       500: components['responses']['InternalServerError']
     }
   }
@@ -2139,6 +2373,7 @@ export interface operations {
       }
       400: components['responses']['BadRequest']
       403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
       500: components['responses']['InternalServerError']
     }
   }
@@ -2225,7 +2460,6 @@ export interface operations {
       }
       400: components['responses']['BadRequest']
       403: components['responses']['Forbidden']
-      409: components['responses']['Conflict']
       500: components['responses']['InternalServerError']
     }
   }
@@ -2369,43 +2603,6 @@ export interface operations {
       500: components['responses']['InternalServerError']
     }
   }
-  adminPutImage: {
-    parameters: {
-      query?: never
-      header?: {
-        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
-        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
-      }
-      path: {
-        /** @description 画像ID */
-        imageId: components['parameters']['ImageId']
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'multipart/form-data': {
-          /** Format: binary */
-          file?: string
-        }
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ImageResponse']
-        }
-      }
-      400: components['responses']['BadRequest']
-      403: components['responses']['Forbidden']
-      404: components['responses']['NotFound']
-      500: components['responses']['InternalServerError']
-    }
-  }
   adminDeleteImage: {
     parameters: {
       query?: never
@@ -2449,6 +2646,7 @@ export interface operations {
           'application/json': components['schemas']['RollCallResponse'][]
         }
       }
+      404: components['responses']['NotFound']
       500: components['responses']['InternalServerError']
     }
   }
@@ -2482,6 +2680,7 @@ export interface operations {
       }
       400: components['responses']['BadRequest']
       403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
       500: components['responses']['InternalServerError']
     }
   }
@@ -2561,7 +2760,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'text/event-stream': components['schemas']['RollCallReactionResponse']
+          'text/event-stream': components['schemas']['RollCallReactionEvent']
         }
       }
       404: components['responses']['NotFound']

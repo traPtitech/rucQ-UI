@@ -21,6 +21,7 @@ export const questionsHandlers = [
             ],
             isPublic: true,
             isOpen: true,
+            isRequired: false,
           },
           {
             id: 4,
@@ -32,6 +33,7 @@ export const questionsHandlers = [
             ],
             isPublic: false,
             isOpen: true,
+            isRequired: false,
           },
           {
             id: 5,
@@ -43,6 +45,7 @@ export const questionsHandlers = [
             ],
             isPublic: true,
             isOpen: true,
+            isRequired: false,
           },
           {
             id: 6,
@@ -54,6 +57,7 @@ export const questionsHandlers = [
             ],
             isPublic: false,
             isOpen: false,
+            isRequired: false,
           },
           {
             id: 7,
@@ -66,6 +70,7 @@ export const questionsHandlers = [
             ],
             isPublic: false,
             isOpen: true,
+            isRequired: false,
           },
           {
             id: 8,
@@ -77,6 +82,7 @@ export const questionsHandlers = [
             ],
             isPublic: false,
             isOpen: false,
+            isRequired: false,
           },
           {
             id: 9,
@@ -84,6 +90,7 @@ export const questionsHandlers = [
             type: 'free_text',
             isPublic: true,
             isOpen: true,
+            isRequired: false,
           },
           {
             id: 10,
@@ -95,6 +102,7 @@ export const questionsHandlers = [
             ],
             isPublic: true,
             isOpen: false,
+            isRequired: false,
           },
           {
             id: 11,
@@ -103,6 +111,7 @@ export const questionsHandlers = [
             type: 'free_number',
             isPublic: true,
             isOpen: true,
+            isRequired: false,
           },
           {
             id: 12,
@@ -111,6 +120,7 @@ export const questionsHandlers = [
             type: 'free_number',
             isPublic: false,
             isOpen: true,
+            isRequired: false,
           },
         ],
       },
@@ -130,6 +140,7 @@ export const questionsHandlers = [
             ],
             isPublic: true,
             isOpen: false,
+            isRequired: false,
           },
         ],
       },
@@ -145,6 +156,7 @@ export const questionsHandlers = [
             type: 'free_text',
             isPublic: true,
             isOpen: true,
+            isRequired: false,
           },
         ],
       },

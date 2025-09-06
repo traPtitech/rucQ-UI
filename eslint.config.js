@@ -30,6 +30,8 @@ export default defineConfig([
   {
     rules: {
       'vue/component-name-in-template-casing': ['warn', 'kebab-case'], // kebab-case 推奨
+      'vue/no-template-target-blank': ['error', { enforceDynamicLinks: 'always' }],
+      'vue/no-v-html': 'error',
     },
   },
 ])

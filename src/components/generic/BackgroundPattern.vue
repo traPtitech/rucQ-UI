@@ -28,7 +28,7 @@ const bgColor = computed(() => {
 
 <style module>
 .background {
-  position: fixed;
+  position: fixed !important;
   top: 0vh;
   left: 0vw;
   height: 100vh;
