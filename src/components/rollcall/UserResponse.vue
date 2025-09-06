@@ -32,17 +32,47 @@ const orderedUserIds = computed(() => {
         v-for="id in orderedUserIds.slice(0, displayCount)"
         :id="id"
         :key="id"
+        id-tooltip
         :size="28"
-        :class="[id === userStore.user.id ? $style.myIcon : '', 'mx-1']"
+        :class="[id === userStore.user.id ? $style.myIcon : '', 'mr-2']"
       />
-      <v-btn
-        v-if="userIds.length > displayCount"
-        :class="$style.moreBtn"
-        density="comfortable"
-        elevation="0"
-        variant="text"
-        icon="mdi-chevron-right"
-      ></v-btn>
+      <v-dialog max-width="800">
+        <template #activator="{ props: activatorProps }">
+          <v-btn
+            v-if="userIds.length > displayCount"
+            density="comfortable"
+            elevation="0"
+            variant="text"
+            icon="mdi-chevron-right"
+            v-bind="activatorProps"
+          ></v-btn>
+        </template>
+        <template #default="{ isActive }">
+          <v-card class="pa-2">
+            <div class="w-100 d-flex align-center justify-center">
+              <div :class="$style.title">{{ title }}</div>
+              <v-btn
+                :class="$style.closeButton"
+                density="comfortable"
+                elevation="0"
+                icon="mdi-close"
+                base-color="transparent"
+                @click="isActive.value = false"
+              ></v-btn>
+            </div>
+            <div class="mt-2 d-flex flex-wrap justify-center">
+              <user-icon
+                v-for="id in orderedUserIds"
+                :id="id"
+                :key="id"
+                id-tooltip
+                :size="28"
+                :class="[id === userStore.user.id ? $style.myIcon : '', 'ma-1']"
+              />
+            </div>
+          </v-card>
+        </template>
+      </v-dialog>
     </div>
     <div :class="$style.count">{{ userIds.length }}人</div>
   </div>
@@ -66,7 +96,7 @@ const orderedUserIds = computed(() => {
 .iconRow {
   position: relative;
   width: 100%;
-  height: 40px;
+  height: 36px;
   margin-top: 6px;
   display: flex;
   align-items: center;
@@ -78,12 +108,10 @@ const orderedUserIds = computed(() => {
   border: 2px solid white;
 }
 
-.moreBtn {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  min-width: 28px;
+.closeButton {
+  position: absolute !important;
+  right: 4px;
+  top: 4px;
 }
 
 .count {
