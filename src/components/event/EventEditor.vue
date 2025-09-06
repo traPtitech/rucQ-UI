@@ -117,16 +117,7 @@ onMounted(() => {
 
 // Mutations
 const upsertEventMutation = useMutation({
-  mutationFn: async (body: {
-    type: 'duration'
-    name: string
-    description: string
-    location: string
-    timeStart: string
-    timeEnd: string
-    displayColor: components['schemas']['DurationEventResponse']['displayColor']
-    organizerId: string
-  }) => {
+  mutationFn: async (body: components['schemas']['DurationEventRequest']) => {
     if (props.event) {
       const { error } = await apiClient.PUT('/api/events/{eventId}', {
         params: { path: { eventId: props.event.id } },

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { apiClient } from '@/api/apiClient'
 import type { components } from '@/api/schema'
 import UserIcon from '@/components/generic/UserIcon.vue'
@@ -12,9 +11,7 @@ const route = useRoute()
 const campStore = useCampStore()
 const userStore = useUserStore()
 
-const displayCamp = computed(() => {
-  return campStore.getCampByDisplayId(route.params.campname as string)
-})
+const displayCamp = campStore.getCampByDisplayId(route.params.campname as string)
 
 type RoomGroup = components['schemas']['RoomGroupResponse']
 
@@ -27,17 +24,12 @@ const {
   isPending,
   isFetching,
 } = useQuery<RoomGroup[], Error>({
-  queryKey: computed(() =>
-    displayCamp.value
-      ? qk.camps.roomGroups(displayCamp.value.id)
-      : ['camps', 'detail', 'room-groups', 'disabled'],
-  ),
-  enabled: computed(() => Boolean(displayCamp.value)),
+  queryKey: qk.camps.roomGroups(displayCamp.id),
   staleTime: 3 * 60 * 60_000, // 3h
 
   queryFn: async () => {
     const { data, error } = await apiClient.GET('/api/camps/{campId}/room-groups', {
-      params: { path: { campId: displayCamp.value!.id } },
+      params: { path: { campId: displayCamp.id } },
     })
     if (error || !data) throw error ?? new Error('Failed to fetch room groups')
     return data
@@ -49,7 +41,7 @@ const {
   <div class="position-relative w-100 h-100">
     <!-- Loading -->
     <div
-      v-if="!displayCamp || !roomGroups || (roomGroups.length === 0 && (isPending || isFetching))"
+      v-if="!roomGroups || (roomGroups.length === 0 && (isPending || isFetching))"
       class="d-flex flex-column align-center justify-center w-100 h-100"
     >
       <v-progress-circular indeterminate size="56" color="primary" class="mb-3" />

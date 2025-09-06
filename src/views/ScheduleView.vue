@@ -29,7 +29,7 @@ const { data: events } = useQuery<CampEvent[], Error>({
       : ['camps', 'detail', 'events', 'disabled'],
   ),
   enabled: computed(() => Boolean(displayCamp.value)),
-  staleTime: 60 * 60 * 1000, // 1h
+  staleTime: 10 * 60 * 1000, // 10m
   queryFn: async () => {
     const { data, error } = await apiClient.GET('/api/camps/{campId}/events', {
       params: { path: { campId: displayCamp.value!.id } },
