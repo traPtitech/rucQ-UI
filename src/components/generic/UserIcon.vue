@@ -1,64 +1,92 @@
 <script setup lang="ts">
-import { useUserStore } from '@/store'
-import { storeToRefs } from 'pinia'
 import { computed, ref, useAttrs } from 'vue'
+import { useQuery } from '@tanstack/vue-query'
+import { iconKeys } from '@/api/queries/keys'
+import { useUserStore } from '@/store'
 
-const { user } = storeToRefs(useUserStore())
-const props = defineProps<{ id?: string; size?: number; idTooltip?: boolean }>()
+const props = defineProps<{ id?: string; size: number; idTooltip?: boolean }>()
 // idTooltip ... クリック時に Tooltip で ID を表示するかどうか
+const userId = props.id ?? useUserStore().user.id // id が指定されていない場合は自分のアイコンを表示
 
-const $attrs = useAttrs() // $attrs を取得
+const attrs = useAttrs()
+const iconRef = ref<HTMLElement | undefined>()
 
-const showTooltip = ref(false)
+const imageStyle = {
+  width: `${props.size}px`,
+  height: `${props.size}px`,
+  objectFit: 'contain' as const,
+  borderRadius: '50%',
+  display: 'block',
+  cursor: props.idTooltip ? 'pointer' : 'default',
+}
 
-const imageStyle = computed(
-  () =>
-    ({
-      width: `${props.size}px`,
-      height: `${props.size}px`,
-      objectFit: 'contain',
-      borderRadius: `${props.size || 0}px`,
-      display: 'block',
-      cursor: props.idTooltip ? 'pointer' : 'default',
-    }) as const,
+const directUrl = `https://q.trap.jp/api/v3/public/icon/${userId}`
+
+const {
+  data: cachedIconUrl,
+  isLoading,
+  isFetching,
+  isError,
+} = useQuery<string, Error>({
+  queryKey: iconKeys.user(userId),
+  staleTime: 24 * 60 * 60_000, // 24h
+  gcTime: 24 * 60 * 60_000, // 24h
+  retry: 0,
+  // データURLで保存する
+  queryFn: async () => {
+    const res = await fetch(directUrl)
+    if (!res.ok) throw new Error(`アイコンを取得できませんでした: ${res.status}`)
+
+    const blob = await res.blob()
+    const dataUrl = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onloadend = () => resolve(reader.result as string)
+      reader.onerror = () => reject(new Error('アイコンの変換に失敗しました'))
+      reader.readAsDataURL(blob)
+    })
+    return dataUrl
+  },
+})
+
+const showSkeleton = computed(
+  () => !cachedIconUrl.value || isLoading.value || isFetching.value || isError.value,
 )
 
-const userId = computed(() => props.id || user.value?.id)
-const tooltipText = computed(() => `@${userId.value}`)
-
-// tooltipProps から onMouseenter イベントを除外（onMouseleave イベントは維持）
-const getModifiedTooltipProps = (tooltipProps: Record<string, unknown>) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { onMouseenter, ...rest } = tooltipProps // ホバーでは表示させない
-  return rest
-}
+const tooltipText = `@${userId}`
 </script>
-
 <template>
-  <v-tooltip v-if="idTooltip" v-model="showTooltip" location="top">
-    <template #default>
+  <template v-if="showSkeleton">
+    <v-avatar :size="size">
+      <v-skeleton-loader type="image" class="w-100 h-100" />
+    </v-avatar>
+  </template>
+
+  <template v-else>
+    <img
+      ref="iconRef"
+      tabindex="0"
+      v-bind="attrs"
+      :style="imageStyle"
+      :src="cachedIconUrl"
+      loading="lazy"
+    />
+
+    <v-tooltip
+      :activator="iconRef"
+      :open-on-hover="idTooltip"
+      :open-on-click="idTooltip"
+      :open-delay="1000"
+      location="top"
+    >
       <span class="text-white font-weight-medium">{{ tooltipText }}</span>
-    </template>
-    <template #activator="{ props: tooltipProps }">
-      <img
-        tabindex="0"
-        v-bind="{ ...$attrs, ...getModifiedTooltipProps(tooltipProps) }"
-        :style="imageStyle"
-        :src="`https://q.trap.jp/api/v3/public/icon/${userId}`"
-        @click="showTooltip = !showTooltip"
-      />
-    </template>
-  </v-tooltip>
-  <img
-    v-else
-    v-bind="$attrs"
-    :style="imageStyle"
-    :src="`https://q.trap.jp/api/v3/public/icon/${userId}`"
-  />
+    </v-tooltip>
+  </template>
 </template>
 
 <style module>
 :global(.v-tooltip .v-overlay__content) {
-  background-color: rgba(var(--v-theme-primary), 0.9) !important;
+  background-color: rgba(0, 0, 0, 0.7) !important;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 </style>

@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { components } from '@/api/schema'
 import { apiClient } from '@/api/apiClient'
+import { queryClient } from '@/lib/queryClient'
+import { qk } from '@/api/queries/keys'
 
 type User = components['schemas']['UserResponse']
 type Camp = components['schemas']['CampResponse']
@@ -10,10 +12,18 @@ export const useUserStore = defineStore('user', () => {
   const user = ref<User>()
 
   const initUser = async () => {
-    const { data, error } = await apiClient.GET('/api/me')
-    if (error || !data) {
-      throw new Error(`ユーザー情報を取得できません: ${error}`)
-    }
+    const data = await queryClient.ensureQueryData({
+      queryKey: qk.me.all,
+      queryFn: async () => {
+        const { data, error } = await apiClient.GET('/api/me')
+        if (error || !data) {
+          throw new Error(`ユーザー情報を取得できません: ${error}`)
+        }
+        return data
+      },
+      staleTime: Infinity,
+      gcTime: Infinity,
+    })
     user.value = data
   }
 
@@ -34,28 +44,42 @@ export const useCampStore = defineStore('camp', () => {
   const hasRegisteredLatest = ref(false) // 最新の合宿に参加登録済みかどうか
 
   const initCamp = async (me: User) => {
-    const camps = await apiClient.GET('/api/camps')
-    if (camps.error || !camps.data) {
-      throw new Error(`合宿情報を取得できません: ${camps.error}`)
-    }
+    const camps = await queryClient.ensureQueryData<Camp[]>({
+      queryKey: qk.camps.lists(),
+      queryFn: async () => {
+        const { data, error } = await apiClient.GET('/api/camps')
+        if (error || !data) {
+          throw new Error(`合宿情報を取得できません: ${error}`)
+        }
+        return data
+          .filter((camp) => !camp.isDraft)
+          .sort((a, b) => new Date(b.dateStart).getTime() - new Date(a.dateStart).getTime())
+      },
+    })
 
     // index が小さいほど新しい合宿
-    allCamps.value = camps.data
-      .filter((camp) => !camp.isDraft)
-      .sort((a, b) => new Date(b.dateStart).getTime() - new Date(a.dateStart).getTime())
+    allCamps.value = camps
 
     latestCamp.value = allCamps.value[0]
     if (!latestCamp.value) {
       return
     }
 
-    const participants = await apiClient.GET('/api/camps/{campId}/participants', {
-      params: { path: { campId: latestCamp.value.id } },
-    })
-    if (participants.error || !participants.data) {
-      throw new Error(`合宿参加者情報を取得できません: ${participants.error}`)
-    }
-    hasRegisteredLatest.value = participants.data.some((user) => user.id === me.id)
+    const participants = await queryClient.ensureQueryData<components['schemas']['UserResponse'][]>(
+      {
+        queryKey: qk.camps.participants(latestCamp.value.id),
+        queryFn: async () => {
+          const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
+            params: { path: { campId: latestCamp.value!.id } },
+          })
+          if (error || !data) {
+            throw new Error(`合宿参加者情報を取得できません: ${error}`)
+          }
+          return data
+        },
+      },
+    )
+    hasRegisteredLatest.value = participants.some((user) => user.id === me.id)
   }
 
   // パスパラメータから合宿を取得する関数
@@ -73,6 +97,21 @@ export const useCampStore = defineStore('camp', () => {
     })
     if (error) throw error
     hasRegisteredLatest.value = true
+    // 参加登録後は参加者リストを即時更新
+    const participantsKey = qk.camps.participants(campId)
+
+    await queryClient.fetchQuery({
+      queryKey: participantsKey,
+      queryFn: async () => {
+        const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
+          params: { path: { campId } },
+        })
+        if (error || !data) {
+          throw new Error(`合宿参加者情報を取得できません: ${error}`)
+        }
+        return data
+      },
+    })
   }
 
   const unregister = async (campId: number) => {
@@ -81,6 +120,21 @@ export const useCampStore = defineStore('camp', () => {
     })
     if (error) throw error
     hasRegisteredLatest.value = false
+    // 参加取り消し後は参加者リストを即時更新
+    const participantsKey = qk.camps.participants(campId)
+    
+    await queryClient.fetchQuery({
+      queryKey: participantsKey,
+      queryFn: async () => {
+        const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
+          params: { path: { campId } },
+        })
+        if (error || !data) {
+          throw new Error(`合宿参加者情報を取得できません: ${error}`)
+        }
+        return data
+      },
+    })
   }
 
   // 指定した合宿がユーザーにとって操作可能かどうかを判定

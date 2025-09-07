@@ -3,55 +3,59 @@ import MasonryWall from '@yeger/vue-masonry-wall'
 import PaymentInfo from '@/components/information/PaymentInfo.vue'
 import RoomInfo from '@/components/information/RoomInfo.vue'
 import { apiClient } from '@/api/apiClient'
-import { onMounted, ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
 import type { components } from '@/api/schema'
 import QuestionGroupPanel from '@/components/information/QuestionGroupPanel.vue'
 import RegisterCampButton from '@/components/information/RegisterCampButton.vue'
 import UnregisterCampButton from '@/components/information/UnregisterCampButton.vue'
-type QuestionGroup = components['schemas']['QuestionGroupResponse']
+import { useQuery } from '@tanstack/vue-query'
+import { qk } from '@/api/queries/keys'
+
+type QuestionGroup = components['schemas']['QuestionGroupResponse'][]
 type Dashboard = components['schemas']['DashboardResponse']
 
 const campStore = useCampStore()
 const route = useRoute()
 
-const displayCamp = computed(() => {
-  return campStore.getCampByDisplayId(route.params.campname as string)
+const displayCamp = campStore.getCampByDisplayId(route.params.campname as string)
+
+const isRegistered = computed(() => campStore.hasRegisteredLatest)
+
+// 質問グループ一覧
+const { data: questionGroups } = useQuery<QuestionGroup, Error>({
+  queryKey: qk.camps.questionGroups(displayCamp.id),
+  queryFn: async () => {
+    const { data, error } = await apiClient.GET('/api/camps/{campId}/question-groups', {
+      params: { path: { campId: displayCamp.id } },
+    })
+    if (error || !data) throw error ?? new Error('Failed to fetch question groups')
+    return data
+  },
 })
 
-const getQuestionGroups = async () => {
-  const { data, error } = await apiClient.GET('/api/camps/{campId}/question-groups', {
-    params: { path: { campId: displayCamp.value.id } },
-  })
-  if (error || !data) throw error ?? new Error('Failed to fetch question groups')
-  return data
-}
-
-const getDashboard = async () => {
-  const { data, error } = await apiClient.GET('/api/camps/{campId}/me', {
-    params: { path: { campId: displayCamp.value.id } },
-  })
-  if (error || !data) throw error ?? new Error('Failed to fetch dashboard')
-  return data
-}
-
-const isRegistered = computed(() => {
-  return campStore.hasRegisteredLatest
+// ダッシュボード（支払い/部屋情報）
+const {
+  data: dashboard,
+  isPending: isPendingDashboard,
+  isFetching: isFetchingDashboard,
+} = useQuery<Dashboard, Error>({
+  queryKey: qk.camps.dashboard(displayCamp.id),
+  queryFn: async () => {
+    const { data, error } = await apiClient.GET('/api/camps/{campId}/me', {
+      params: { path: { campId: displayCamp.id } },
+    })
+    if (error || !data) throw error ?? new Error('Failed to fetch dashboard')
+    return data
+  },
 })
 
-const questionGroups = ref<QuestionGroup[]>([])
-const dashboard = ref<Dashboard>()
-const isReady = ref(false)
-
-onMounted(async () => {
-  questionGroups.value = await getQuestionGroups()
-  dashboard.value = await getDashboard()
-  isReady.value = true
-})
+// PaymentInfoに読み込み状態を渡す
+const isReady = computed(() => !(isPendingDashboard.value || isFetchingDashboard.value))
 
 // 参加登録が可能な状態かどうかを判定
-const isRegisteredOpen = displayCamp.value.isRegistrationOpen
+const isRegisteredOpen = displayCamp.isRegistrationOpen
 </script>
 
 <template>
