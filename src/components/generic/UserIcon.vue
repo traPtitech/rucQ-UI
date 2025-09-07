@@ -8,15 +8,14 @@ const props = defineProps<{ id?: string; size: number; idTooltip?: boolean }>()
 // idTooltip ... クリック時に Tooltip で ID を表示するかどうか
 const userId = props.id ?? useUserStore().user.id // id が指定されていない場合は自分のアイコンを表示
 
-const $attrs = useAttrs() // $attrs を取得
-
-const showTooltip = ref(false)
+const attrs = useAttrs()
+const iconRef = ref<HTMLElement | undefined>()
 
 const imageStyle = {
   width: `${props.size}px`,
   height: `${props.size}px`,
   objectFit: 'contain' as const,
-  borderRadius: `${props.size || 0}px`,
+  borderRadius: '50%',
   display: 'block',
   cursor: props.idTooltip ? 'pointer' : 'default',
 }
@@ -54,17 +53,8 @@ const showSkeleton = computed(
 )
 
 const tooltipText = `@${userId}`
-
-// tooltipProps から onMouseenter イベントを除外（onMouseleave イベントは維持）
-const getModifiedTooltipProps = (tooltipProps: Record<string, unknown>) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { onMouseenter, ...rest } = tooltipProps // ホバーでは表示させない
-  return rest
-}
 </script>
-
 <template>
-  <!-- ロード中はスケルトンを表示 -->
   <template v-if="showSkeleton">
     <v-avatar :size="size">
       <v-skeleton-loader type="image" class="w-100 h-100" />
@@ -72,33 +62,31 @@ const getModifiedTooltipProps = (tooltipProps: Record<string, unknown>) => {
   </template>
 
   <template v-else>
-    <!-- Tooltipあり版 -->
-    <v-tooltip v-if="idTooltip" v-model="showTooltip" location="top">
-      <template #default>
-        <span class="text-white font-weight-medium">{{ tooltipText }}</span>
-      </template>
-      <template #activator="{ props: tooltipProps }">
-        <v-avatar :size="size" v-bind="{ ...$attrs, ...getModifiedTooltipProps(tooltipProps) }">
-          <img
-            tabindex="0"
-            :style="imageStyle"
-            loading="lazy"
-            :src="cachedIconUrl"
-            @click="showTooltip = !showTooltip"
-          />
-        </v-avatar>
-      </template>
-    </v-tooltip>
+    <img
+      ref="iconRef"
+      tabindex="0"
+      v-bind="attrs"
+      :style="imageStyle"
+      :src="cachedIconUrl"
+      loading="lazy"
+    />
 
-    <!-- Tooltipなし版 -->
-    <v-avatar v-else :size="size" v-bind="$attrs">
-      <img :style="imageStyle" loading="lazy" :src="cachedIconUrl" />
-    </v-avatar>
+    <v-tooltip
+      :activator="iconRef"
+      :open-on-hover="idTooltip"
+      :open-on-click="idTooltip"
+      :open-delay="1000"
+      location="top"
+    >
+      <span class="text-white font-weight-medium">{{ tooltipText }}</span>
+    </v-tooltip>
   </template>
 </template>
 
 <style module>
 :global(.v-tooltip .v-overlay__content) {
-  background-color: rgba(var(--v-theme-primary), 0.9) !important;
+  background-color: rgba(0, 0, 0, 0.7) !important;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 </style>
