@@ -112,10 +112,10 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
 <style module>
 .topBackground {
   position: absolute;
-  top: -400px; /* 上方向へのスクロールで上端が切れないように余分に上方向の大きさを取る */
+  top: -2000px; /* 上方向へのスクロールで上端が切れないように余分に上方向の大きさを取る */
   left: 0;
   width: 100vw;
-  clip-path: inset(0 0 calc(100% - 770px) 0); /* theme 色の背景部分の実質的な表示高さは 370px */
+  clip-path: inset(0 0 calc(100% - 2370px) 0); /* theme 色の背景部分の実質的な表示高さは 370px */
 }
 
 .header {
