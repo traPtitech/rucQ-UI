@@ -56,10 +56,10 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
 <template>
   <div class="position-relative">
     <background-pattern variant="light" />
-    <div :class="$style.topBackground">
-      <background-pattern :variant="isSubject ? 'primary' : 'light'" class="position-relative" />
-    </div>
     <div :class="[$style.header, `text-${isSubject ? 'white' : 'black'}`]">
+      <div :class="$style.headerBg">
+        <background-pattern :variant="isSubject ? 'primary' : 'light'" />
+      </div>
       <div :class="$style.title">{{ rollcall?.name }}</div>
       <div :class="$style.description">{{ rollcall?.description }}</div>
       <div :class="$style.unanswered">
@@ -110,21 +110,24 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
 </template>
 
 <style module>
-.topBackground {
-  position: absolute;
-  top: -2000px; /* 上方向へのスクロールで上端が切れないように余分に上方向の大きさを取る */
-  left: 0;
-  width: 100vw;
-  clip-path: inset(0 0 calc(100% - 2370px) 0); /* theme 色の背景部分の実質的な表示高さは 370px */
-}
-
 .header {
   width: 100%;
-  height: 400px;
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  padding: 80px 16px 40px;
+  z-index: 1;
+}
+
+.headerBg {
+  position: absolute;
+  top: -2000px; /* 上方向へのスクロールで上端が切れないように余分に上方向の大きさを取る */
+  left: 0;
+  width: 100%;
+  height: calc(100% + 2000px); /* その分戻す */
+  z-index: -1;
+  clip-path: inset(0 0 20px 0);
 }
 
 .title {
