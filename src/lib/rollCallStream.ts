@@ -40,6 +40,9 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
   const reactions = ref<RollCallReaction[]>([])
   const stopStream = ref<() => void>()
 
+  // リアクションの重複作成を防ぐためのフラグ
+  const inFlightCreate = ref(false)
+
   // 自分の送信済みリアクション
   const myReaction = computed(() => reactions.value.find((r) => r.userId === userId))
 
@@ -57,6 +60,12 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
   const applyEvent = (ev: RollCallReactionEvent) => {
     switch (ev.type) {
       case 'created': {
+        // 既存 ID 更新 or 新規追加の前に、念のため同一ユーザーの旧レコードがないかを見る
+        for (let i = reactions.value.length - 1; i >= 0; i--) {
+          const r = reactions.value[i]
+          // 別 ID で同一ユーザーのものが残っていたら除去
+          if (r.userId === ev.userId && r.id !== ev.id) reactions.value.splice(i, 1)
+        }
         const idx = reactions.value.findIndex((r) => r.id === ev.id)
         const entry = { id: ev.id, userId: ev.userId, content: ev.content }
         if (idx >= 0) reactions.value[idx] = entry
@@ -102,10 +111,13 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
     if (!rollcall.value) return
     if (!rollcall.value.subjects.includes(userId)) return
     if (myReaction.value && myReaction.value.content === content) return
+    // create 中は追加の create を抑止（何度も高速クリックすると重複が生まれるため）
+    if (!myReaction.value && inFlightCreate.value) return
 
     try {
       if (!myReaction.value) {
         // まだリアクションがない場合は新規作成
+        inFlightCreate.value = true
         const { data, error } = await apiClient.POST('/api/roll-calls/{rollCallId}/reactions', {
           params: { path: { rollCallId: rollcall.value.id } },
           body: { content },
@@ -124,6 +136,8 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
       }
     } catch (e) {
       console.error(e)
+    } finally {
+      inFlightCreate.value = false
     }
   }
 
