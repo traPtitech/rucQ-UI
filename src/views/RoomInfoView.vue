@@ -1,51 +1,69 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
 import { apiClient } from '@/api/apiClient'
 import type { components } from '@/api/schema'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { useCampStore, useUserStore } from '@/store'
 import { useRoute } from 'vue-router'
+import { useQuery } from '@tanstack/vue-query'
+import { qk } from '@/api/queries/keys'
 
 const route = useRoute()
 const campStore = useCampStore()
 const userStore = useUserStore()
 
-const displayCamp = computed(() => {
-  return campStore.getCampByDisplayId(route.params.campname as string)
-})
+const displayCamp = campStore.getCampByDisplayId(route.params.campname as string)
 
 type RoomGroup = components['schemas']['RoomGroupResponse']
-
-const roomGroups = ref<RoomGroup[]>([])
-
-const getRoomGroups = async () => {
-  const { data, error } = await apiClient.GET('/api/camps/{campId}/room-groups', {
-    params: { path: { campId: displayCamp.value.id } },
-  })
-  if (error || !data) throw error ?? new Error('Failed to fetch room groups')
-  return data
-}
 
 const isMyRoom = (room: components['schemas']['RoomResponse']) => {
   return room.members.some((member) => member.id === userStore.user.id)
 }
 
-onMounted(async () => {
-  roomGroups.value = await getRoomGroups()
+const {
+  data: roomGroups,
+  isPending,
+  isFetching,
+} = useQuery<RoomGroup[], Error>({
+  queryKey: qk.camps.roomGroups(displayCamp.id),
+  staleTime: 3 * 60 * 60_000, // 3h
+
+  queryFn: async () => {
+    const { data, error } = await apiClient.GET('/api/camps/{campId}/room-groups', {
+      params: { path: { campId: displayCamp.id } },
+    })
+    if (error || !data) throw error ?? new Error('Failed to fetch room groups')
+    return data
+  },
 })
 </script>
 
 <template>
   <div class="position-relative w-100 h-100">
+    <!-- Loading -->
     <div
-      v-if="roomGroups.length === 0"
+      v-if="!roomGroups || (roomGroups.length === 0 && (isPending || isFetching))"
+      class="d-flex flex-column align-center justify-center w-100 h-100"
+    >
+      <v-progress-circular indeterminate size="56" color="primary" class="mb-3" />
+      <h3 class="font-weight-bold">部屋割を読み込み中…</h3>
+    </div>
+
+    <!-- Empty state -->
+    <div
+      v-else-if="roomGroups && roomGroups.length === 0"
       class="d-flex flex-column align-center justify-center w-100 h-100"
     >
       <v-icon size="64" class="mb-2" icon="mdi-view-grid" />
       <h3 class="font-weight-bold">{{ displayCamp.name }}の部屋割は未定です</h3>
     </div>
+
+    <!-- Content -->
     <div v-else :class="$style.content">
-      <div v-for="group in roomGroups" :key="group.id" class="d-flex flex-column align-center">
+      <div
+        v-for="group in roomGroups || []"
+        :key="group.id"
+        class="d-flex flex-column align-center"
+      >
         <div :class="$style.floorName">
           <span :class="$style.floorNameText">{{ group.name }}</span>
         </div>
@@ -71,12 +89,7 @@ onMounted(async () => {
                 v-if="isMyRoom(room)"
                 class="w-100 h-100 d-flex flex-wrap justify-center align-center"
               >
-                <user-icon
-                  :id="userStore.user.id"
-                  :size="26"
-                  class="ma-1"
-                  :class="$style.userIcon"
-                />
+                <user-icon :size="26" class="ma-1" :class="$style.userIcon" />
                 <user-icon
                   v-for="user in room.members.filter((u) => u.id !== userStore.user.id)"
                   :id="user.id"
