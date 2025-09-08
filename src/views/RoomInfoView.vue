@@ -96,6 +96,7 @@ const {
                   :key="user.id"
                   :size="26"
                   class="ma-1"
+                  id-tooltip
                 />
               </div>
               <div v-else class="w-100 h-100 d-flex flex-wrap justify-center align-center">
@@ -105,6 +106,7 @@ const {
                   :key="user.id"
                   :size="26"
                   class="ma-1"
+                  id-tooltip
                 />
               </div>
             </div>
