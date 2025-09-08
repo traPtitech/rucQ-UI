@@ -60,12 +60,8 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
   const applyEvent = (ev: RollCallReactionEvent) => {
     switch (ev.type) {
       case 'created': {
-        // 既存 ID 更新 or 新規追加の前に、念のため同一ユーザーの旧レコードがないかを見る
-        for (let i = reactions.value.length - 1; i >= 0; i--) {
-          const r = reactions.value[i]
-          // 別 ID で同一ユーザーのものが残っていたら除去
-          if (r.userId === ev.userId && r.id !== ev.id) reactions.value.splice(i, 1)
-        }
+        // filter で同一ユーザーの旧 ID を一括除去
+        reactions.value = reactions.value.filter((r) => !(r.userId === ev.userId && r.id !== ev.id))
         const idx = reactions.value.findIndex((r) => r.id === ev.id)
         const entry = { id: ev.id, userId: ev.userId, content: ev.content }
         if (idx >= 0) reactions.value[idx] = entry
