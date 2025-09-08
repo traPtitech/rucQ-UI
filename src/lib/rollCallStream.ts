@@ -40,8 +40,8 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
   const reactions = ref<RollCallReaction[]>([])
   const stopStream = ref<() => void>()
 
-  // リアクションの重複作成を防ぐためのフラグ
-  const inFlightCreate = ref(false)
+  // 送信中操作（create / update）を一度にひとつしか行えないようにするためのフラグ
+  const inFlight = ref(false)
 
   // 自分の送信済みリアクション
   const myReaction = computed(() => reactions.value.find((r) => r.userId === userId))
@@ -107,13 +107,11 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
     if (!rollcall.value) return
     if (!rollcall.value.subjects.includes(userId)) return
     if (myReaction.value && myReaction.value.content === content) return
-    // create 中は追加の create を抑止（何度も高速クリックすると重複が生まれるため）
-    if (!myReaction.value && inFlightCreate.value) return
+    if (inFlight.value) return // いずれかの操作中は他の操作を禁止
 
     try {
+      inFlight.value = true
       if (!myReaction.value) {
-        // まだリアクションがない場合は新規作成
-        inFlightCreate.value = true
         const { data, error } = await apiClient.POST('/api/roll-calls/{rollCallId}/reactions', {
           params: { path: { rollCallId: rollcall.value.id } },
           body: { content },
@@ -133,7 +131,7 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
     } catch (e) {
       console.error(e)
     } finally {
-      inFlightCreate.value = false
+      inFlight.value = false
     }
   }
 
