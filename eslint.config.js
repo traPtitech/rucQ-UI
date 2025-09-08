@@ -6,7 +6,7 @@ import eslintConfigPrettier from 'eslint-config-prettier'
 
 export default defineConfig([
   {
-    ignores: ['dist', 'node_modules', '.output', 'coverage'],
+  ignores: ['dist', 'dev-dist', 'node_modules', '.output', 'coverage', 'public/mockServiceWorker.js'],
   },
 
   js.configs.recommended,
@@ -30,6 +30,8 @@ export default defineConfig([
   {
     rules: {
       'vue/component-name-in-template-casing': ['warn', 'kebab-case'], // kebab-case 推奨
+      'vue/no-template-target-blank': ['error', { enforceDynamicLinks: 'always' }],
+      'vue/no-v-html': 'error',
     },
   },
 ])
