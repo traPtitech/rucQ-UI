@@ -6,7 +6,7 @@ import eslintConfigPrettier from 'eslint-config-prettier'
 
 export default defineConfig([
   {
-    ignores: ['dist', 'node_modules', '.output', 'coverage'],
+  ignores: ['dist', 'dev-dist', 'node_modules', '.output', 'coverage', 'public/mockServiceWorker.js'],
   },
 
   js.configs.recommended,
