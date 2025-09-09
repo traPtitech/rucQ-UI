@@ -11,7 +11,8 @@ const router = useRouter()
 const route = useRoute()
 
 const currentPath = computed(() => route.path)
-const fullPath = (path: string) => `/${route.params.campname}/${path}`
+const fullPath = (path: string) =>
+  `/${route.params.campname}${path ? `/${path}` : ''}`
 const isActive = (itemPath: string) => currentPath.value === fullPath(itemPath)
 
 // 選択されたアイテムの配列を管理
