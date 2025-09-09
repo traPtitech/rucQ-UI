@@ -17,9 +17,10 @@ const asyncPersister = createAsyncStoragePersister({
   storage: localforage,
 })
 
-persistQueryClient({
+// persistQueryClient は [unsubscribe, restorePromise] を返す
+export const [, queryCacheRestored] = persistQueryClient({
   queryClient,
   persister: asyncPersister,
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 永続化キャッシュの寿命
-  buster: 'v1', // APIやスキーマが変わったら更新
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  buster: 'v1',
 })

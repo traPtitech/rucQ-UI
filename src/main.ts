@@ -3,7 +3,7 @@ import router from '@/router'
 import { createPinia } from 'pinia'
 import { VueQueryPlugin } from '@tanstack/vue-query'
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
-import { queryClient } from '@/lib/queryClient'
+import { queryClient, queryCacheRestored } from '@/lib/queryClient'
 import { vuetify } from '@/lib/vuetify'
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
@@ -32,6 +32,8 @@ async function initializeApp() {
     await worker.start()
     // await (await import('./dev/setup')).default()
   }
+  // queryClientの永続化キャッシュが復元されるのを待つ
+  await queryCacheRestored
 
   try {
     const userStore = useUserStore()
