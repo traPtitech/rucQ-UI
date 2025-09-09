@@ -12,7 +12,7 @@ defineProps<{ room?: Room }>()
 
 <template>
   <div v-if="room" :class="$style.container">
-    <div :class="$style.room">201</div>
+    <div :class="$style.room">{{ room.name }}</div>
     <div :class="$style.members">
       <user-icon :size="32" class="mx-1" id-tooltip />
       <user-icon

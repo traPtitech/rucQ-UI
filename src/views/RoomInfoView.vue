@@ -25,8 +25,6 @@ const {
   isFetching,
 } = useQuery<RoomGroup[], Error>({
   queryKey: qk.camps.roomGroups(displayCamp.id),
-  staleTime: 3 * 60 * 60_000, // 3h
-
   queryFn: async () => {
     const { data, error } = await apiClient.GET('/api/camps/{campId}/room-groups', {
       params: { path: { campId: displayCamp.id } },
