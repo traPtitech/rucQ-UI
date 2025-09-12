@@ -41,7 +41,7 @@ const getMyAnswers = async () => {
       )
       if (error || !data) throw error ?? new Error('Failed to fetch answers')
       return data
-    },  
+    },
   })
   return data
 }
@@ -53,6 +53,11 @@ const originalMap = reactive<Record<number, AnswerData>>({})
 
 // getMyAnswers の結果をリアクティブ変数 answersMap に格納する
 const refreshAnswersMap = async () => {
+  // 回答取得クエリキーを invalidate
+  await queryClient.invalidateQueries({
+    queryKey: qk.me.questionGroupAnswers(props.questionGroup.id),
+  })
+
   for (const question of props.questionGroup.questions) {
     switch (question.type) {
       case 'free_text':
@@ -94,6 +99,7 @@ const refreshAnswersMap = async () => {
         break
       }
     }
+    console.log(answersMap[answer.questionId])
   }
 
   // originalMap にディープコピーを追加
