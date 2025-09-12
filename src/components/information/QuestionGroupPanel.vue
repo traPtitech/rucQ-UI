@@ -99,7 +99,6 @@ const refreshAnswersMap = async () => {
         break
       }
     }
-    console.log(answersMap[answer.questionId])
   }
 
   // originalMap にディープコピーを追加
