@@ -158,7 +158,7 @@ const allChecked = computed(() => {
 
 // 回答受付中の質問が 1 つ以上存在するか。もし false ならばそもそも編集モードに入れない
 const isEditable = computed(
-  () => isOperable.value && props.questionGroup.questions.some((q) => q.isOpen),
+  () => campStore.hasRegisteredLatest && props.questionGroup.questions.some((q) => q.isOpen),
 )
 
 // 回答が変更されたかどうかを判定
