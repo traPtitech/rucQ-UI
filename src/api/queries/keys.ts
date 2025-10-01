@@ -1,10 +1,10 @@
-export const meKeys = {
+const meKeys = {
   all: ['me'] as const,
   questionGroupAnswers: (questionGroupId: number) =>
     ['me', 'question-groups', questionGroupId, 'answers'] as const,
 }
 
-export const campKeys = {
+const campKeys = {
   all: ['camps'] as const,
 
   lists: () => ['camps', 'list'] as const,
@@ -20,8 +20,7 @@ export const campKeys = {
   dashboard: (id: number) => ['camps', 'detail', id, 'dashboard'] as const,
 }
 
-// Icon-related keys
-export const iconKeys = {
+const iconKeys = {
   all: ['icons'] as const,
   user: (id: string) => ['icons', 'user', id] as const,
 }
