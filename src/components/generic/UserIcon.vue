@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, useAttrs } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
-import { iconKeys } from '@/api/queries/keys'
+import { qk } from '@/api/queries/keys'
 import { useUserStore } from '@/store'
 
 const props = defineProps<{ id?: string; size: number; idTooltip?: boolean }>()
@@ -28,7 +28,7 @@ const {
   isFetching,
   isError,
 } = useQuery<string, Error>({
-  queryKey: iconKeys.user(userId),
+  queryKey: qk.icons.user(userId),
   staleTime: 24 * 60 * 60_000, // 24h
   gcTime: 24 * 60 * 60_000, // 24h
   retry: 0,

@@ -5,13 +5,14 @@ import { ref, computed, onMounted, reactive, toRaw } from 'vue'
 import { useCampStore } from '@/store'
 import QuestionGroupEditor from '@/components/information/QuestionGroupEditor.vue'
 import QuestionGroupViewer from '@/components/information/QuestionGroupViewer.vue'
-import { useMutation } from '@tanstack/vue-query'
-import { queryClient } from '@/lib/queryClient'
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Question = components['schemas']['QuestionResponse']
 type Camp = components['schemas']['CampResponse']
+
+const queryClient = useQueryClient()
 
 const props = defineProps<{
   questionGroup: QuestionGroup

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { components } from '@/api/schema'
 import { apiClient } from '@/api/apiClient'
-import { queryClient } from '@/lib/queryClient'
+import { useQueryClient } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
 
 type User = components['schemas']['UserResponse']
@@ -10,6 +10,7 @@ type Camp = components['schemas']['CampResponse']
 
 export const useUserStore = defineStore('user', () => {
   const user = ref<User>()
+  const queryClient = useQueryClient()
 
   const initUser = async () => {
     const data = await queryClient.ensureQueryData({
@@ -39,6 +40,7 @@ export const useUserStore = defineStore('user', () => {
 })
 
 export const useCampStore = defineStore('camp', () => {
+  const queryClient = useQueryClient()
   const latestCamp = ref<Camp>()
   const allCamps = ref<Camp[]>([])
   const hasRegisteredLatest = ref(false) // 最新の合宿に参加登録済みかどうか
@@ -122,7 +124,7 @@ export const useCampStore = defineStore('camp', () => {
     hasRegisteredLatest.value = false
     // 参加取り消し後は参加者リストを即時更新
     const participantsKey = qk.camps.participants(campId)
-    
+
     await queryClient.fetchQuery({
       queryKey: participantsKey,
       queryFn: async () => {
