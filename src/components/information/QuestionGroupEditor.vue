@@ -4,7 +4,7 @@ import QuestionEditField from '@/components/information/QuestionEditField.vue'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import AnswersDialog from '@/components/information/AnswersDialog.vue'
 import { computed } from 'vue'
-import { getDayString } from '@/utility/date'
+import { getDayString } from '@/components/event/utils/date'
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Question = components['schemas']['QuestionResponse']

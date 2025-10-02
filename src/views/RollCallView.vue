@@ -6,7 +6,7 @@ import { apiClient } from '@/api/apiClient'
 import type { components } from '@/api/schema'
 import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
 import UserResponse from '@/components/rollcall/UserResponse.vue'
-import { useRollCallStream } from '@/lib/rollCallStream'
+import { useRollCallStream } from '@/components/rollcall/rollCallStream'
 
 type RollCall = components['schemas']['RollCallResponse']
 

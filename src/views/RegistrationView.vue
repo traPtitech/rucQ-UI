@@ -2,7 +2,7 @@
 import { useCampStore, useTimeStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
-import { getDayStringNoPad } from '@/utility/date'
+import { getDayStringNoPad } from '@/components/event/utils/date'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import { useRouter } from 'vue-router'
 import type { components } from '@/api/schema'
