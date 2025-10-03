@@ -1,7 +1,7 @@
 import type { components } from '@/api/schema'
 import { DayEventGrid, type EventGroup } from '@/components/event/utils/eventGrid'
 import { getStartTime, getEndTime } from '@/components/event/utils/eventLib'
-import { getJSTDate } from '@/components/event/utils/date'
+import { getJSTDate } from '@/utils/date'
 
 type Camp = components['schemas']['CampResponse']
 type MomentEvent = components['schemas']['MomentEventResponse']

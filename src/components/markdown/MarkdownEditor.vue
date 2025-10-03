@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, nextTick } from 'vue'
-import { decorated } from '@/components/event/utils/editorParse'
+import { decorated } from '@/components/markdown/utils/editorParse'
 const text = defineModel<string>('text')
 
 const props = defineProps<{ color?: string | undefined }>()

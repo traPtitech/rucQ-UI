@@ -8,7 +8,7 @@ import { apiClient } from '@/api/apiClient'
 import { useCampStore, useUserStore } from '@/store'
 import { useRoute } from 'vue-router'
 import type { components } from '@/api/schema'
-import { dateToText, dateDiffInDaysJST, getJSTDate } from '@/components/event/utils/date'
+import { dateToText, dateDiffInDaysJST, getJSTDate } from '@/utils/date'
 import { EVENT_COLORS } from '@/components/event/utils/eventColors'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 

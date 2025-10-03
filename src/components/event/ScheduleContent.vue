@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { getDayStringNoPad } from '@/components/event/utils/date'
+import { getDayStringNoPad } from '@/utils/date'
 import { getLayout } from '@/components/event/utils/eventLayout'
 import EventBlock from '@/components/event/EventBlock.vue'
 import type { components } from '@/api/schema'

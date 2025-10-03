@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
-import { getDayStringNoPad } from '@/components/event/utils/date'
+import { getDayStringNoPad } from '@/utils/date'
 import EventTimePick from './EventTimePick.vue'
 import EventDeleteDialog from './EventDeleteDialog.vue'
 import type { components } from '@/api/schema'
