@@ -33,3 +33,4 @@ coverage
 .env
 
 dev-dist/
+stats.html
