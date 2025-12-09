@@ -27,6 +27,14 @@ const executeRegistration = async () => {
 
 <template>
   <v-card :class="$style.container">
+    <div :class="$style.side">
+
+    </div>
+
+    <div :class="$style.main">
+      合宿係が ￥{{  }} の 振込を確認しました
+    </div>
+<!--
     <div :class="$style.header">
       <user-icon :size="28" />
       <h3 class="text-h6 font-weight-bold">合宿への参加</h3>
@@ -42,6 +50,7 @@ const executeRegistration = async () => {
         合宿に参加する
       </v-btn>
     </div>
+-->
   </v-card>
 
   <v-dialog v-model="dialog" width="400" @after-leave="executeRegistration">
@@ -64,12 +73,28 @@ const executeRegistration = async () => {
 
 <style module>
 .container {
-  margin: 24px 0 16px 0;
-  padding: 24px;
+  margin: 0px;
+  padding: 0px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1) !important;
   border: 1px solid #e9e5d9;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+}
+
+.side {
+  margin: 0px;
+  padding: 0px;
+  width: 10vw;
+  height: 60px;
+  background-color: #4caf50;
+}
+
+.main {
+  margin: 0px;
+  padding: 0px 0px 0px 20px;
+  line-height: 60px;
+  text-align: center;
+  color: #4caf50;
 }
 
 .header {
