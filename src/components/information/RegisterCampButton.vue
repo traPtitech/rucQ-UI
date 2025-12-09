@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import UserIcon from '@/components/generic/UserIcon.vue'
 import { useCampStore } from '@/store'
 
 const campStore = useCampStore()
@@ -28,29 +27,19 @@ const executeRegistration = async () => {
 <template>
   <v-card :class="$style.container">
     <div :class="$style.side">
-
+      <v-icon color="white">mdi-check</v-icon>
     </div>
 
-    <div :class="$style.main">
-      合宿係が ￥{{  }} の 振込を確認しました
-    </div>
-<!--
-    <div :class="$style.header">
-      <user-icon :size="28" />
-      <h3 class="text-h6 font-weight-bold">合宿への参加</h3>
-    </div>
-
-    <div :class="$style.statusRow">
-      <div :class="$style.registeredLabel">
-        <v-icon class="text-secondary" size="20">mdi-close-circle-outline</v-icon>
-        <span class="text-secondary">未登録</span>
+    <div :class="$style.mainContent">
+      <div :class="$style.text">合宿係が ￥{{}} の 振込を確認しました</div>
+      <!--
+      <div style="align-items: right;">
+        <v-btn color="primary" elevation="0" size="small" class="text-none" @click="dialog = true">
+          合宿に参加する
+        </v-btn>
       </div>
-
-      <v-btn color="primary" elevation="0" size="small" class="text-none" @click="dialog = true">
-        合宿に参加する
-      </v-btn>
+      -->
     </div>
--->
   </v-card>
 
   <v-dialog v-model="dialog" width="400" @after-leave="executeRegistration">
@@ -86,35 +75,29 @@ const executeRegistration = async () => {
   padding: 0px;
   width: 10vw;
   height: 60px;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
   background-color: #4caf50;
 }
 
-.main {
+.mainContent {
   margin: 0px;
-  padding: 0px 0px 0px 20px;
-  line-height: 60px;
-  text-align: center;
-  color: #4caf50;
+  padding: 0px 0px 0px 0px;
 }
 
-.header {
-  display: flex;
+.text {
+  padding: 0px 0px 0px 20px;
+  line-height: 60px;
   align-items: center;
-  margin-bottom: 16px;
-  gap: 16px;
+  color: #4caf50;
 }
 
 .participateButton {
   height: 48px;
   font-weight: 600;
   font-size: 16px;
-}
-
-.statusRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 8px;
 }
 
 .registeredLabel {
