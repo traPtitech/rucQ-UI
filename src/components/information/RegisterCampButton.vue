@@ -30,7 +30,7 @@ const executeRegistration = async () => {
       <v-icon color="white">mdi-check</v-icon>
     </div>
 
-    <div :class="$style.mainContent">
+    <div :class="$style.mainContent">  <!-- to do 金額を入れる -->
       <div :class="$style.text">合宿係が ￥{{}} の 振込を確認しました</div>
       <!--
       <div style="align-items: right;">
