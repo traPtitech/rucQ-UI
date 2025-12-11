@@ -2,7 +2,7 @@
 import type { components } from '@/api/schema'
 import QuestionShowField from '@/components/information/QuestionShowField.vue'
 import { computed } from 'vue'
-import AnswerDialog from '@/components/information/AnswersDialog.vue'
+import AnswersDialog from '@/components/information/AnswersDialog.vue'
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Question = components['schemas']['QuestionResponse']
@@ -62,7 +62,7 @@ const questionUnits = computed(() => props.getQuestionUnits(props.questionGroup.
           />
         </div>
       </div>
-      <answer-dialog :question-group="props.questionGroup" />
+      <answers-dialog :question-group="props.questionGroup" />
     </v-card-text>
   </v-card>
 </template>
