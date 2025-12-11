@@ -87,6 +87,7 @@ const closeBtnProps = {
 
 <template>
   <v-dialog
+    v-if="publicQuestions.length > 0"
     :fullscreen="xs"
     :transition="xs ? 'dialog-bottom-transition' : undefined"
     :max-width="xs ? undefined : 800"
