@@ -20,7 +20,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :rules="[requiredRule]"
     :disabled="!question.isOpen"
     variant="underlined"
-    class="wrap-text"
+    :class="$style.wrapText"
   ></v-text-field>
   <v-number-input
     v-if="question.type === 'free_number'"
@@ -31,7 +31,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :disabled="!question.isOpen"
     variant="underlined"
     control-variant="hidden"
-    class="wrap-text"
+    :class="$style.wrapText"
   ></v-number-input>
   <v-select
     v-if="question.type === 'single'"
@@ -44,7 +44,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :items="question.options"
     :item-value="(option) => option.id"
     :item-title="(option) => option.content"
-    class="wrap-text"
+    :class="$style.wrapText"
   ></v-select>
   <v-select
     v-if="question.type === 'multiple'"
@@ -58,20 +58,16 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :items="question.options"
     :item-value="(option) => option.id"
     :item-title="(option) => option.content"
-    class="wrap-text"
+    :class="$style.wrapText"
   ></v-select>
 </template>
 
-<style scoped>
-.wrap-text :deep(.v-select__selection-text) {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: clip;
+<style module>
+.wrapText :global(.v-select__selection-text) {
+  white-space: normal !important;
 }
 
-:global(.v-list-item-title) {
+:global(.v-overlay-container) :global(.v-list-item-title) {
   white-space: normal;
-  overflow: visible;
-  text-overflow: clip;
 }
 </style>
