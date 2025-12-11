@@ -6,7 +6,7 @@ import { apiClient } from '@/api/apiClient'
 import type { components } from '@/api/schema'
 import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
 import UserResponse from '@/components/rollcall/UserResponse.vue'
-import { useRollCallStream } from '@/lib/rollCallStream'
+import { useRollCallStream } from '@/components/rollcall/rollCallStream'
 
 type RollCall = components['schemas']['RollCallResponse']
 
@@ -84,7 +84,7 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
           </div>
         </v-btn>
       </div>
-      <div v-if="!isSubject" :class="[$style.notSubject, 'text-primary']">対象外の点呼です</div>
+      <div v-if="!isSubject" :class="[$style.notSubject, 'text-primary']">点呼の対象外です</div>
     </div>
     <div :class="$style.body">
       <v-card
@@ -157,7 +157,8 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
 
 .notSubject {
   position: absolute;
-  bottom: 32px;
+  bottom: 0;
+  left: 0;
   width: 100%;
   text-align: center;
   font-size: 14px;

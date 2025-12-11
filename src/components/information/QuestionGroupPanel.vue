@@ -5,13 +5,14 @@ import { ref, computed, onMounted, reactive, toRaw } from 'vue'
 import { useCampStore } from '@/store'
 import QuestionGroupEditor from '@/components/information/QuestionGroupEditor.vue'
 import QuestionGroupViewer from '@/components/information/QuestionGroupViewer.vue'
-import { useMutation } from '@tanstack/vue-query'
-import { queryClient } from '@/lib/queryClient'
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Question = components['schemas']['QuestionResponse']
 type Camp = components['schemas']['CampResponse']
+
+const queryClient = useQueryClient()
 
 const props = defineProps<{
   questionGroup: QuestionGroup
@@ -41,7 +42,7 @@ const getMyAnswers = async () => {
       )
       if (error || !data) throw error ?? new Error('Failed to fetch answers')
       return data
-    },  
+    },
   })
   return data
 }
@@ -53,6 +54,11 @@ const originalMap = reactive<Record<number, AnswerData>>({})
 
 // getMyAnswers の結果をリアクティブ変数 answersMap に格納する
 const refreshAnswersMap = async () => {
+  // 回答取得クエリキーを invalidate
+  await queryClient.invalidateQueries({
+    queryKey: qk.me.questionGroupAnswers(props.questionGroup.id),
+  })
+
   for (const question of props.questionGroup.questions) {
     switch (question.type) {
       case 'free_text':
@@ -153,7 +159,7 @@ const allChecked = computed(() => {
 
 // 回答受付中の質問が 1 つ以上存在するか。もし false ならばそもそも編集モードに入れない
 const isEditable = computed(
-  () => isOperable.value && props.questionGroup.questions.some((q) => q.isOpen),
+  () => campStore.hasRegisteredLatest && props.questionGroup.questions.some((q) => q.isOpen),
 )
 
 // 回答が変更されたかどうかを判定

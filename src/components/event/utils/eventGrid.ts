@@ -1,5 +1,5 @@
 import type { components } from '@/api/schema'
-import { getStartTime, getEndTime } from '@/utility/eventLib'
+import { getStartTime, getEndTime } from '@/components/event/utils/eventLib'
 
 type MomentEvent = components['schemas']['MomentEventResponse']
 type DurationEvent = components['schemas']['DurationEventResponse']

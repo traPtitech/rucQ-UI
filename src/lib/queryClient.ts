@@ -1,3 +1,4 @@
+declare const __APP_VERSION__: string
 import { QueryClient } from '@tanstack/vue-query'
 import { persistQueryClient } from '@tanstack/query-persist-client-core'
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
@@ -21,6 +22,6 @@ const asyncPersister = createAsyncStoragePersister({
 export const [, queryCacheRestored] = persistQueryClient({
   queryClient,
   persister: asyncPersister,
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-  buster: 'v1',
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 永続化キャッシュの寿命
+  buster: __APP_VERSION__, // package.json のバージョンを自動反映
 })
