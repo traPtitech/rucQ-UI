@@ -20,7 +20,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :rules="[requiredRule]"
     :disabled="!question.isOpen"
     variant="underlined"
-    class="multi-line-select"
+    class="wrap-text"
   ></v-text-field>
   <v-number-input
     v-if="question.type === 'free_number'"
@@ -31,7 +31,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :disabled="!question.isOpen"
     variant="underlined"
     control-variant="hidden"
-    class="multi-line-select"
+    class="wrap-text"
   ></v-number-input>
   <v-select
     v-if="question.type === 'single'"
@@ -44,7 +44,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :items="question.options"
     :item-value="(option) => option.id"
     :item-title="(option) => option.content"
-    class="multi-line-select"
+    class="wrap-text"
   ></v-select>
   <v-select
     v-if="question.type === 'multiple'"
@@ -58,12 +58,12 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :items="question.options"
     :item-value="(option) => option.id"
     :item-title="(option) => option.content"
-    class="multi-line-select"
+    class="wrap-text"
   ></v-select>
 </template>
 
 <style scoped>
-.multi-line-select :deep(.v-select__selection-text) {
+.wrap-text :deep(.v-select__selection-text) {
   white-space: normal;
   overflow: visible;
   text-overflow: clip;
