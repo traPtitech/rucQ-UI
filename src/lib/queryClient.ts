@@ -19,7 +19,7 @@ const asyncPersister = createAsyncStoragePersister({
 })
 
 export const queryCacheReady = async () =>
-  await persistQueryClient({
+  persistQueryClient({
     queryClient,
     persister: asyncPersister,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 永続化キャッシュの寿命
