@@ -66,7 +66,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
 .multi-line-select :deep(.v-select__selection-text) {
   white-space: normal;
   overflow: visible;
-  text-overflow: clip !important;
+  text-overflow: clip;
 }
 
 :global(.v-list-item-title) {
