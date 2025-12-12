@@ -24,10 +24,12 @@
 
 1. <https://rucq-dev.trapti.tech/api/me> にアクセスする
 2. Cookie 一覧から `_forward_auth` の値を取得する
-3. `npm run dev:staging` を実行する
-4. <http://localhost:5173> にアクセスし、Devtools で Cookie をセットする
-    - Application タブ → Storage → Cookies → http://... にある
-5. ページをリロードすると API との接続が確認できる
+3. 取得した値を `.env` ファイルに書き込む
+  ```env
+  STAGING_COOKIE=_forward_auth=xxxxx
+  ```
+4. `npm run dev:staging` を実行する
+5. <http://localhost:5173> にアクセスすると API との接続が確認できる
 
 ### API スキーマの更新
 

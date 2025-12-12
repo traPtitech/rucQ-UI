@@ -1,7 +1,7 @@
 import pkg from './package.json'
 import { fileURLToPath, URL } from 'node:url'
 
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import vuetify from 'vite-plugin-vuetify'
@@ -9,6 +9,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 import { visualizer } from 'rollup-plugin-visualizer'
 
 export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
   return {
     define: {
       __APP_VERSION__: JSON.stringify(pkg.version),
@@ -100,6 +101,9 @@ export default defineConfig(({ mode }) => {
               '/api': {
                 target: 'https://rucq-dev.trapti.tech',
                 changeOrigin: true,
+                headers: {
+                  Cookie: env.STAGING_COOKIE,
+                },
               },
             }
           : ({} as Record<string, string>),
