@@ -45,7 +45,18 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :item-value="(option) => option.id"
     :item-title="(option) => option.content"
     :class="$style.wrapText"
-  ></v-select>
+  >
+    <template #item="{ props, item }">
+      <v-list-item
+        v-bind="props"
+        :title="''"
+      >
+        <v-list-item-title style="white-space: normal;">
+          {{ item.title }}
+        </v-list-item-title>
+      </v-list-item>
+    </template>
+  </v-select>
   <v-select
     v-if="question.type === 'multiple'"
     v-model="(value as number[])"
@@ -59,15 +70,22 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :item-value="(option) => option.id"
     :item-title="(option) => option.content"
     :class="$style.wrapText"
-  ></v-select>
+  >
+    <template #item="{ props, item }">
+      <v-list-item
+        v-bind="props"
+        :title="''"
+      >
+        <v-list-item-title style="white-space: normal;">
+          {{ item.title }}
+        </v-list-item-title>
+      </v-list-item>
+    </template>
+  </v-select>
 </template>
 
 <style module>
 .wrapText :global(.v-select__selection-text) {
   white-space: normal !important;
-}
-
-:global(.v-overlay-container) :global(.v-list-item-title) {
-  white-space: normal;
 }
 </style>
