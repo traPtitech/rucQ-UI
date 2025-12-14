@@ -46,16 +46,15 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :item-title="(option) => option.content"
     :class="$style.wrapText"
   >
-    <template #item="{ props, item }">
-      <v-list-item
-        v-bind="props"
-        :title="''"
-      >
-        <v-list-item-title style="white-space: normal;">
-          {{ item.title }}
-        </v-list-item-title>
-      </v-list-item>
-    </template>
+  <template #item="{ props, item }">
+    <v-list-item v-bind="props">
+      <template #title>
+        <span style="white-space: normal;">
+        {{ item.title }}
+        </span>
+      </template>
+    </v-list-item>
+  </template>
   </v-select>
   <v-select
     v-if="question.type === 'multiple'"
@@ -72,13 +71,12 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :class="$style.wrapText"
   >
     <template #item="{ props, item }">
-      <v-list-item
-        v-bind="props"
-        :title="''"
-      >
-        <v-list-item-title style="white-space: normal;">
+      <v-list-item v-bind="props">
+        <template #title>
+          <span style="white-space: normal;">
           {{ item.title }}
-        </v-list-item-title>
+          </span>
+        </template>
       </v-list-item>
     </template>
   </v-select>
