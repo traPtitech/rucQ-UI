@@ -8,19 +8,20 @@ import localforage from 'localforage'
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      gcTime: 0, // キャッシュオフ
-      staleTime: 0, // キャッシュオフ
+      gcTime: 7 * 24 * 60 * 60 * 1000, // 1週間
+      staleTime: 60 * 60 * 1000, // 1h
     },
   },
 })
 
-// const asyncPersister = createAsyncStoragePersister({
-//   storage: localforage,
-// })
+const asyncPersister = createAsyncStoragePersister({
+  storage: localforage,
+})
 
-// persistQueryClient({
-//   queryClient,
-//   persister: asyncPersister,
-//   maxAge: 7 * 24 * 60 * 60 * 1000, // 永続化キャッシュの寿命
-//   buster: __APP_VERSION__, // package.json のバージョンを自動反映
-// })
+export const queryCacheReady = async () =>
+  persistQueryClient({
+    queryClient,
+    persister: asyncPersister,
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 永続化キャッシュの寿命
+    buster: __APP_VERSION__, // package.json のバージョンを自動反映
+  })

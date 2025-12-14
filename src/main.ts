@@ -3,13 +3,13 @@ import router from '@/router'
 import { createPinia } from 'pinia'
 import { VueQueryPlugin } from '@tanstack/vue-query'
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
-import { queryClient } from '@/lib/queryClient'
+import { queryClient, queryCacheReady } from '@/lib/queryClient'
 import { vuetify } from '@/lib/vuetify'
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
+import { useUserStore, useCampStore } from './store'
 
 import App from './App.vue'
-
 import './styles/main.scss'
 
 const app = createApp(App)
@@ -24,7 +24,6 @@ app.use(pinia)
 app.use(vuetify)
 app.use(VueQueryPlugin, { queryClient })
 
-import { useUserStore, useCampStore } from './store'
 
 async function initializeApp() {
   if (import.meta.env.DEV && import.meta.env.MODE !== 'staging') {
@@ -33,6 +32,7 @@ async function initializeApp() {
   }
 
   try {
+    await queryCacheReady() // キャッシュの読み込み
     const userStore = useUserStore()
     const campStore = useCampStore()
     await userStore.initUser()
