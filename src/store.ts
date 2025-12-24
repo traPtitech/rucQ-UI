@@ -32,7 +32,7 @@ export const useUserStore = defineStore('user', () => {
         ) {
           // fetch の中で追わせず、トップレベル遷移でログイン開始（CORSにならない）
           window.location.assign('/api/me')
-          throw new Error('Redirecting to login')
+          return new Promise(() => {})
         }
 
         if (res.status === 401) {
