@@ -18,10 +18,12 @@ const asyncPersister = createAsyncStoragePersister({
   storage: localforage,
 })
 
-export const queryCacheReady = async () =>
-  persistQueryClient({
-    queryClient,
-    persister: asyncPersister,
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 永続化キャッシュの寿命
-    buster: __APP_VERSION__, // package.json のバージョンを自動反映
-  })
+// @tanstack/query-persist-client-core/src/persist.ts の実装によると
+// persistQueryClient = persistQueryClientRestore + persistQueryClientSubscribe
+// 第二引数にキャッシュ復元の完了を待つ Promise を返す
+export const [, restorePromise] = persistQueryClient({
+  queryClient,
+  persister: asyncPersister,
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 永続化キャッシュの寿命を 1 週間に設定
+  buster: __APP_VERSION__, // package.json のバージョンを自動反映
+})

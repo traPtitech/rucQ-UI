@@ -3,7 +3,7 @@ import router from '@/router'
 import { createPinia } from 'pinia'
 import { VueQueryPlugin } from '@tanstack/vue-query'
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
-import { queryClient, queryCacheReady } from '@/lib/queryClient'
+import { queryClient, restorePromise } from '@/lib/queryClient'
 import { vuetify } from '@/lib/vuetify'
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
@@ -24,7 +24,6 @@ app.use(pinia)
 app.use(vuetify)
 app.use(VueQueryPlugin, { queryClient })
 
-
 async function initializeApp() {
   if (import.meta.env.DEV && import.meta.env.MODE !== 'staging') {
     const { worker } = await import('./mocks/browser')
@@ -32,7 +31,7 @@ async function initializeApp() {
   }
 
   try {
-    await queryCacheReady() // キャッシュの読み込み
+    await restorePromise
     const userStore = useUserStore()
     const campStore = useCampStore()
     await userStore.initUser()
