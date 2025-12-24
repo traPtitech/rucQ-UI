@@ -16,11 +16,35 @@ export const useUserStore = defineStore('user', () => {
     const data = await queryClient.ensureQueryData({
       queryKey: qk.me.all,
       queryFn: async () => {
-        const { data, error } = await apiClient.GET('/api/me')
-        if (error || !data) {
-          throw new Error(`ユーザー情報を取得できません: ${error}`)
+        const res = await fetch('/api/me', {
+          method: 'GET',
+          credentials: 'include',
+          redirect: 'manual', // ★リダイレクト追従を止める
+          headers: { accept: 'application/json' },
+        })
+
+        // 未ログイン時（/api/me が 307 で authorize に飛ばす設計）をここで捕まえる
+        if (
+          res.type === 'opaqueredirect' ||
+          res.status === 302 ||
+          res.status === 307 ||
+          res.status === 0
+        ) {
+          // fetch の中で追わせず、トップレベル遷移でログイン開始（CORSにならない）
+          window.location.assign('/api/me')
+          throw new Error('Redirecting to login')
         }
-        return data
+
+        if (res.status === 401) {
+          window.location.assign('/api/me')
+          throw new Error('Redirecting to login')
+        }
+
+        if (!res.ok) {
+          throw new Error(`ユーザー情報を取得できません: ${res.status}`)
+        }
+
+        return await res.json()
       },
       staleTime: Infinity,
       gcTime: Infinity,
