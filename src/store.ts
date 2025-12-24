@@ -22,7 +22,7 @@ export const useUserStore = defineStore('user', () => {
         }
         return data
       },
-      staleTime: Infinity,
+      staleTime: 0,
       gcTime: Infinity,
     })
     user.value = data
