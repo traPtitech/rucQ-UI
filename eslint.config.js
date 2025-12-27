@@ -7,7 +7,14 @@ import pluginSecurity from 'eslint-plugin-security'
 
 export default defineConfig([
   {
-  ignores: ['dist', 'dev-dist', 'node_modules', '.output', 'coverage', 'public/mockServiceWorker.js'],
+    ignores: [
+      'dist',
+      'dev-dist',
+      'node_modules',
+      '.output',
+      'coverage',
+      'public/mockServiceWorker.js',
+    ],
   },
 
   js.configs.recommended,
@@ -33,6 +40,7 @@ export default defineConfig([
     rules: {
       'vue/component-name-in-template-casing': ['warn', 'kebab-case'], // kebab-case 推奨
       'vue/no-template-target-blank': ['error', { enforceDynamicLinks: 'always' }],
+      'security/detect-object-injection': 'off', // 過剰な警告を無効化
       'vue/no-v-html': 'error',
     },
   },
