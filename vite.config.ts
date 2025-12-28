@@ -85,6 +85,7 @@ export default defineConfig(({ mode }) => {
               },
             },
           ],
+          navigateFallback: null, // 初回アクセス時にswからページを返さない
         },
         devOptions: { enabled: true },
       }),
