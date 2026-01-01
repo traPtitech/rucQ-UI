@@ -8,6 +8,7 @@ import { vuetify } from '@/lib/vuetify'
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
 import { useUserStore, useCampStore } from './store'
+import { useRegisterSW } from 'virtual:pwa-register/vue'
 
 import App from './App.vue'
 import './styles/main.scss'
@@ -24,6 +25,19 @@ app.use(pinia)
 app.use(vuetify)
 app.use(VueQueryPlugin, { queryClient })
 
+// ユーザーがタブに戻ってきた時、Service Worker の更新をチェック
+useRegisterSW({
+  onRegisteredSW(swUrl, r) {
+    if (!r) return
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        console.log('Checking for SW update...')
+        r.update() // ブラウザに SW の更新を確認させる
+        // vite.config.ts の workbox 設定により、見つかった新しい SW は即座に有効化される
+      }
+    })
+  },
+})
 
 async function initializeApp() {
   if (import.meta.env.DEV && import.meta.env.MODE !== 'staging') {
