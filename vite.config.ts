@@ -71,6 +71,7 @@ export default defineConfig(({ mode }) => {
         // Service Worker
         workbox: {
           globPatterns: ['**/*.{js,css,html,svg,png,jpg,webp,woff2}'],
+          cleanupOutdatedCaches: true,
           skipWaiting: true,
           clientsClaim: true,
           runtimeCaching: [
