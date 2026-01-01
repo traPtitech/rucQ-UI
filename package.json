@@ -15,6 +15,10 @@
     "generate:api": "npx openapi-typescript https://raw.githubusercontent.com/traPtitech/rucQ/main/openapi.yaml -o src/api/schema.d.ts && npm run format"
   },
   "dependencies": {
+    "@fontsource-variable/m-plus-2": "^5.2.9",
+    "@fontsource-variable/m-plus-code-latin": "^5.2.7",
+    "@fontsource-variable/reddit-sans": "^5.2.7",
+    "@fontsource-variable/roboto": "^5.2.9",
     "@mdi/font": "^7.4.47",
     "@tanstack/query-async-storage-persister": "^5.85.9",
     "@tanstack/query-persist-client-core": "^5.85.9",
