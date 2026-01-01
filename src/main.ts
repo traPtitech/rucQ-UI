@@ -26,9 +26,11 @@ app.use(vuetify)
 app.use(VueQueryPlugin, { queryClient })
 
 // ユーザーがタブに戻ってきた時、Service Worker の更新をチェック
+let swUpdateListenerRegistered = false
 useRegisterSW({
   onRegisteredSW(swUrl, r) {
-    if (!r) return
+    if (!r || swUpdateListenerRegistered) return
+    swUpdateListenerRegistered = true
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
         console.log('Checking for SW update...')
