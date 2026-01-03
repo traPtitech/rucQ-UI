@@ -16,8 +16,17 @@ export const useUserStore = defineStore('user', () => {
     const data = await queryClient.fetchQuery({
       queryKey: qk.me.all,
       queryFn: async () => {
-        const { data, error } = await apiClient.GET('/api/me')
+        const { data, error, response } = await apiClient.GET('/api/me')
         if (error || !data) {
+          // Temporary Redirect の場合、手動でリダイレクト処理を行う
+          if (response?.status === 307) {
+            const location = response.headers.get('Location')
+            if (location) {
+              window.location.href = location
+              return new Promise<never>(() => {})
+              // ユーザーにエラー表示をさせないよう、解決しない Promise を返す
+            }
+          }
           throw new Error(`ユーザー情報を取得できません: ${error}`)
         }
         return data
