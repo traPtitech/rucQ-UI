@@ -139,7 +139,7 @@ const enclose = (symbol: string) => {
   color: var(--color-text);
   width: 100%;
   height: 100%;
-  font-family: 'M PLUS Code Latin', 'M PLUS 1p';
+  font-family: 'M PLUS Code Latin Variable', 'M PLUS 2 Variable';
   font-weight: 400;
   display: flex;
 }
@@ -182,7 +182,7 @@ const enclose = (symbol: string) => {
   top: 0px;
   width: 100%;
   padding-bottom: 4em;
-  font-family: 'M PLUS Code Latin', 'M PLUS 1p';
+  font-family: 'M PLUS Code Latin Variable', 'M PLUS 2 Variable';
   z-index: 0;
 }
 
