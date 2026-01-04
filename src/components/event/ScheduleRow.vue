@@ -74,7 +74,7 @@ const momentEvent = computed(() => {
   margin-top: 1px;
   font-weight: 900;
   width: fit-content;
-  font-family: Roboto;
+  font-family: 'Roboto Variable';
 }
 
 .line {

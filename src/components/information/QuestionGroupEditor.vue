@@ -131,7 +131,7 @@ const answerModel = (questionId: number) =>
 }
 
 .deadline {
-  font-family: 'Reddit Sans';
+  font-family: 'Reddit Sans Variable';
   margin-right: 6px;
   font-size: 16px;
   font-weight: bold;

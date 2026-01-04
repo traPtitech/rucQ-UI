@@ -72,20 +72,6 @@ export default defineConfig(({ mode }) => {
         workbox: {
           globPatterns: ['**/*.{js,css,html,svg,png,jpg,webp,woff2}'],
           navigateFallbackDenylist: [/^\/api/],
-          runtimeCaching: [
-            {
-              // フォント
-              urlPattern: ({ request }) => request.destination === 'font',
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'fonts-cache',
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 60 * 60 * 24 * 365, // 1年
-                },
-              },
-            },
-          ],
         },
         devOptions: { enabled: true },
       }),

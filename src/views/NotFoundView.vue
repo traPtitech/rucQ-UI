@@ -28,7 +28,7 @@ import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
 .path {
   padding: 0px 20px;
   font-size: 24px;
-  font-family: 'M PLUS Code Latin';
+  font-family: 'M PLUS Code Latin Variable';
   border-radius: 6px;
   border: 1px solid white;
 }

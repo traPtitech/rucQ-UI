@@ -152,7 +152,7 @@ const {
 }
 
 .roomName {
-  font-family: 'Reddit Sans';
+  font-family: 'Reddit Sans Variable';
   font-size: 20px;
   font-weight: 800;
   letter-spacing: 0.1em;
