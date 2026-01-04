@@ -71,7 +71,7 @@ export default defineConfig(({ mode }) => {
         // Service Worker
         workbox: {
           globPatterns: ['**/*.{js,css,html,svg,png,jpg,webp,woff2}'],
-          navigateFallbackDenylist: [/^\/api/],
+          navigateFallbackDenylist: [/^\/api/, /^\/login/],
         },
         devOptions: { enabled: true },
       }),
