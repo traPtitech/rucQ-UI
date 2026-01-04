@@ -74,20 +74,6 @@ export default defineConfig(({ mode }) => {
           cleanupOutdatedCaches: true,
           skipWaiting: true,
           clientsClaim: true,
-          runtimeCaching: [
-            {
-              // フォント
-              urlPattern: ({ request }) => request.destination === 'font',
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'fonts-cache',
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 60 * 60 * 24 * 365, // 1年
-                },
-              },
-            },
-          ],
         },
         devOptions: { enabled: true },
       }),
