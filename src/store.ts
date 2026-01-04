@@ -19,13 +19,10 @@ export const useUserStore = defineStore('user', () => {
         const { data, error, response } = await apiClient.GET('/api/me')
 
         // Temporary Redirect の場合、手動でリダイレクト処理を行う
-        if (response.status === 307) {
-          const location = response.headers.get('Location')
-          if (location) {
-            window.location.href = location
-            return new Promise<never>(() => {})
-            // ユーザーにエラー表示をさせないよう、解決しない Promise を返す
-          }
+        if (response.type === 'opaqueredirect') {
+          window.location.href = '/'
+          return new Promise<never>(() => {})
+          // ユーザーにエラー表示をさせないよう、解決しない Promise を返す
         }
 
         if (error || !data) {
