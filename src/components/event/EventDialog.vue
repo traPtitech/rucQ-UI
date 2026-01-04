@@ -94,7 +94,7 @@ const planner = computed(() => {
 }
 
 .timeInfo {
-  font-family: Roboto;
+  font-family: 'Roboto Variable';
   font-weight: 500;
   font-size: 13px;
 }
@@ -108,7 +108,7 @@ const planner = computed(() => {
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.05em;
-  font-family: 'Reddit Sans';
+  font-family: 'Reddit Sans Variable';
   font-variant-ligatures: none;
 }
 

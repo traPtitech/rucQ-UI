@@ -182,7 +182,7 @@ onMounted(async () => {
 }
 
 .preview :global(code) {
-  font-family: 'M PLUS Code Latin 60', 'M PLUS 1p';
+  font-family: 'M PLUS Code Latin Variable', 'M PLUS 2 Variable';
   font-weight: 500;
   font-size: 10pt;
 }
