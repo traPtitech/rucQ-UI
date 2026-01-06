@@ -5,7 +5,7 @@ import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persi
 import localforage from 'localforage'
 
 // キャッシュの設定
-export const queryClient = new QueryClient({
+const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       gcTime: 7 * 24 * 60 * 60 * 1000, // 1週間
@@ -18,10 +18,11 @@ const asyncPersister = createAsyncStoragePersister({
   storage: localforage,
 })
 
-export const queryCacheReady = async () =>
-  persistQueryClient({
-    queryClient,
-    persister: asyncPersister,
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 永続化キャッシュの寿命
-    buster: __APP_VERSION__, // package.json のバージョンを自動反映
-  })
+const [, restorePromise] = persistQueryClient({
+  queryClient,
+  persister: asyncPersister,
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 永続化キャッシュの寿命
+  buster: __APP_VERSION__, // package.json のバージョンを自動反映
+})
+
+export { queryClient, restorePromise }
