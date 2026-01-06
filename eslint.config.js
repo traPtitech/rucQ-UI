@@ -31,6 +31,7 @@ export default defineConfig([
       'vue/component-name-in-template-casing': ['warn', 'kebab-case'], // kebab-case 推奨
       'vue/no-template-target-blank': ['error', { enforceDynamicLinks: 'always' }],
       'security/detect-object-injection': 'off', // 過剰な警告を無効化
+      '@typescript-eslint/consistent-type-definitions': 'off', // interface 推奨を無効化
       'vue/no-v-html': 'error',
     },
   },
