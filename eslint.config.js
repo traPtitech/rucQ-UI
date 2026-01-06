@@ -46,9 +46,9 @@ export default defineConfig([
   {
     files: ['src/**/*.{ts,vue}'],
     rules: {
-      'security/detect-object-injection': 'off',
-      '@typescript-eslint/consistent-type-definitions': 'off',
-      'no-undef': 'off', // JavaScript でのみ有用
+      'security/detect-object-injection': 'off', // 過剰な警告を無効化
+      '@typescript-eslint/consistent-type-definitions': 'off', // interface 推奨を無効化
+      'no-undef': 'off', // TypeScript の型チェックを信頼する
     },
   },
 
