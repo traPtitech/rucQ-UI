@@ -38,6 +38,48 @@ async function initializeApp() {
 
   try {
     await restorePromise // キャッシュの読み込み
+
+    // indexed db の内容表示（デバッグ用）
+    if (import.meta.env.DEV) {
+      // Method 1: IndexedDB直叩き
+      console.group('🔍 IndexedDB Cache (Direct Access)')
+      try {
+        const localforage = await import('localforage')
+        const keys = await localforage.default.keys()
+        console.log(`Found ${keys.length} keys in IndexedDB`)
+
+        for (const key of keys) {
+          const value = await localforage.default.getItem(key)
+          console.log(`Key: ${key}`, value)
+        }
+      } catch (err) {
+        console.error('Failed to read from IndexedDB:', err)
+      }
+      console.groupEnd()
+
+      // Method 2: queryClient経由
+      console.group('🔍 QueryClient Cache (via getQueryCache)')
+      try {
+        const cache = queryClient.getQueryCache()
+        const queries = cache.getAll()
+        console.log(`Found ${queries.length} queries in cache`)
+
+        queries.forEach((query) => {
+          console.log('Query:', {
+            queryKey: query.queryKey,
+            state: query.state,
+            dataUpdatedAt: new Date(query.state.dataUpdatedAt),
+            error: query.state.error,
+            status: query.state.status,
+          })
+          console.log('Data:', query.state.data)
+        })
+      } catch (err) {
+        console.error('Failed to read from QueryClient:', err)
+      }
+      console.groupEnd()
+    }
+
     const userStore = useUserStore()
     const campStore = useCampStore()
     await userStore.initUser()
