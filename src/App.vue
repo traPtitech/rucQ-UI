@@ -8,10 +8,12 @@
 <script setup lang="ts">
 import { useQueryClient } from '@tanstack/vue-query'
 import localforage from 'localforage'
+import { onMounted } from 'vue'
 const queryClient = useQueryClient()
 
-// indexed db の内容表示（デバッグ用）
-if (import.meta.env.DEV) {
+onMounted(async () => {
+  // indexed db の内容表示（デバッグ用）
+
   // Method 1: IndexedDB直叩き
   console.group('🔍 IndexedDB Cache (Direct Access)')
   try {
@@ -48,5 +50,5 @@ if (import.meta.env.DEV) {
     console.error('Failed to read from QueryClient:', err)
   }
   console.groupEnd()
-}
+})
 </script>
