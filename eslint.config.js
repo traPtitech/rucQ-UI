@@ -5,7 +5,7 @@ import eslintConfigPrettier from 'eslint-config-prettier'
 import pluginSecurity from 'eslint-plugin-security'
 import js from '@eslint/js'
 
-function withFiles(files, ...configs) {
+const withFiles = (files, ...configs) => {
   return configs.flat().map((config) => ({ ...config, files }))
 }
 
