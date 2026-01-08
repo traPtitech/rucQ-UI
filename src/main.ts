@@ -17,6 +17,7 @@ import '@fontsource-variable/roboto' // 'Roboto Variable'
 import App from './App.vue'
 import './styles/main.scss'
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 const app = createApp(App)
 const pinia = createPinia()
 
