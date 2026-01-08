@@ -19,6 +19,7 @@ export const useUserStore = defineStore('user', () => {
         const { data, error, response } = await apiClient.GET('/api/me', {
           redirect: 'manual',
         })
+        
 
         // Temporary Redirect の場合、手動でリダイレクト処理を行う
         if (response.type === 'opaqueredirect') {
