@@ -2,8 +2,10 @@ import { defineStore } from 'pinia'
 import { ref, computed, readonly } from 'vue'
 import type { components } from '@/api/schema'
 import { apiClient } from '@/api/apiClient'
-import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import { useQueryClient } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
+
+const queryClient = useQueryClient()
 
 type User = components['schemas']['UserResponse']
 type Camp = components['schemas']['CampResponse']
@@ -29,14 +31,18 @@ export const useUserStore = defineStore('me', () => {
     return data
   }
 
-  const { data } = useQuery({
-    queryKey: ['me'],
-    queryFn: fetchMe,
-    staleTime: 0,
-    gcTime: Infinity,
-  })
+  const user = ref<User>()
 
-  return { user: readonly(data.value!) }
+  const initUser = async () => {
+    user.value = await queryClient.fetchQuery<User>({
+      queryKey: ['me'],
+      queryFn: fetchMe,
+      staleTime: 0,
+      gcTime: Infinity,
+    })
+  }
+
+  return { initUser, user: readonly(user.value!) }
 })
 
 export const useCampStore = defineStore('camp', () => {
