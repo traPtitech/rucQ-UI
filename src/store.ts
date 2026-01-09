@@ -60,7 +60,7 @@ export const useCampStore = defineStore('camp', () => {
         console.log('/api/camps', r)
         const { data, error } = r
         if (error || !data) {
-          throw new Error(`合宿情報を取得できません: ${error}`)
+          throw new Error(`合宿情報を取得できません: ${error.message}`)
         }
         const openCamps = data
           .filter((camp) => !camp.isDraft)
