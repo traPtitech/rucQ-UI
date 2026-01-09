@@ -35,12 +35,17 @@ export const useUserStore = defineStore('me', () => {
   const user = ref<User>()
 
   const initUser = async () => {
-    user.value = await queryClient.fetchQuery<User>({
-      queryKey: ['me'],
-      queryFn: fetchMe,
-      staleTime: 0,
-      gcTime: Infinity,
-    })
+    try {
+      user.value = await queryClient.fetchQuery<User>({
+        queryKey: ['me'],
+        queryFn: fetchMe,
+        staleTime: 0,
+        gcTime: Infinity,
+      })
+    } catch (error) {
+      console.error('Failed to initialize user store:', error)
+      throw error
+    }
   }
 
   return { initUser, user: computed(() => user.value!) }
