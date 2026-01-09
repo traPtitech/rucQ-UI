@@ -12,6 +12,7 @@ type Camp = components['schemas']['CampResponse']
 
 export const useUserStore = defineStore('me', () => {
   const fetchMe = async () => {
+    console.log('try fetch /api/me')
     const r = await apiClient.GET('/api/me', { redirect: 'manual' })
     console.log('/api/me', r)
     const { data, error, response } = r
