@@ -16,9 +16,11 @@ export const useUserStore = defineStore('user', () => {
     const data = await queryClient.fetchQuery({
       queryKey: qk.me.all,
       queryFn: async () => {
-        const { data, error, response } = await apiClient.GET('/api/me', {
+        const r = await apiClient.GET('/api/me', {
           redirect: 'manual',
         })
+        console.log('/api/me', r)
+        const { data, error, response } = r
 
         // Temporary Redirect の場合、手動でリダイレクト処理を行う
         if (response.type === 'opaqueredirect') {
@@ -30,11 +32,13 @@ export const useUserStore = defineStore('user', () => {
         if (error || !data) {
           throw new Error(`ユーザー情報を取得できません: ${error}`)
         }
+        console.log('me data', data)
         return data
       },
       staleTime: 0,
       gcTime: Infinity,
     })
+    console.log('user: ', data)
     user.value = data
   }
 
@@ -59,13 +63,17 @@ export const useCampStore = defineStore('camp', () => {
     const camps = await queryClient.ensureQueryData<Camp[]>({
       queryKey: qk.camps.lists(),
       queryFn: async () => {
-        const { data, error } = await apiClient.GET('/api/camps')
+        const r = await apiClient.GET('/api/camps')
+        console.log('/api/camps', r)
+        const { data, error } = r
         if (error || !data) {
           throw new Error(`合宿情報を取得できません: ${error}`)
         }
-        return data
+        const openCamps = data
           .filter((camp) => !camp.isDraft)
           .sort((a, b) => new Date(b.dateStart).getTime() - new Date(a.dateStart).getTime())
+        console.log(openCamps)
+        return openCamps
       },
     })
 
