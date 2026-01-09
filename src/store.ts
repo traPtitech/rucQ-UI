@@ -5,12 +5,12 @@ import { apiClient } from '@/api/apiClient'
 import { useQueryClient } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
 
-const queryClient = useQueryClient()
-
 type User = components['schemas']['UserResponse']
 type Camp = components['schemas']['CampResponse']
 
 export const useUserStore = defineStore('me', () => {
+  const queryClient = useQueryClient()
+
   const fetchMe = async () => {
     console.log('try fetch /api/me')
     const r = await apiClient.GET('/api/me', { redirect: 'manual' })
@@ -43,7 +43,7 @@ export const useUserStore = defineStore('me', () => {
     })
   }
 
-  return { initUser, user: readonly(user.value!) }
+  return { initUser, user: readonly(user) }
 })
 
 export const useCampStore = defineStore('camp', () => {
