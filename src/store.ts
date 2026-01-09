@@ -43,7 +43,7 @@ export const useUserStore = defineStore('me', () => {
     })
   }
 
-  return { initUser, user: readonly(user) }
+  return { initUser, user: computed(() => user.value!) }
 })
 
 export const useCampStore = defineStore('camp', () => {
