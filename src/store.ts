@@ -1,56 +1,42 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, readonly } from 'vue'
 import type { components } from '@/api/schema'
 import { apiClient } from '@/api/apiClient'
-import { useQueryClient } from '@tanstack/vue-query'
+import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
 
 type User = components['schemas']['UserResponse']
 type Camp = components['schemas']['CampResponse']
 
-export const useUserStore = defineStore('user', () => {
-  const user = ref<User>()
-  const queryClient = useQueryClient()
+export const useUserStore = defineStore('me', () => {
+  const fetchMe = async () => {
+    const r = await apiClient.GET('/api/me', { redirect: 'manual' })
+    console.log('/api/me', r)
+    const { data, error, response } = r
 
-  const initUser = async () => {
-    const data = await queryClient.fetchQuery({
-      queryKey: qk.me.all,
-      queryFn: async () => {
-        const r = await apiClient.GET('/api/me', {
-          redirect: 'manual',
-        })
-        console.log('/api/me', r)
-        const { data, error, response } = r
+    // Temporary Redirect の場合、手動でリダイレクト処理を行う
+    if (response.type === 'opaqueredirect') {
+      window.location.href = '/login'
+      return new Promise<never>(() => {
+        // ユーザーにエラー表示をさせないよう、解決しない Promise を返す
+      })
+    }
+    if (error) {
+      throw new Error(`ユーザー情報を取得できません: ${error.message}`)
+    }
 
-        // Temporary Redirect の場合、手動でリダイレクト処理を行う
-        if (response.type === 'opaqueredirect') {
-          window.location.href = '/login'
-          return new Promise<never>(() => {})
-          // ユーザーにエラー表示をさせないよう、解決しない Promise を返す
-        }
-
-        if (error || !data) {
-          throw new Error(`ユーザー情報を取得できません: ${error}`)
-        }
-        console.log('me data', data)
-        return data
-      },
-      staleTime: 0,
-      gcTime: Infinity,
-    })
-    console.log('user: ', data)
-    user.value = data
+    console.log('me data', data)
+    return data
   }
 
-  return {
-    initUser,
-    user: computed(() => {
-      if (!user.value) {
-        throw new Error('ユーザー情報が初期化されていません')
-      }
-      return user.value
-    }),
-  }
+  const { data } = useQuery({
+    queryKey: ['me'],
+    queryFn: fetchMe,
+    staleTime: 0,
+    gcTime: Infinity,
+  })
+
+  return { user: readonly(data.value!) }
 })
 
 export const useCampStore = defineStore('camp', () => {
