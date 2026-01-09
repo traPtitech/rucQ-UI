@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed, readonly } from 'vue'
+import { ref, computed } from 'vue'
 import type { components } from '@/api/schema'
 import { apiClient } from '@/api/apiClient'
 import { useQueryClient } from '@tanstack/vue-query'
