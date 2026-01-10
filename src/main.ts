@@ -40,7 +40,6 @@ async function initializeApp() {
     await restorePromise // キャッシュの読み込み
     const userStore = useUserStore()
     const campStore = useCampStore()
-    await userStore.initUser()
     await campStore.initCamp(userStore.user)
   } catch (error) {
     console.error(error)
