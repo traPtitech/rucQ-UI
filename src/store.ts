@@ -2,15 +2,13 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { components } from '@/api/schema'
 import { apiClient } from '@/api/apiClient'
-import { useQueryClient, onlineManager } from '@tanstack/vue-query'
+import { useQuery, useQueryClient, onlineManager } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
 
 type User = components['schemas']['UserResponse']
 type Camp = components['schemas']['CampResponse']
 
 export const useUserStore = defineStore('me', () => {
-  const queryClient = useQueryClient()
-
   const fetchMe = async () => {
     console.log(`navigator.onLine: ${navigator.onLine}`)
     console.log(`onlineManager.isOnline(): ${onlineManager.isOnline()}`)
@@ -34,23 +32,14 @@ export const useUserStore = defineStore('me', () => {
     return data
   }
 
-  const user = ref<User>()
+  const user = useQuery<User>({
+    queryKey: qk.me.all,
+    queryFn: fetchMe,
+    staleTime: 5 * 60 * 1000, // 5分
+    retry: 1, // 失敗したら1回だけリトライ
+  })
 
-  const initUser = async () => {
-    try {
-      user.value = await queryClient.fetchQuery<User>({
-        queryKey: ['me'],
-        queryFn: fetchMe,
-        staleTime: 0,
-        gcTime: Infinity,
-      })
-    } catch (error) {
-      console.error('Failed to initialize user store:', error)
-      throw error
-    }
-  }
-
-  return { initUser, user: computed(() => user.value!) }
+  return { user: computed(() => user.data.value!) }
 })
 
 export const useCampStore = defineStore('camp', () => {
