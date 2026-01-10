@@ -2,28 +2,18 @@
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
 
     "types": ["vite/client"],
     // 環境変数 import.meta.env や静的アセットの型定義を宣言
 
     "strict": true,
-    // 厳格な型チェックオプションを有効化
-
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    // 未使用の変数やパラメータをエラーにする
-
-    "noFallthroughCasesInSwitch": true,
-    // switch 文でのフォールスルーを防止
-
+    "erasableSyntaxOnly": true,
     "noUncheckedIndexedAccess": true,
     // 配列の要素へのアクセスが undefined である可能性を考慮する
 
-    "erasableSyntaxOnly": true,
-    // 型情報が削除されても動作に影響しない構文のみを許可
-
     "paths": { "@/*": ["./src/*"] }
-    // エイリアス @ を src フォルダにマッピング
   },
   "include": ["src/**/*"]
 }
