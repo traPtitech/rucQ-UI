@@ -1,5 +1,5 @@
 declare const __APP_VERSION__: string
-import { QueryClient } from '@tanstack/vue-query'
+import { QueryClient, defaultShouldDehydrateQuery } from '@tanstack/vue-query'
 import { persistQueryClient } from '@tanstack/query-persist-client-core'
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import localforage from 'localforage'
@@ -23,6 +23,16 @@ const [, restorePromise] = persistQueryClient({
   persister: asyncPersister,
   maxAge: 7 * 24 * 60 * 60 * 1000, // 永続化キャッシュの寿命
   buster: __APP_VERSION__, // package.json のバージョンを自動反映
+  // dehydrateOptions: {
+  //   shouldDehydrateQuery: (query) => {
+  //     const defaultResult = defaultShouldDehydrateQuery(query)
+  //     if (query.state.status === 'error' && query.state.data !== undefined) {
+  //       return true // ステータスが error でもインメモリキャッシュがあれば保存対象にする
+  //     }
+
+  //     return defaultResult
+  //   },
+  // },
 })
 
 export { queryClient, restorePromise }
