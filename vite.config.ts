@@ -9,20 +9,14 @@ import vuetify from 'vite-plugin-vuetify'
 import { VitePWA } from 'vite-plugin-pwa'
 import { visualizer } from 'rollup-plugin-visualizer'
 
-const getGitCommitHashShort = () => {
-  try {
-    return execSync('git rev-parse --short HEAD').toString().trim()
-  } catch {
-    return 'unknown'
-  }
-}
-
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
+  const hash = execSync('git rev-parse --short HEAD').toString()
+  console.log(`${pkg.version}, Commit Hash: ${hash}`)
   return {
     define: {
       __APP_VERSION__: JSON.stringify(pkg.version),
-      __COMMIT_HASH__: JSON.stringify(getGitCommitHashShort()),
+      __COMMIT_HASH__: JSON.stringify(hash),
     },
     plugins: [
       visualizer(),
