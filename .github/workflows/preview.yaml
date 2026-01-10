@@ -43,3 +43,4 @@ jobs:
           tags: ghcr.io/traptitech/${{ env.IMAGE_NAME }}:preview-${{ env.PR_NUMBER }}-${{ github.event.pull_request.head.sha }}
           cache-from: type=registry,ref=ghcr.io/traptitech/${{ env.IMAGE_NAME }}:buildcache
           cache-to: type=registry,ref=ghcr.io/traptitech/${{ env.IMAGE_NAME }}:buildcache,mode=max
+          build-args: VITE_COMMIT_HASH=${{ github.event.pull_request.head.sha }}

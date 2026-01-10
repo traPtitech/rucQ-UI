@@ -1,6 +1,5 @@
 import pkg from './package.json'
 import { fileURLToPath, URL } from 'node:url'
-import { execSync } from 'node:child_process'
 
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -11,7 +10,9 @@ import { visualizer } from 'rollup-plugin-visualizer'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const hash = execSync('git rev-parse --short HEAD').toString()
+  const hash = env.VITE_COMMIT_HASH || 'dev'
+  // 環境変数からコミットハッシュを取得
+
   console.log(`${pkg.version}, Commit Hash: ${hash}`)
   return {
     define: {
