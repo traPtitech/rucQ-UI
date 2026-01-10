@@ -10,6 +10,7 @@
     "strict": true,
     "noUnusedLocals": true,
     "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     // 配列の要素へのアクセスが undefined である可能性を考慮する
 
