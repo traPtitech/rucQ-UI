@@ -12,6 +12,7 @@ export const useUserStore = defineStore('me', () => {
   const queryClient = useQueryClient()
 
   const fetchMe = async () => {
+    console.log(`navigator.onLine: ${navigator.onLine}`)
     console.log('try fetch /api/me')
     const r = await apiClient.GET('/api/me', { redirect: 'manual' })
     console.log('/api/me', r)
