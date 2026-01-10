@@ -13,6 +13,12 @@ RUN npm ci
 # ソースコードをコピー
 COPY . .
 
+# ビルド引数としてコミットハッシュを受け取る
+ARG COMMIT_HASH
+
+# 環境変数としてコミットハッシュを設定
+ENV COMMIT_HASH=$COMMIT_HASH
+
 # アプリケーションをビルド
 RUN npm run build
 

@@ -1,4 +1,3 @@
-declare const __APP_VERSION__: string
 import { QueryClient } from '@tanstack/vue-query'
 import { persistQueryClient } from '@tanstack/query-persist-client-core'
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
