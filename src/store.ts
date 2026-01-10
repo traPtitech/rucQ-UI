@@ -12,7 +12,6 @@ type Camp = components['schemas']['CampResponse']
 export const useUserStore = defineStore('me', () => {
   const fetchMe = async () => {
     const r = await apiClient.GET('/api/me', { redirect: 'manual' })
-    console.log('/api/me', r)
     const { data, error, response } = r
 
     // Temporary Redirect の場合、手動でリダイレクト処理を行う
@@ -26,12 +25,11 @@ export const useUserStore = defineStore('me', () => {
       throw new Error(`ユーザー情報を取得できません: ${error.message}`)
     }
 
-    console.log('me data', data)
     return data
   }
 
   const { data } = useQuery({
-    queryKey: ['me'],
+    queryKey: qk.me.all,
     queryFn: fetchMe,
     staleTime: 0,
     gcTime: Infinity,
