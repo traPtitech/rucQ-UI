@@ -13,7 +13,7 @@ export const useUserStore = defineStore('user', () => {
   const queryClient = useQueryClient()
 
   const initUser = async () => {
-    const data = await queryClient.fetchQuery({
+    const data = await queryClient.ensureQueryData({
       queryKey: qk.me.all,
       queryFn: async () => {
         const { data, error, response } = await apiClient.GET('/api/me', {
@@ -34,6 +34,7 @@ export const useUserStore = defineStore('user', () => {
       },
       staleTime: 0,
       gcTime: Infinity,
+      revalidateIfStale: true,
     })
     user.value = data
   }
