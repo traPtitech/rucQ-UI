@@ -23,6 +23,8 @@ const [, restorePromise] = persistQueryClient({
   persister: asyncPersister,
   maxAge: 7 * 24 * 60 * 60 * 1000, // 永続化キャッシュの寿命
   buster: __APP_VERSION__, // package.json のバージョンを自動反映
+  dehydrateOptions: { shouldDehydrateQuery: () => true },
+  // ステータスによらずメモリ上にあるキャッシュを永続化
 })
 
 export { queryClient, restorePromise }
