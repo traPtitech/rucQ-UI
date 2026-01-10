@@ -40,7 +40,7 @@ const getMyAnswers = async () => {
           params: { path: { questionGroupId: props.questionGroup.id } },
         },
       )
-      if (error || !data) throw error ?? new Error('Failed to fetch answers')
+      if (error) throw new Error(error.message ?? 'Failed to fetch answers')
       return data
     },
   })
@@ -81,11 +81,11 @@ const refreshAnswersMap = async () => {
     isAnswered.value = true // すでに回答済み
     switch (answer.type) {
       case 'free_text': {
-        answersMap[answer.questionId] = { id: answer.id, value: answer.content as string }
+        answersMap[answer.questionId] = { id: answer.id, value: answer.content }
         break
       }
       case 'free_number': {
-        answersMap[answer.questionId] = { id: answer.id, value: answer.content as number }
+        answersMap[answer.questionId] = { id: answer.id, value: answer.content }
         break
       }
       case 'single': {
@@ -114,7 +114,7 @@ const refreshAnswersMap = async () => {
 }
 
 // 質問配列を 1 列 / 2 列ユニットに整形する純粋関数
-const getQuestionUnits = (questions: Question[]): Array<{ size: 1 | 2; questions: Question[] }> => {
+const getQuestionUnits = (questions: Question[]): { size: 1 | 2; questions: Question[] }[] => {
   const units: { size: 1 | 2; questions: Question[] }[] = []
   for (const question of questions) {
     if (question.type === 'free_text' || question.type === 'multiple') {
@@ -213,7 +213,7 @@ const saveAnswersMutation = useMutation({
             body: getAnswerBody(question, answer.value!),
           })
           const { error } = resp
-          if (error) throw error
+          if (error) throw new Error(error.message)
         })
       await Promise.all(updatePromises)
     } else {
@@ -224,7 +224,7 @@ const saveAnswersMutation = useMutation({
           getAnswerBody(question, answersMap[question.id].value!),
         ),
       })
-      if (error) throw error
+      if (error) throw new Error(error.message)
     }
   },
   onSuccess: async () => {

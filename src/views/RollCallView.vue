@@ -26,13 +26,13 @@ const getRollCall = async () => {
   const { data, error } = await apiClient.GET('/api/camps/{campId}/roll-calls', {
     params: { path: { campId: camp.id } },
   })
-  if (error || !data) throw error ?? new Error('Failed to fetch roll calls')
+  if (error) throw new Error(error.message ?? 'Failed to fetch roll calls')
   return data.find((r) => r.id.toString() === route.params.rollcallId)
 }
 
 // ユーザーが点呼の対象かどうか
 const isSubject = computed(() => {
-  if (!rollcall.value || !userStore.user) return false
+  if (!rollcall.value) return false
   return rollcall.value.subjects.includes(userStore.user.id)
 })
 

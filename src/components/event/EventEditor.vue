@@ -123,13 +123,13 @@ const upsertEventMutation = useMutation({
         params: { path: { eventId: props.event.id } },
         body,
       })
-      if (error) throw error
+      if (error) throw new Error(error.message)
     } else {
       const { error } = await apiClient.POST('/api/camps/{campId}/events', {
         params: { path: { campId: displayCamp.value.id } },
         body,
       })
-      if (error) throw error
+      if (error) throw new Error(error.message)
     }
   },
   onSuccess: async () => {
@@ -143,7 +143,7 @@ const deleteEventMutation = useMutation({
     const { error } = await apiClient.DELETE('/api/events/{eventId}', {
       params: { path: { eventId: props.event.id } },
     })
-    if (error) throw error
+    if (error) throw new Error(error.message)
   },
   onSuccess: async () => {
     await queryClient.invalidateQueries({ queryKey: qk.camps.events(displayCamp.value.id) })

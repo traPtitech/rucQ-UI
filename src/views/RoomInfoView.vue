@@ -29,7 +29,7 @@ const {
     const { data, error } = await apiClient.GET('/api/camps/{campId}/room-groups', {
       params: { path: { campId: displayCamp.id } },
     })
-    if (error || !data) throw error ?? new Error('Failed to fetch room groups')
+    if (error) throw new Error(error.message ?? 'Failed to fetch room groups')
     return data
   },
 })
