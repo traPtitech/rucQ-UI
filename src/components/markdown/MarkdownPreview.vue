@@ -95,7 +95,7 @@ watch(
     headingElements.forEach((heading) => {
       const level = parseInt(heading.tagName.charAt(1))
       const id = `heading-${idCounter++}`
-      const text = heading.textContent
+      const text = heading.textContent ?? ''
 
       heading.setAttribute('id', id)
       headingInfos.push({ id, level, text })
