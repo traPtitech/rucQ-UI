@@ -1080,7 +1080,6 @@ export interface components {
     }
     PaymentRequest: {
       userId: string
-      campId: number
       amount: number
       amountPaid: number
     }

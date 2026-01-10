@@ -2,7 +2,7 @@ import { HttpResponse } from 'msw'
 import { http } from '@/mocks/http'
 
 export const roomsHandlers = [
-  http.get('/api/camps/{campId}/room-groups', async () => {
+  http.get('/api/camps/{campId}/room-groups', () => {
     return HttpResponse.json([
       {
         id: 1,

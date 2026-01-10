@@ -44,8 +44,8 @@ const getParticipants = async (camp: Camp) => {
   const participants = await apiClient.GET('/api/camps/{campId}/participants', {
     params: { path: { campId: camp.id } },
   })
-  if (participants.error || !participants.data) {
-    throw new Error(`参加者情報を取得できません: ${participants.error}`)
+  if (participants.error) {
+    throw new Error(`参加者情報を取得できません: ${participants.error.message}`)
   }
   return participants.data
 }
@@ -71,11 +71,11 @@ const endPickRef = ref<{ validate: () => Promise<string[] | undefined> } | null>
 // お互いが変わったらフィールドを再検証
 watch(
   () => endMinute.value,
-  () => startPickRef.value?.validate?.(),
+  () => startPickRef.value?.validate(),
 )
 watch(
   () => startMinute.value,
-  () => endPickRef.value!.validate?.(),
+  () => endPickRef.value!.validate(),
 )
 
 onMounted(async () => {

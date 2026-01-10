@@ -2,7 +2,7 @@ import { HttpResponse } from 'msw'
 import { http } from '@/mocks/http'
 
 export const rollCallsHandlers = [
-  http.get('/api/camps/{campId}/roll-calls', async () => {
+  http.get('/api/camps/{campId}/roll-calls', () => {
     return HttpResponse.json([
       {
         id: 1,

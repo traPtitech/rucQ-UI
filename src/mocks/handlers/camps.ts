@@ -2,7 +2,7 @@ import { HttpResponse } from 'msw'
 import { http } from '@/mocks/http'
 
 export const campsHandlers = [
-  http.get('/api/camps', async () => {
+  http.get('/api/camps', () => {
     return HttpResponse.json([
       {
         id: 1,
@@ -159,7 +159,7 @@ A: 屋外活動は室内プログラムに変更となります。
       },
     ])
   }),
-  http.post('/api/camps/{campId}/register', async ({ params }) => {
+  http.post('/api/camps/{campId}/register', ({ params }) => {
     return HttpResponse.json({ message: `Successfully registered for camp ${params.campId}` })
   }),
 ]

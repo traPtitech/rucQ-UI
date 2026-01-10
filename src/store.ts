@@ -23,13 +23,12 @@ export const useUserStore = defineStore('user', () => {
         // Temporary Redirect の場合、手動でリダイレクト処理を行う
         if (response.type === 'opaqueredirect') {
           window.location.href = '/login'
-          return new Promise<never>(() => {})
-          // ユーザーにエラー表示をさせないよう、解決しない Promise を返す
+          return new Promise<never>(() => {
+            // ユーザーにエラー表示をさせないよう、解決しない Promise を返す
+          })
         }
 
-        if (error || !data) {
-          throw new Error(`ユーザー情報を取得できません: ${error}`)
-        }
+        if (error) throw new Error(`ユーザー情報を取得できません: ${error.message}`)
         return data
       },
       staleTime: 0,
@@ -61,22 +60,18 @@ export const useCampStore = defineStore('camp', () => {
       queryKey: qk.camps.lists(),
       queryFn: async () => {
         const { data, error } = await apiClient.GET('/api/camps')
-        if (error || !data) {
-          throw new Error(`合宿情報を取得できません: ${error}`)
-        }
+        if (error) throw new Error(`合宿情報を取得できません: ${error.message}`)
         return data
           .filter((camp) => !camp.isDraft)
           .sort((a, b) => new Date(b.dateStart).getTime() - new Date(a.dateStart).getTime())
       },
     })
 
+    if (camps.length === 0) throw new Error('表示可能な合宿がありません')
+
     // index が小さいほど新しい合宿
     allCamps.value = camps
-
     latestCamp.value = allCamps.value[0]
-    if (!latestCamp.value) {
-      return
-    }
 
     const participants = await queryClient.ensureQueryData<components['schemas']['UserResponse'][]>(
       {
@@ -85,9 +80,7 @@ export const useCampStore = defineStore('camp', () => {
           const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
             params: { path: { campId: latestCamp.value!.id } },
           })
-          if (error || !data) {
-            throw new Error(`合宿参加者情報を取得できません: ${error}`)
-          }
+          if (error) throw new Error(`合宿参加者情報を取得できません: ${error.message}`)
           return data
         },
       },
@@ -108,7 +101,7 @@ export const useCampStore = defineStore('camp', () => {
     const { error } = await apiClient.POST('/api/camps/{campId}/register', {
       params: { path: { campId: campId } },
     })
-    if (error) throw error
+    if (error) throw new Error(error.message)
     hasRegisteredLatest.value = true
     // 参加登録後は参加者リストを即時更新
     const participantsKey = qk.camps.participants(campId)
@@ -119,9 +112,7 @@ export const useCampStore = defineStore('camp', () => {
         const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
           params: { path: { campId } },
         })
-        if (error || !data) {
-          throw new Error(`合宿参加者情報を取得できません: ${error}`)
-        }
+        if (error) throw new Error(`合宿参加者情報を取得できません: ${error.message}`)
         return data
       },
     })
@@ -131,7 +122,7 @@ export const useCampStore = defineStore('camp', () => {
     const { error } = await apiClient.DELETE('/api/camps/{campId}/register', {
       params: { path: { campId } },
     })
-    if (error) throw error
+    if (error) throw new Error(error.message)
     hasRegisteredLatest.value = false
     // 参加取り消し後は参加者リストを即時更新
     const participantsKey = qk.camps.participants(campId)
@@ -142,9 +133,7 @@ export const useCampStore = defineStore('camp', () => {
         const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
           params: { path: { campId } },
         })
-        if (error || !data) {
-          throw new Error(`合宿参加者情報を取得できません: ${error}`)
-        }
+        if (error) throw new Error(`合宿参加者情報を取得できません: ${error.message}`)
         return data
       },
     })

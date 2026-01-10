@@ -10,4 +10,3 @@ export const getStartTime = (event: CampEvent) => {
 export const getEndTime = (event: CampEvent) => {
   return event.type === 'moment' ? new Date(event.time) : new Date(event.timeEnd)
 }
-

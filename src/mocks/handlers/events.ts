@@ -6,7 +6,7 @@ import { http } from '@/mocks/http'
 // duration: 有志が開催する「開始時刻と終了時刻が異なる」イベント
 
 export const eventsHandlers = [
-  http.get('/api/camps/{campId}/events', async () => {
+  http.get('/api/camps/{campId}/events', () => {
     return HttpResponse.json([
       // 1日目 (2125-08-01)
       {

@@ -2,7 +2,7 @@ import { HttpResponse } from 'msw'
 import { http } from '@/mocks/http'
 
 export const paymentsHandlers = [
-  http.get('/api/camps/{campId}/me', async ({ params }) => {
+  http.get('/api/camps/{campId}/me', ({ params }) => {
     return HttpResponse.json({
       id: 'traP',
       payment: {

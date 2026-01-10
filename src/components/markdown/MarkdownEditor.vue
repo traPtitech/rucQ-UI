@@ -19,7 +19,7 @@ const handleInput = () => {
   textAll.value = ta.value.value
   const s = { start: ta.value.selectionStart, end: ta.value.selectionEnd }
 
-  nextTick(() => {
+  void nextTick(() => {
     if (!ta.value || text.value === undefined) return // 空文字も false なので !text.value はダメ
     if (isComposing.value) {
       if (s.start === s.end) {
@@ -55,7 +55,7 @@ const enclose = (symbol: string) => {
   tempText = tempText.slice(0, s.start) + symbol + tempText.slice(s.start, tempText.length)
   text.value = tempText
   const cursorPos = s.start === s.end ? s.end + symbol.length : s.end + 2 * symbol.length
-  nextTick(() => {
+  void nextTick(() => {
     if (!ta.value) return
     ta.value.setSelectionRange(cursorPos, cursorPos)
     handleInput()
