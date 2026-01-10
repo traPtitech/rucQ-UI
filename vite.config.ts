@@ -10,7 +10,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const hash = env.VITE_COMMIT_HASH || 'dev'
+  const hash = (env.VITE_COMMIT_HASH || 'unknown').slice(0, 7)
   // 環境変数からコミットハッシュを取得
 
   console.log(`${pkg.version}, Commit Hash: ${hash}`)
