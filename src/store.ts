@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { components } from '@/api/schema'
 import { apiClient } from '@/api/apiClient'
-import { useQueryClient } from '@tanstack/vue-query'
+import { useQueryClient, onlineManager } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
 
 type User = components['schemas']['UserResponse']
@@ -13,6 +13,7 @@ export const useUserStore = defineStore('me', () => {
 
   const fetchMe = async () => {
     console.log(`navigator.onLine: ${navigator.onLine}`)
+    console.log(`onlineManager.isOnline(): ${onlineManager.isOnline()}`)
     console.log('try fetch /api/me')
     const r = await apiClient.GET('/api/me', { redirect: 'manual' })
     console.log('/api/me', r)
