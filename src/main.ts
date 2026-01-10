@@ -46,6 +46,7 @@ async function initializeApp() {
     console.error(error)
   }
 
+  console.log(`${__APP_VERSION__}, Commit Hash: ${__COMMIT_HASH__}`)
   app.use(router)
   app.mount('#app')
 }
