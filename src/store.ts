@@ -101,7 +101,7 @@ export const useCampStore = defineStore('camp', () => {
     const { error } = await apiClient.POST('/api/camps/{campId}/register', {
       params: { path: { campId: campId } },
     })
-    if (error) throw new Error(error.message)
+    if (error) throw new Error(`合宿参加登録に失敗しました: ${error.message}`)
     hasRegisteredLatest.value = true
     // 参加登録後は参加者リストを即時更新
     const participantsKey = qk.camps.participants(campId)
@@ -122,7 +122,7 @@ export const useCampStore = defineStore('camp', () => {
     const { error } = await apiClient.DELETE('/api/camps/{campId}/register', {
       params: { path: { campId } },
     })
-    if (error) throw new Error(error.message)
+    if (error) throw new Error(`合宿参加取り消しに失敗しました: ${error.message}`)
     hasRegisteredLatest.value = false
     // 参加取り消し後は参加者リストを即時更新
     const participantsKey = qk.camps.participants(campId)
