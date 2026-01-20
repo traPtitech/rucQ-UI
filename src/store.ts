@@ -22,10 +22,7 @@ export const useUserStore = defineStore('user', () => {
 
         // Temporary Redirect の場合、手動でリダイレクト処理を行う
         if (response.type === 'opaqueredirect') {
-          // 既に /login にいる場合は無限ループを防ぐ
-          if (window.location.pathname !== '/login') {
-            window.location.replace('/login')
-          }
+          window.location.href = '/login'
           return new Promise<never>(() => {
             // ユーザーにエラー表示をさせないよう、解決しない Promise を返す
           })
