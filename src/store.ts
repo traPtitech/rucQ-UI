@@ -28,7 +28,7 @@ export const useUserStore = defineStore('user', () => {
           })
         }
 
-        if (error) throw new Error(`ユーザー情報を取得できません: ${error.message}`)
+        if (error) throw new Error(`ユーザー情報の取得に失敗しました: ${error.message}`)
         return data
       },
       staleTime: 0,
@@ -60,7 +60,7 @@ export const useCampStore = defineStore('camp', () => {
       queryKey: qk.camps.lists(),
       queryFn: async () => {
         const { data, error } = await apiClient.GET('/api/camps')
-        if (error) throw new Error(`合宿情報を取得できません: ${error.message}`)
+        if (error) throw new Error(`合宿情報の取得に失敗しました: ${error.message}`)
         return data
           .filter((camp) => !camp.isDraft)
           .sort((a, b) => new Date(b.dateStart).getTime() - new Date(a.dateStart).getTime())
@@ -80,7 +80,7 @@ export const useCampStore = defineStore('camp', () => {
           const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
             params: { path: { campId: latestCamp.value!.id } },
           })
-          if (error) throw new Error(`合宿参加者情報を取得できません: ${error.message}`)
+          if (error) throw new Error(`合宿参加者情報の取得に失敗しました: ${error.message}`)
           return data
         },
       },
@@ -112,7 +112,7 @@ export const useCampStore = defineStore('camp', () => {
         const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
           params: { path: { campId } },
         })
-        if (error) throw new Error(`合宿参加者情報を取得できません: ${error.message}`)
+        if (error) throw new Error(`合宿参加者情報の取得に失敗しました: ${error.message}`)
         return data
       },
     })
@@ -133,7 +133,7 @@ export const useCampStore = defineStore('camp', () => {
         const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
           params: { path: { campId } },
         })
-        if (error) throw new Error(`合宿参加者情報を取得できません: ${error.message}`)
+        if (error) throw new Error(`合宿参加者情報の取得に失敗しました: ${error.message}`)
         return data
       },
     })

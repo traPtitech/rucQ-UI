@@ -26,7 +26,7 @@ const getRollCall = async () => {
   const { data, error } = await apiClient.GET('/api/camps/{campId}/roll-calls', {
     params: { path: { campId: camp.id } },
   })
-  if (error) throw new Error(error.message ?? 'Failed to fetch roll calls')
+  if (error) throw new Error(`点呼情報の取得に失敗しました: ${error.message}`)
   return data.find((r) => r.id.toString() === route.params.rollcallId)
 }
 

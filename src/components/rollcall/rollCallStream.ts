@@ -52,7 +52,7 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
     const { data, error } = await apiClient.GET('/api/roll-calls/{rollCallId}/reactions', {
       params: { path: { rollCallId: rollcall.value.id } },
     })
-    if (error) throw new Error(error.message ?? 'Failed to fetch reactions')
+    if (error) throw new Error(`リアクションの取得に失敗しました: ${error.message}`)
     return data
   }
 
@@ -115,7 +115,7 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
           params: { path: { rollCallId: rollcall.value.id } },
           body: { content },
         })
-        if (error) throw new Error(error.message ?? 'failed to post reaction')
+        if (error) throw new Error(`リアクションの送信に失敗しました: ${error.message}`)
         reactions.value.push(data)
       } else {
         // すでにリアクションがある場合は更新
@@ -123,7 +123,7 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
           params: { path: { reactionId: myReaction.value.id } },
           body: { content },
         })
-        if (error) throw new Error(error.message ?? 'failed to update reaction')
+        if (error) throw new Error(`リアクションの更新に失敗しました: ${error.message}`)
         const idx = reactions.value.findIndex((r) => r.id === data.id)
         if (idx >= 0) reactions.value[idx] = data
       }

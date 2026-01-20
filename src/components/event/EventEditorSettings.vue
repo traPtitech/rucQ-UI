@@ -45,7 +45,7 @@ const getParticipants = async (camp: Camp) => {
     params: { path: { campId: camp.id } },
   })
   if (participants.error) {
-    throw new Error(`参加者情報を取得できません: ${participants.error.message}`)
+    throw new Error(`参加者情報の取得に失敗しました: ${participants.error.message}`)
   }
   return participants.data
 }

@@ -30,7 +30,7 @@ const { data: events } = useQuery<CampEvent[], Error>({
     const { data, error } = await apiClient.GET('/api/camps/{campId}/events', {
       params: { path: { campId: displayCamp.value.id } },
     })
-    if (error) throw new Error(error.message ?? 'Failed to fetch events')
+    if (error) throw new Error(`イベント情報の取得に失敗しました: ${error.message}`)
     return data
   },
 })

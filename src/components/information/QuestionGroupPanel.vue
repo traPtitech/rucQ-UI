@@ -40,7 +40,7 @@ const getMyAnswers = async () => {
           params: { path: { questionGroupId: props.questionGroup.id } },
         },
       )
-      if (error) throw new Error(error.message ?? 'Failed to fetch answers')
+      if (error) throw new Error(`自分の回答の取得に失敗しました: ${error.message}`)
       return data
     },
   })
@@ -213,7 +213,7 @@ const saveAnswersMutation = useMutation({
             body: getAnswerBody(question, answer.value!),
           })
           const { error } = resp
-          if (error) throw new Error(error.message)
+          if (error) throw new Error(`回答の更新に失敗しました: ${error.message}`)
         })
       await Promise.all(updatePromises)
     } else {
@@ -224,7 +224,7 @@ const saveAnswersMutation = useMutation({
           getAnswerBody(question, answersMap[question.id].value!),
         ),
       })
-      if (error) throw new Error(error.message)
+      if (error) throw new Error(`回答の送信に失敗しました: ${error.message}`)
     }
   },
   onSuccess: async () => {
