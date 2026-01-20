@@ -36,14 +36,17 @@ async function initializeApp() {
     await worker.start()
   }
 
-  try {
-    await restorePromise // キャッシュの読み込み
-    const userStore = useUserStore()
-    const campStore = useCampStore()
-    await userStore.initUser()
-    await campStore.initCamp(userStore.user)
-  } catch (error) {
-    console.error(error)
+  // ログインページにリダイレクトされた際は認証のリダイレクトのみが必要なのでスキップ
+  if (window.location.pathname !== '/login') {
+    try {
+      await restorePromise // キャッシュの読み込み
+      const userStore = useUserStore()
+      const campStore = useCampStore()
+      await userStore.initUser()
+      await campStore.initCamp(userStore.user)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   app.use(router)
