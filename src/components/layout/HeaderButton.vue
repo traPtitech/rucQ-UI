@@ -24,8 +24,6 @@ const isArchived = computed(() => {
   return displayCamp.value ? timeStore.isCampEnded(displayCamp.value) : false
 })
 
-const campName = computed(() => displayCamp.value?.name)
-
 const campIconUrl = computed(() => {
   if (isArchived.value) {
     return '/icons/icon-transparent-archived.svg'
@@ -33,7 +31,6 @@ const campIconUrl = computed(() => {
     return '/icons/icon-transparent.svg'
   }
 })
-
 </script>
 
 <template>
@@ -41,7 +38,7 @@ const campIconUrl = computed(() => {
     <template #prepend>
       <img :src="campIconUrl" alt="rucQ Icon" :class="$style.icon" />
     </template>
-    <v-app-bar-title class="text-primary">
+    <v-app-bar-title :class="isArchived ? $style.archivedTitle : 'text-primary'">
       <span :class="$style.routeTitle">{{ route.name }} </span>
     </v-app-bar-title>
     <v-menu>
@@ -84,6 +81,10 @@ const campIconUrl = computed(() => {
 
 .routeTitle {
   font-weight: bold;
+}
+
+.archivedTitle {
+  color: #8d8d8d;
 }
 
 .appBar {
