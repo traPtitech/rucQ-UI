@@ -53,10 +53,10 @@ const router = createRouter({
 
 // ナビゲーションガード
 router.beforeEach((to, from, next) => {
-  // /login にアクセスした場合、フルページリロードで / に遷移
-  // （クライアントサイドリダイレクトだと main.ts の初期化がスキップされてしまうため）
+  // /login へのアクセスは何もしない
+  // サーバーが OAuth にリダイレクトするか、認証済みなら / にリダイレクトする
+  // フロントエンドが介入すると OAuth のコールバック処理がスキップされてしまう
   if (to.path === '/login') {
-    window.location.href = '/'
     return
   }
 
