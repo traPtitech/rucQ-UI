@@ -57,6 +57,7 @@ router.beforeEach((to, from, next) => {
   // サーバーが OAuth にリダイレクトするか、認証済みなら / にリダイレクトする
   // フロントエンドが介入すると OAuth のコールバック処理がスキップされてしまう
   if (to.path === '/login') {
+    window.location.href = '/login?t=' + Date.now()
     return
   }
 
