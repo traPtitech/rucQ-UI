@@ -22,7 +22,8 @@ export const useUserStore = defineStore('user', () => {
 
         // Temporary Redirect の場合、手動でリダイレクト処理を行う
         if (response.type === 'opaqueredirect') {
-          window.location.href = '/login'
+          // キャッシュバスターを追加してブラウザのディスクキャッシュを回避
+          window.location.href = '/login?t=' + Date.now()
           return new Promise<never>(() => {
             // ユーザーにエラー表示をさせないよう、解決しない Promise を返す
           })
