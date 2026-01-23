@@ -13,6 +13,9 @@ import UnregisterCampButton from '@/components/information/UnregisterCampButton.
 import { useQuery } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
 
+// Lachite のテスト用
+import { RegisterCampButtonPaid } from '@/components/information/RegisterCampButtonPaid.vue'
+
 type QuestionGroup = components['schemas']['QuestionGroupResponse'][]
 type Dashboard = components['schemas']['DashboardResponse']
 
@@ -64,6 +67,13 @@ const isRegisteredOpen = displayCamp.isRegistrationOpen
       <unregister-camp-button v-if="isRegistered" />
       <register-camp-button v-else />
     </div>
+
+    <!-- Lachite のテスト用に作成-->
+    <div>
+      <RegisterCampButtonPaid />
+    </div>
+    
+    
     <room-info v-if="dashboard?.room" :room="dashboard?.room" />
     <payment-info v-else :is-ready="isReady" :payment="dashboard?.payment" />
     <div :class="$style.heading">合宿オプション</div>
