@@ -4,9 +4,6 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
 
-    "types": ["vite/client"],
-    // 環境変数 import.meta.env や静的アセットの型定義を宣言
-
     "strict": true,
     "noUnusedLocals": true,
     "noFallthroughCasesInSwitch": true,
