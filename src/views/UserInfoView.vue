@@ -1,20 +1,23 @@
 <script setup lang="ts">
-import MasonryWall from '@yeger/vue-masonry-wall'
-import PaymentInfo from '@/components/information/PaymentInfo.vue'
-import RoomInfo from '@/components/information/RoomInfo.vue'
 import { apiClient } from '@/api/apiClient'
-import { computed } from 'vue'
-import { useCampStore } from '@/store'
-import { useRoute } from 'vue-router'
+import { qk } from '@/api/queries/keys'
 import type { components } from '@/api/schema'
+import PaymentInfo from '@/components/information/PaymentInfo.vue'
 import QuestionGroupPanel from '@/components/information/QuestionGroupPanel.vue'
 import RegisterCampButton from '@/components/information/RegisterCampButton.vue'
+import RoomInfo from '@/components/information/RoomInfo.vue'
 import UnregisterCampButton from '@/components/information/UnregisterCampButton.vue'
+import { useCampStore } from '@/store'
 import { useQuery } from '@tanstack/vue-query'
-import { qk } from '@/api/queries/keys'
+import MasonryWall from '@yeger/vue-masonry-wall'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
 // Lachite のテスト用
-import { RegisterCampButtonPaid } from '@/components/information/RegisterCampButtonPaid.vue'
+import RegisterCampButtonNew from '@/components/information/RegisterCampButtonNew.vue'
+import RegisterCampButtonPaid from '@/components/information/RegisterCampButtonPaid.vue'
+import RegisterCampButtonUnpaid from '@/components/information/RegisterCampButtonUnpaid.vue'
+import UnregisterCampButtonNew from '@/components/information/UnregisterCampButtonNew.vue'
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse'][]
 type Dashboard = components['schemas']['DashboardResponse']
@@ -69,11 +72,17 @@ const isRegisteredOpen = displayCamp.isRegistrationOpen
     </div>
 
     <!-- Lachite のテスト用に作成-->
-    <div>
-      <RegisterCampButtonPaid />
+    <div :class="$style.heading">参加登録</div>
+
+    <div v-if="isReady">
+      <RegisterCampButtonPaid v-if="dashboard?.payment" :payment="dashboard?.payment" />
+      <RegisterCampButtonUnpaid v-else :payment="dashboard?.payment" />
     </div>
-    
-    
+    <div v-else>
+      <RegisterCampButtonNew v-if="isRegistered" />
+      <UnregisterCampButtonNew />
+    </div>
+
     <room-info v-if="dashboard?.room" :room="dashboard?.room" />
     <payment-info v-else :is-ready="isReady" :payment="dashboard?.payment" />
     <div :class="$style.heading">合宿オプション</div>
