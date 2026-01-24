@@ -75,6 +75,7 @@ export default defineConfig(({ mode }) => {
           runtimeCaching: [
             {
               urlPattern: ({ url, request }) => {
+                // /login へのナビゲーションリクエストがdisk cacheされると認証リダイレクトが正しく動作しないためNetworkOnlyにする
                 return request.mode === 'navigate' && url.pathname.startsWith('/login')
               },
               handler: 'NetworkOnly',
