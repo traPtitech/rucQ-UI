@@ -4,13 +4,13 @@
 	route {
 		root * /usr/share/caddy
 
-		@noCache {
-			path /sw.js
-			path /registerSW.js
-			path /manifest.webmanifest
-			path /index.html
+		# デフォルトで HTTP Cache を無効化
+		header Cache-Control "no-cache, no-store, must-revalidate"
+
+		@assets {
+			path /assets/*
 		}
-		header @noCache Cache-Control "no-cache, no-store, must-revalidate"
+		header @assets Cache-Control "max-age=31536000, immutable"
 
 		try_files {path} /index.html
 		file_server {
