@@ -3,6 +3,14 @@
 
 	route {
 		root * /usr/share/caddy
+
+		@noCache {
+			path /sw.js
+			path /manifest.webmanifest
+			path /index.html
+		}
+		header @noCache Cache-Control "no-cache, no-store, must-revalidate"
+
 		try_files {path} /index.html
 		file_server {
 			precompressed br gzip
