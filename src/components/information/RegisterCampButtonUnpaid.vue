@@ -3,9 +3,12 @@
 <template>
   <v-card :class="$style.container">
     <div :class="$style.side">
-      <v-icon color="white">mdi-check</v-icon>
+      <v-icon color="white">mdi-exclamation</v-icon>
     </div>
-    <div :class="$style.mainContent">合宿係が ￥ {{}} の振り込みを確認しました</div>
+    <div :class="$style.mainContent">
+      ￥ {{}} の振込が未確認です <br />
+      振込済みの場合は、合宿係の確認までお待ちください
+    </div>
   </v-card>
 </template>
 
@@ -24,14 +27,13 @@
   height: 60px;
   text-align: center;
   line-height: 60px;
-  background-color: #4caf50;
+  background-color: #ff7300;
 }
 
 .mainContent {
-  height: 60px;
-  text-align: center;
-  line-height: 60px;
-  color: #4caf50;
-  margin-left: 20px;
+  height: 53px;
+  text-align: left;
+  color: #ff7300;
+  margin: 7px auto auto 20px;
 }
 </style>

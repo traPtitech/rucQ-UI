@@ -14,7 +14,9 @@ import { useQuery } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
 
 // Lachite のテスト用
-import { RegisterCampButtonPaid } from '@/components/information/RegisterCampButtonPaid.vue'
+import RegisterCampButtonPaid from '@/components/information/RegisterCampButtonPaid.vue'
+import RegisterCampButtonUnpaid from '@/components/information/RegisterCampButtonUnpaid.vue'
+
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse'][]
 type Dashboard = components['schemas']['DashboardResponse']
@@ -71,6 +73,7 @@ const isRegisteredOpen = displayCamp.isRegistrationOpen
     <!-- Lachite のテスト用に作成-->
     <div>
       <RegisterCampButtonPaid />
+      <RegisterCampButtonUnpaid />
     </div>
     
     
