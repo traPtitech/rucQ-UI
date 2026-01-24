@@ -6,6 +6,10 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/login',
+      redirect: '/',
+    },
+    {
       path: '/',
       component: () => import('@/views/RegistrationView.vue'),
     },
@@ -53,14 +57,6 @@ const router = createRouter({
 
 // ナビゲーションガード
 router.beforeEach((to, from, next) => {
-  // /login へのアクセスは何もしない
-  // サーバーが OAuth にリダイレクトするか、認証済みなら / にリダイレクトする
-  // フロントエンドが介入すると OAuth のコールバック処理がスキップされてしまう
-  if (to.path === '/login') {
-    window.location.href = '/'
-    return
-  }
-
   try {
     const campStore = useCampStore()
     const { hasRegisteredLatest } = storeToRefs(campStore)
