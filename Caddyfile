@@ -6,6 +6,7 @@
 
 		@noCache {
 			path /sw.js
+			path /registerSW.js
 			path /manifest.webmanifest
 			path /index.html
 		}
