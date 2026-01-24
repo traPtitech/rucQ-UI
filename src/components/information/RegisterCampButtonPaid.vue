@@ -5,7 +5,7 @@
     <div :class="$style.side">
       <v-icon color="white">mdi-check</v-icon>
     </div>
-    <div :class="$style.mainContent">合宿係が ￥ {{}} の振り込みを確認しました</div>
+    <div :class="$style.mainContent">合宿係が ￥ {{}} の振込を確認しました</div>
   </v-card>
 </template>
 
