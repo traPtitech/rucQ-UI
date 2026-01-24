@@ -95,7 +95,7 @@ watch(
     headingElements.forEach((heading) => {
       const level = parseInt(heading.tagName.charAt(1))
       const id = `heading-${idCounter++}`
-      const text = heading.textContent || ''
+      const text = heading.textContent ?? ''
 
       heading.setAttribute('id', id)
       headingInfos.push({ id, level, text })
@@ -115,7 +115,7 @@ watch(
   { immediate: true },
 )
 
-onMounted(async () => {
+onMounted(() => {
   const highlightStyleTag = document.createElement('style')
   highlightStyleTag.textContent = darkStyle
   document.head.appendChild(highlightStyleTag)

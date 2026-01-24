@@ -30,7 +30,7 @@ const { data: questionGroups } = useQuery<QuestionGroup, Error>({
     const { data, error } = await apiClient.GET('/api/camps/{campId}/question-groups', {
       params: { path: { campId: displayCamp.id } },
     })
-    if (error || !data) throw error ?? new Error('Failed to fetch question groups')
+    if (error) throw new Error(`質問グループ情報の取得に失敗しました: ${error.message}`)
     return data
   },
 })
@@ -46,7 +46,7 @@ const {
     const { data, error } = await apiClient.GET('/api/camps/{campId}/me', {
       params: { path: { campId: displayCamp.id } },
     })
-    if (error || !data) throw error ?? new Error('Failed to fetch dashboard')
+    if (error) throw new Error(`ダッシュボード情報の取得に失敗しました: ${error.message}`)
     return data
   },
 })
