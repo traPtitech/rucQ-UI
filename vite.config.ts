@@ -72,15 +72,6 @@ export default defineConfig(({ mode }) => {
         workbox: {
           globPatterns: ['**/*.{js,css,html,svg,png,jpg,webp,woff2}'],
           navigateFallbackDenylist: [/^\/api/, /^\/login/],
-          runtimeCaching: [
-            {
-              urlPattern: ({ url, request }) => {
-                // /login へのナビゲーションリクエストがdisk cacheされると認証リダイレクトが正しく動作しないためNetworkOnlyにする
-                return request.mode === 'navigate' && url.pathname.startsWith('/login')
-              },
-              handler: 'NetworkOnly',
-            },
-          ],
         },
         devOptions: { enabled: true },
       }),
