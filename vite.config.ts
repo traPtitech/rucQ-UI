@@ -29,58 +29,58 @@ export default defineConfig(({ mode }) => {
           configFile: 'src/styles/settings.scss',
         },
       }),
-      VitePWA({
-        registerType: 'autoUpdate',
-        manifest: {
-          name: 'rucQ',
-          short_name: 'rucQ',
-          display: 'standalone',
-          start_url: '/',
-          scope: '/',
-          icons: [
-            {
-              src: '/icons/android-chrome-192x192.png',
-              sizes: '192x192',
-              type: 'image/png',
-            },
-            {
-              src: '/icons/android-chrome-512x512.png',
-              sizes: '512x512',
-              type: 'image/png',
-            },
-            {
-              src: '/icons/android-chrome-192x192-maskable.png',
-              sizes: '192x192',
-              type: 'image/png',
-              purpose: 'maskable',
-            },
-            {
-              src: '/icons/android-chrome-512x512-maskable.png',
-              sizes: '512x512',
-              type: 'image/png',
-              purpose: 'maskable',
-            },
-          ],
-        },
-        includeAssets: [
-          'favicon.ico',
-          'apple-touch-icon.png',
-          'android-chrome-192x192.png',
-          'android-chrome-512x512.png',
-          'android-chrome-192x192-maskable.png',
-          'android-chrome-512x512-maskable.png',
-          'icon-transparent.svg',
-          'logo.svg',
-          'logo-bg.svg',
-          'logo-white.svg',
-        ],
-        // Service Worker
-        workbox: {
-          globPatterns: ['**/*.{js,css,html,svg,png,jpg,webp,woff2}'],
-          navigateFallbackDenylist: [/^\/api/, /^\/login/],
-        },
-        devOptions: { enabled: true },
-      }),
+      // VitePWA({
+      //   registerType: 'autoUpdate',
+      //   manifest: {
+      //     name: 'rucQ',
+      //     short_name: 'rucQ',
+      //     display: 'standalone',
+      //     start_url: '/',
+      //     scope: '/',
+      //     icons: [
+      //       {
+      //         src: '/icons/android-chrome-192x192.png',
+      //         sizes: '192x192',
+      //         type: 'image/png',
+      //       },
+      //       {
+      //         src: '/icons/android-chrome-512x512.png',
+      //         sizes: '512x512',
+      //         type: 'image/png',
+      //       },
+      //       {
+      //         src: '/icons/android-chrome-192x192-maskable.png',
+      //         sizes: '192x192',
+      //         type: 'image/png',
+      //         purpose: 'maskable',
+      //       },
+      //       {
+      //         src: '/icons/android-chrome-512x512-maskable.png',
+      //         sizes: '512x512',
+      //         type: 'image/png',
+      //         purpose: 'maskable',
+      //       },
+      //     ],
+      //   },
+      //   includeAssets: [
+      //     'favicon.ico',
+      //     'apple-touch-icon.png',
+      //     'android-chrome-192x192.png',
+      //     'android-chrome-512x512.png',
+      //     'android-chrome-192x192-maskable.png',
+      //     'android-chrome-512x512-maskable.png',
+      //     'icon-transparent.svg',
+      //     'logo.svg',
+      //     'logo-bg.svg',
+      //     'logo-white.svg',
+      //   ],
+      //   // Service Worker
+      //   workbox: {
+      //     globPatterns: ['**/*.{js,css,html,svg,png,jpg,webp,woff2}'],
+      //     navigateFallbackDenylist: [/^\/api/, /^\/login/],
+      //   },
+      //   devOptions: { enabled: true },
+      // }),
     ],
     resolve: {
       alias: {
