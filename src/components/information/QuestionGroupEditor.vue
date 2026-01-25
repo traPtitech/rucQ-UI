@@ -38,7 +38,7 @@ const questionUnits = computed(() => props.getQuestionUnits(props.questionGroup.
 // 各設問の v-model 用 computed（親に更新を委譲）
 const answerModel = (questionId: number) =>
   computed({
-    get: () => props.answersMap[questionId].value,
+    get: () => props.answersMap[questionId]!.value,
     set: (v) => emit('update:answer', { questionId, value: v! }),
   })
 </script>
