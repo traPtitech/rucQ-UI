@@ -81,12 +81,12 @@ export default defineConfig(({ mode }) => {
           runtimeCaching: [
             {
               urlPattern: /^https:\/\/image-proxy\.trap\.jp\/icon\/.*/,
-              handler: 'StaleWhileRevalidate',
+              handler: 'CacheFirst',
               options: {
                 cacheName: 'user-icons',
                 expiration: {
                   maxEntries: 200,
-                  maxAgeSeconds: 30 * 24 * 60 * 60,
+                  maxAgeSeconds: 7 * 24 * 60 * 60, // 1 週間
                 },
                 cacheableResponse: {
                   statuses: [0, 200],
