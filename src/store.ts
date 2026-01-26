@@ -22,6 +22,7 @@ export const useUserStore = defineStore('user', () => {
 
         // Temporary Redirect の場合、手動でリダイレクト処理を行う
         if (response.type === 'opaqueredirect') {
+          await fetch('/clear', { method: 'POST' })
           window.location.href = '/login'
           return new Promise<never>(() => {
             // ユーザーにエラー表示をさせないよう、解決しない Promise を返す

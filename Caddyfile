@@ -7,6 +7,16 @@
 		# デフォルトで HTTP Cache を無効化
 		header Cache-Control "no-cache, no-store, must-revalidate"
 
+		@clear {
+            path /clear
+			method POST
+        }
+        handle @clear {
+            header Clear-Site-Data "\"cookies\""
+            header Cache-Control "no-store, max-age=0"
+            respond "Cookie cleared" 200
+        }
+
 		@assets {
 			path /assets/*
 		}
