@@ -29,10 +29,10 @@ const bgColor = computed(() => {
 <style module>
 .background {
   position: fixed !important;
-  top: 0vh;
-  left: 0vw;
-  height: 100vh;
-  width: 100vw;
+  top: 0;
+  left: 0;
+  height: 100lvh;
+  width: 100lvw;
   display: flex;
   justify-content: center;
   align-items: center;
