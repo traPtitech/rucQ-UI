@@ -4,6 +4,9 @@ import type { components } from '@/api/schema'
 import { apiClient } from '@/api/apiClient'
 import { useQueryClient } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 type User = components['schemas']['UserResponse']
 type Camp = components['schemas']['CampResponse']
@@ -22,7 +25,7 @@ export const useUserStore = defineStore('user', () => {
 
         // Temporary Redirect の場合、手動でリダイレクト処理を行う
         if (response.type === 'opaqueredirect') {
-          window.location.href = '/login'
+          await router.replace('/login')
           return new Promise<never>(() => {
             // ユーザーにエラー表示をさせないよう、解決しない Promise を返す
           })
