@@ -16,9 +16,7 @@ export const useUserStore = defineStore('user', () => {
     const data = await queryClient.ensureQueryData({
       queryKey: qk.me.all,
       queryFn: async () => {
-        const { data, error, response } = await apiClient.GET('/api/me', {
-          redirect: 'manual',
-        })
+        const { data, error, response } = await apiClient.GET('/api/me')
 
         // Temporary Redirect の場合、手動でリダイレクト処理を行う
         if (response.type === 'opaqueredirect') {
