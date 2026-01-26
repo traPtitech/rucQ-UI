@@ -28,7 +28,7 @@ export const useUserStore = defineStore('user', () => {
             const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim()
             document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`
           })
-          window.location.href = `/login?t=${Date.now()}`
+          window.location.replace(`/login?t=${Date.now()}`)
           return new Promise<never>(() => {
             // ユーザーにエラー表示をさせないよう、解決しない Promise を返す
           })
