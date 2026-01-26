@@ -4,6 +4,9 @@ import type { components } from '@/api/schema'
 import { apiClient } from '@/api/apiClient'
 import { useQueryClient } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 type User = components['schemas']['UserResponse']
 type Camp = components['schemas']['CampResponse']
@@ -28,7 +31,7 @@ export const useUserStore = defineStore('user', () => {
             const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim()
             document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`
           })
-          window.location.replace(`/login?t=${Date.now()}`)
+          await router.replace(`/login?t=${Date.now()}`)
           return new Promise<never>(() => {
             // ユーザーにエラー表示をさせないよう、解決しない Promise を返す
           })
