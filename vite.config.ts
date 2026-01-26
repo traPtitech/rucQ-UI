@@ -80,7 +80,7 @@ export default defineConfig(({ mode }) => {
           navigateFallbackDenylist: [/^\/api/, /^\/login/],
           runtimeCaching: [
             {
-              urlPattern: /^https:\/\/q\.trap\.jp\/api\/v3\/public\/icon\/.*/,
+              urlPattern: /^https:\/\/image-proxy\.trap\.jp\/icon\/.*/,
               handler: 'CacheFirst',
               options: {
                 cacheName: 'user-icons',

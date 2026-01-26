@@ -12,7 +12,10 @@ const props = defineProps<{
 const iconRef = ref<HTMLElement | undefined>()
 
 const userId = computed(() => props.id ?? useUserStore().user.id)
-const iconUrl = computed(() => `https://q.trap.jp/api/v3/public/icon/${userId.value}`)
+const iconUrl = computed(
+  () => `https://image-proxy.trap.jp/icon/${userId.value}?width=${props.size * 2}`,
+  // 2 倍サイズの画像をリクエスト
+)
 const cursorStyle = computed(() => ({ cursor: props.idTooltip ? 'pointer' : 'default' }))
 
 // 画像のロード状態を管理
