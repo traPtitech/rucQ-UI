@@ -141,6 +141,7 @@ const openCamp = async (camp: Camp) => {
 }
 
 .version {
+  font-family: 'Reddit Sans Variable', sans-serif;
   position: absolute;
   bottom: 24px;
   font-size: 14px;
