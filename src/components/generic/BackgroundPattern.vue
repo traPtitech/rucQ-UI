@@ -31,7 +31,7 @@ const bgColor = computed(() => {
   position: fixed !important;
   top: 0vh;
   left: 0vw;
-  height: 100vh;
+  height: 100dvh;
   width: 100vw;
   display: flex;
   justify-content: center;
