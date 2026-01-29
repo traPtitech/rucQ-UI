@@ -28,7 +28,7 @@ const getAnswers = async (question: Question) => {
       for (const option of question.options) byAnswer[option.content] = []
       for (const answer of data) {
         if (answer.type !== 'single') continue
-        byAnswer[answer.selectedOption.content].push(answer.userId)
+        byAnswer[answer.selectedOption.content]!.push(answer.userId)
       }
       break
     }
@@ -37,7 +37,7 @@ const getAnswers = async (question: Question) => {
       for (const answer of data) {
         if (answer.type !== 'multiple') continue
         for (const selectedOption of answer.selectedOptions) {
-          byAnswer[selectedOption.content].push(answer.userId)
+          byAnswer[selectedOption.content]!.push(answer.userId)
         }
       }
       break
@@ -46,7 +46,7 @@ const getAnswers = async (question: Question) => {
       for (const answer of data) {
         if (answer.type !== 'free_text') continue
         byAnswer[answer.content] ??= []
-        byAnswer[answer.content].push(answer.userId)
+        byAnswer[answer.content]!.push(answer.userId)
       }
       break
     }
@@ -54,7 +54,7 @@ const getAnswers = async (question: Question) => {
       for (const answer of data) {
         if (answer.type !== 'free_number') continue
         byAnswer[answer.content.toString()] ??= []
-        byAnswer[answer.content.toString()].push(answer.userId)
+        byAnswer[answer.content.toString()]!.push(answer.userId)
       }
       break
     }
