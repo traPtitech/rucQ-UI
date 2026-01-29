@@ -6,10 +6,6 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/login',
-      redirect: '/',
-    },
-    {
       path: '/',
       component: () => import('@/views/RegistrationView.vue'),
     },
@@ -57,6 +53,11 @@ const router = createRouter({
 
 // ナビゲーションガード
 router.beforeEach((to, from, next) => {
+  if (to.path === '/login') {
+    window.location.href = '/'
+    return
+  }
+
   try {
     const campStore = useCampStore()
     const { hasRegisteredLatest } = storeToRefs(campStore)
