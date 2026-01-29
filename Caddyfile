@@ -3,6 +3,15 @@
 
 	route {
 		root * /usr/share/caddy
+
+		# デフォルトで HTTP Cache を無効化
+		header Cache-Control "no-cache, no-store, must-revalidate"
+
+		@assets {
+			path /assets/*
+		}
+		header @assets Cache-Control "max-age=31536000, immutable"
+
 		try_files {path} /index.html
 		file_server {
 			precompressed br gzip

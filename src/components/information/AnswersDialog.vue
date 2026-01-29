@@ -20,7 +20,7 @@ const getAnswers = async (question: Question) => {
   const { data, error } = await apiClient.GET('/api/questions/{questionId}/answers', {
     params: { path: { questionId: question.id } },
   })
-  if (error || !data) throw error ?? new Error('Failed to fetch answers')
+  if (error) throw new Error(`質問の回答の取得に失敗しました: ${error.message}`)
   const byAnswer: Record<string, string[]> = {}
 
   switch (question.type) {

@@ -45,6 +45,10 @@ async function initializeApp() {
     console.error(error)
   }
 
+  if (__COMMIT_HASH__) {
+    console.log(`Commit Hash: ${__COMMIT_HASH__}`)
+  }
+
   app.use(router)
   app.mount('#app')
 }

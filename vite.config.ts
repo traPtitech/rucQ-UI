@@ -10,9 +10,15 @@ import { visualizer } from 'rollup-plugin-visualizer'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
+  const hash = env.COMMIT_HASH?.slice(0, 7)
+  // 環境変数からコミットハッシュの先頭 7 文字を取得
+
+  if (hash) console.log(`v${pkg.version}, hash: ${hash}`)
+
   return {
     define: {
       __APP_VERSION__: JSON.stringify(pkg.version),
+      __COMMIT_HASH__: hash ? JSON.stringify(hash) : undefined,
     },
     plugins: [
       visualizer(),
