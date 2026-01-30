@@ -10,7 +10,13 @@ const { xs } = useDisplay()
 <template>
   <v-app-bar v-if="xs" elevation="2" color="white" density="comfortable" :class="$style.appBar">
     <template #prepend>
-      <img src="/icons/icon-transparent.svg" alt="rucQ Icon" :class="$style.icon" />
+      <img
+        src="/icons/icon-transparent.svg"
+        alt="rucQ Icon"
+        width="44"
+        height="44"
+        :class="$style.icon"
+      />
     </template>
     <v-app-bar-title class="text-primary">
       <span :class="$style.routeTitle">{{ route.name }}</span>
@@ -41,7 +47,6 @@ const { xs } = useDisplay()
 
 <style module>
 .icon {
-  height: 80%;
   margin-right: 6px;
 }
 
