@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { getTimeStringNoPad } from '@/utils/date'
 
 // prettier-ignore
 const logTypes = {
   'transfer-confirmed': { color: 'green', icon: 'mdi-currency-jpy' },
   'room-reveal'       : { color: 'pink', icon: 'mdi-view-grid' },
-  'rollcall'          : { color: 'orange', icon: 'mdi-hand-back-left-outline' },
+  'rollcall'          : { color: 'primary', icon: 'mdi-hand-back-left-outline' },
   'question'          : { color: 'blue', icon: 'mdi-format-list-checks' },
 } as const
 
 const props = defineProps<{
   type: keyof typeof logTypes
+  date: Date
 }>()
 
 const color = computed(() => logTypes[props.type].color)
@@ -24,16 +26,13 @@ const icon = computed(() => logTypes[props.type].icon)
         class="d-flex flex-column align-center justify-center flex-shrink-0"
         :class="[$style.meta, `bg-${color}`]"
       >
-        <span :class="$style.time">{{ '12:34' }}</span>
+        <span :class="$style.time">{{ getTimeStringNoPad(date) }}</span>
         <v-icon size="24" :icon="icon" color="white" />
       </div>
       <div
-        :class="[
-          `px-3 py-1 flex-grow-1 text-${color} d-flex align-center font-weight-medium`,
-          $style.content,
-        ]"
+        :class="[`px-3 py-1 flex-grow-1 d-flex align-center font-weight-medium`, $style.content]"
       >
-        <slot />
+        <slot :color="color" />
       </div>
     </div>
   </v-card>
@@ -56,8 +55,8 @@ const icon = computed(() => logTypes[props.type].icon)
   font-size: 10px;
   font-family: 'Reddit Sans Variable', sans-serif;
   font-weight: 900;
-  letter-spacing: 0.1em;
-  margin-right: -0.1em;
+  letter-spacing: 0.075em;
+  margin-right: -0.075em;
 }
 
 .content {
