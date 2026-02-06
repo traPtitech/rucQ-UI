@@ -4,35 +4,48 @@ import { getTimeStringNoPad } from '@/utils/date'
 
 // prettier-ignore
 const logTypes = {
-  'transfer-confirmed': { color: 'green', icon: 'mdi-currency-jpy' },
-  'room-reveal'       : { color: 'pink', icon: 'mdi-view-grid' },
-  'rollcall'          : { color: 'primary', icon: 'mdi-hand-back-left-outline' },
-  'question'          : { color: 'blue', icon: 'mdi-format-list-checks' },
+  'transfer-confirmed': { color: 'green', pale: undefined, icon: 'mdi-currency-jpy' },
+  'room-reveal'       : { color: 'pink', pale: undefined, icon: 'mdi-view-grid' },
+  'rollcall'          : { color: 'primary', pale: 'primaryLight', icon: 'mdi-hand-back-left-outline' },
+  'question'          : { color: 'blue', pale: 'blue-lighten-4', icon: 'mdi-format-list-checks' },
 } as const
 
-const props = defineProps<{
-  type: keyof typeof logTypes
-  date: Date
-}>()
+const props = withDefaults(
+  defineProps<{
+    type: keyof typeof logTypes
+    active?: boolean
+    date: Date
+  }>(),
+  { active: true },
+)
 
-const color = computed(() => logTypes[props.type].color)
+const color = computed(() => {
+  const pale = logTypes[props.type].pale
+  if (!pale) return logTypes[props.type].color
+  return props.active ? logTypes[props.type].color : pale
+})
+
+const surface = computed(() => {
+  return props.active ? 'white' : logTypes[props.type].color
+})
+
 const icon = computed(() => logTypes[props.type].icon)
 </script>
 
 <template>
-  <v-card color="white" elevation="0" :class="$style.card">
+  <v-card elevation="0" :class="$style.card">
     <div class="h-100 d-flex align-stretch" :class="$style.inCard">
       <div
         class="d-flex flex-column align-center justify-center flex-shrink-0"
-        :class="[$style.meta, `bg-${color}`]"
+        :class="[$style.meta, `bg-${color} text-${surface}`]"
       >
         <span :class="$style.time">{{ getTimeStringNoPad(date) }}</span>
-        <v-icon size="24" :icon="icon" color="white" />
+        <v-icon size="24" :icon="icon" />
       </div>
       <div
         :class="[`px-3 py-1 flex-grow-1 d-flex align-center font-weight-medium`, $style.content]"
       >
-        <slot :color="color" />
+        <slot :color="logTypes[props.type].color" />
       </div>
     </div>
   </v-card>

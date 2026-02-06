@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import LogBox from '@/components/log/LogLayout.vue'
+import RollCallLog from '@/components/log/RollCallLog.vue'
 import { getDayStringNoPad } from '@/utils/date'
 import { computed } from 'vue'
 const dummyLogs = [
@@ -17,21 +18,21 @@ const dummyLogs = [
     date: new Date('2024-07-02T14:00:00'),
     title: '大学出発時点呼',
     status: 'answered' as const,
-    rollcall_id: 2,
+    rollcallId: 2,
   },
   {
     type: 'rollcall' as const,
     date: new Date('2024-07-02T14:00:00'),
     title: '宿到着時点呼',
     status: 'unanswered' as const,
-    rollcall_id: 3,
+    rollcallId: 3,
   },
   {
     type: 'rollcall' as const,
     date: new Date('2024-07-02T14:00:00'),
     title: 'バスを使わなかった人の点呼',
     status: 'excluded' as const,
-    rollcall_id: 3,
+    rollcallId: 3,
   },
   {
     type: 'question' as const,
@@ -62,7 +63,7 @@ const dailyLogs = computed(() => {
 <template>
   <div class="pa-4" :class="$style.container">
     <template v-for="day in dailyLogs" :key="day.date.toISOString()">
-      <h3 class="mb-4 mt-8">
+      <h3 class="mb-2 mt-8" :class="$style.dayHeader">
         {{ getDayStringNoPad(day.date) }}
       </h3>
       <div class="d-flex flex-column ga-3">
@@ -79,43 +80,7 @@ const dailyLogs = computed(() => {
               </span>
             </template>
           </log-box>
-          <log-box v-if="log.type === 'rollcall'" :type="log.type" :date="log.date">
-            <template #default="{ color }">
-              <div class="w-100 h-100 d-flex justify-space-between align-center">
-                <div>
-                  <div :class="`text-${color}`">{{ log.title }}</div>
-                  <div v-if="log.status === 'answered'" class="d-flex align-center gap-1">
-                    <v-icon size="16" icon="mdi-check" color="green" />
-                    <span class="ml-1 text-caption" :class="$style.caption">回答済み</span>
-                  </div>
-                  <div v-else-if="log.status === 'unanswered'" class="d-flex align-center gap-1">
-                    <v-icon size="16" icon="mdi-alert-circle-outline" color="red" />
-                    <span class="ml-1 text-caption" :class="$style.caption">未回答</span>
-                  </div>
-                  <div v-else class="d-flex align-center gap-1">
-                    <v-icon size="16" icon="mdi-minus-circle-outline" color="grey" />
-                    <span class="ml-1 text-caption" :class="$style.caption">対象外</span>
-                  </div>
-                </div>
-                <v-btn
-                  v-if="log.status === 'unanswered'"
-                  variant="flat"
-                  color="primary"
-                  :to="`/rollcall/${log.rollcall_id}`"
-                >
-                  回答する
-                </v-btn>
-                <v-btn
-                  v-else
-                  variant="outlined"
-                  color="primary"
-                  :to="`/rollcall/${log.rollcall_id}`"
-                >
-                  確認する
-                </v-btn>
-              </div>
-            </template>
-          </log-box>
+          <roll-call-log v-if="log.type === 'rollcall'" :log="log" />
           <log-box v-if="log.type === 'question'" :type="log.type" :date="log.date">
             <template #default="{ color }">
               <span :class="`text-${color}`">回答項目「バス」</span>
@@ -134,7 +99,9 @@ const dailyLogs = computed(() => {
   position: relative;
 }
 
-.caption {
-  margin-bottom: 1.5px;
+.dayHeader {
+  font-family: 'Reddit Sans Variable', sans-serif;
+  font-weight: 900;
+  letter-spacing: 0.075em;
 }
 </style>
