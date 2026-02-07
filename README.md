@@ -4,40 +4,39 @@
 - ユーザー向けクライアント：here
 - Admin 向けクライアント：[traPtitech/rucQ-Admin](https://github.com/traPtitech/rucQ-Admin)
 
-## 環境構築
+## 準備
 
-### 共通設定
+- [Web エンジニアになろう講習会](https://traptitech.github.io/naro-text/chapter1/) に従って環境構築
+- [pnpm](https://pnpm.io/ja/installation) がない場合はインストール。`npm install -g pnpm@10` など
 
-1. Node.js をインストールする
-2. `npm install` を実行して必要なモジュールを揃える
+## 起動
+
+`pnpm i` でフロントエンドの起動に必要な Node モジュールをインストールしてください。
 
 ### MSW の Mock API を使う方法
 
 クライアントからの HTTP リクエストを遮断して仮のレスポンスを返す MockServiceWorker を起動します。
 
-1. `npm run dev` を実行する
-2. <http://localhost:5173> にアクセスする
+1. フロントエンドを起動 `pnpm dev:msw`
+2. <http://localhost:5173> にアクセス
 
-### リモートの Staging API を使う方法
+### ローカルでバックエンドを起動する方法
 
-クライアントが Staging API (<https://rucq-dev.trapti.tech/api>) にアクセスできるようにします。traQ 認証を突破するために Cookie をコピーしてくる必要があります。
+1. バックエンドをローカルで起動 `docker compose up --build`
+2. rucQ-Admin（<http://localhost:3003>）から @traq を合宿係に追加
+3. rucQ-Admin 上で合宿を作成して下書き設定を解除し、参加登録を受け付ける
+4. フロントエンドを起動 `pnpm dev`
+5. <http://localhost:5173> にアクセス
 
-1. <https://rucq-dev.trapti.tech/api/me> にアクセスする
-2. Cookie 一覧から `_forward_auth` の値を取得する
-3. 取得した値を `.env` ファイルに書き込む
-  ```env
-  STAGING_COOKIE=_forward_auth=xxxxx
-  ```
-4. `npm run dev:staging` を実行する
-5. <http://localhost:5173> にアクセスすると API との接続が確認できる
+バックエンドをローカルに立てると自動で traQ も立ち上がります。@traq はデフォルトで traQ に存在するユーザーアカウントです。
 
-### API スキーマの更新
+## API スキーマの更新
 
 API の型定義 [schema.d.ts](./src/api/schema.d.ts) はバックエンド [rucQ](https://github.com/traPtitech/rucQ) の openapi.yaml から自動生成されます。もし openapi.yaml に更新があれば、`npm run generate:api` を実行して schema.d.ts を再生成してください。
 
 ## リリース
 
-現状は以下の手順でやっています
+現状は以下の手順でやっています。
 
 1. main から `release/v1.X.X` という名前でブランチを生やす
 2. その中で package.json のバージョンを書き換えて `npm install` を実行（自動で package-lock.json も書き換わる）
