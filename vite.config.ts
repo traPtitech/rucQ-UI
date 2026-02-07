@@ -1,7 +1,7 @@
 import pkg from './package.json'
 import { fileURLToPath, URL } from 'node:url'
 
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig, loadEnv, type PluginOption } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import vuetify from 'vite-plugin-vuetify'
@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => {
       __COMMIT_HASH__: hash ? JSON.stringify(hash) : undefined,
     },
     plugins: [
-      visualizer(),
+      visualizer() as PluginOption,
       vue(),
       vueDevTools(),
       vuetify({
@@ -76,6 +76,7 @@ export default defineConfig(({ mode }) => {
         ],
         // Service Worker
         workbox: {
+          disableDevLogs: true, // workbox のログを無効化
           globPatterns: ['**/*.{js,css,html,svg,png,jpg,webp,woff2}'],
           navigateFallbackDenylist: [/^\/api/, /^\/login/],
         },
@@ -89,13 +90,16 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       proxy:
-        mode === 'staging'
+        mode === 'development'
           ? {
               '/api': {
-                target: 'https://rucq-dev.trapti.tech',
+                target: 'http://localhost:8080',
                 changeOrigin: true,
-                headers: {
-                  Cookie: env.STAGING_COOKIE,
+                configure: (proxy) => {
+                  proxy.on('proxyReq', (proxyReq) => {
+                    const traqId = env.MY_TRAQ_ID
+                    if (traqId) proxyReq.setHeader('X-Forwarded-User', traqId)
+                  })
                 },
               },
             }

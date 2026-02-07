@@ -30,7 +30,7 @@ app.use(vuetify)
 app.use(VueQueryPlugin, { queryClient })
 
 async function initializeApp() {
-  if (import.meta.env.DEV && import.meta.env.MODE !== 'staging') {
+  if (import.meta.env.DEV && import.meta.env.MODE === 'msw') {
     const { worker } = await import('./mocks/browser')
     await worker.start()
   }
