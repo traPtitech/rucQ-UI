@@ -1,4 +1,15 @@
-import { createVuetify } from 'vuetify'
+import { h } from 'vue'
+import { createVuetify, type IconSet, type IconProps } from 'vuetify'
+import { aliases as mdAliases } from 'vuetify/iconsets/md'
+
+const ms: IconSet = {
+  component: (props: IconProps) => {
+    const iconName = props.icon as string
+    const isFilled = iconName.endsWith('_filled') // _filled でアイコンの塗りつぶしを判定
+    const realIconName = isFilled ? iconName.slice(0, -7) : iconName
+    return h(props.tag, { class: ['material-symbols', { fill: isFilled }] }, realIconName)
+  },
+}
 
 export const vuetify = createVuetify({
   theme: {
@@ -19,5 +30,10 @@ export const vuetify = createVuetify({
         },
       },
     },
+  },
+  icons: {
+    defaultSet: 'ms',
+    aliases: mdAliases,
+    sets: { ms },
   },
 })

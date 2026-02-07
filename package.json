@@ -17,9 +17,9 @@
   "dependencies": {
     "@fontsource-variable/m-plus-2": "^5.2.9",
     "@fontsource-variable/m-plus-code-latin": "^5.2.7",
+    "@fontsource-variable/material-symbols-outlined": "^5.2.33",
     "@fontsource-variable/reddit-sans": "^5.2.7",
     "@fontsource-variable/roboto": "^5.2.9",
-    "@mdi/font": "^7.4.47",
     "@tanstack/query-async-storage-persister": "^5.85.9",
     "@tanstack/query-persist-client-core": "^5.85.9",
     "@tanstack/query-sync-storage-persister": "^5.85.9",
@@ -46,7 +46,6 @@
     "vuetify": "^3.9.5"
   },
   "devDependencies": {
-    "@mdi/font": "^7.4.47",
     "@tsconfig/node22": "^22.0.0",
     "@types/dompurify": "^3.0.5",
     "@types/markdown-it": "^14.1.2",
