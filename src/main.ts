@@ -6,18 +6,13 @@ import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
 import { queryClient, restorePromise } from '@/lib/queryClient'
 import { vuetify } from '@/lib/vuetify'
 import 'vuetify/styles'
+import '@mdi/font/css/materialdesignicons.css'
 import { useUserStore, useCampStore } from './store'
-
-import '@/styles/base.css'
 
 import '@fontsource-variable/m-plus-2' // 'M PLUS 2 Variable'
 import '@fontsource-variable/m-plus-code-latin' // 'M PLUS Code Latin Variable'
 import '@fontsource-variable/reddit-sans' // 'Reddit Sans Variable'
 import '@fontsource-variable/roboto' // 'Roboto Variable'
-
-// 'Material Symbols Outlined Variable' ... Outlined と Fill の両方を読み込む
-import '@fontsource-variable/material-symbols-outlined'
-import '@fontsource-variable/material-symbols-outlined/fill.css'
 
 import App from './App.vue'
 
