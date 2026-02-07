@@ -14,6 +14,7 @@
     "format": "prettier --write src/",
     "generate:api": "npx openapi-typescript https://raw.githubusercontent.com/traPtitech/rucQ/main/openapi.yaml -o src/api/schema.d.ts && npm run format"
   },
+  "packageManager": "pnpm@10.28.2",
   "dependencies": {
     "@fontsource-variable/m-plus-2": "^5.2.9",
     "@fontsource-variable/m-plus-code-latin": "^5.2.7",
