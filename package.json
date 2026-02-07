@@ -47,7 +47,6 @@
     "@types/dompurify": "^3.0.5",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^22.10.2",
-    "@types/sanitize-html": "^2.16.0",
     "@vite-pwa/assets-generator": "^0.2.6",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/eslint-config-prettier": "^10.1.0",
