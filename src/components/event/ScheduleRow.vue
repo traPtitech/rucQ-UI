@@ -87,7 +87,6 @@ const momentEvent = computed(() => {
 .momentText {
   font-weight: 500;
   padding-left: 4px;
-  margin-top: -2px;
   font-size: 13px;
   cursor: pointer;
 }
