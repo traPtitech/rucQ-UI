@@ -145,15 +145,22 @@ export class DayEventGrid {
     let currentGroup: GridRow[] = []
 
     // イベントの途切れ目でグループ分け
-    for (const row of this.rows) {
-      if (row.events.some((event) => event !== null && event.type !== 'moment')) {
-        currentGroup.push(row) // 期間イベントがある行は現在のグループに追加
+    for (let i = 0; i < this.rows.length; i++) {
+      const row = this.rows[i]
+
+      // 手前の行と完全に分離されているかどうか
+      const isSeparated = row.events.every((event, index) => {
+        if (i === 0) return true
+        const lastEvent = this.rows[i - 1].events[index]
+        if (event === null || lastEvent === null || lastEvent === undefined) return true
+        return event.id !== lastEvent.id
+      })
+
+      if (isSeparated) {
+        groups.push(this.exportGroup(currentGroup))
+        currentGroup = [row]
       } else {
-        if (currentGroup.length > 0) {
-          groups.push(this.exportGroup(currentGroup))
-        }
-        groups.push(this.exportGroup([row])) // 瞬間イベントの行も新しいグループとして追加
-        currentGroup = []
+        currentGroup.push(row) // 期間イベントがある行は現在のグループに追加
       }
     }
 
