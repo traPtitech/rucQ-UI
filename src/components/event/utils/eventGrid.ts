@@ -158,10 +158,9 @@ export class DayEventGrid {
 
       if (isSeparated) {
         groups.push(this.exportGroup(currentGroup))
-        currentGroup = [row]
-      } else {
-        currentGroup.push(row) // 期間イベントがある行は現在のグループに追加
+        currentGroup = []
       }
+      currentGroup.push(row)
     }
 
     if (currentGroup.length > 0) {
