@@ -156,7 +156,7 @@ export class DayEventGrid {
         return event.id !== lastEvent.id
       })
 
-      if (isSeparated) {
+      if (isSeparated && currentGroup.length > 0) {
         groups.push(this.exportGroup(currentGroup))
         currentGroup = []
       }
