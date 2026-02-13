@@ -10,12 +10,11 @@ import '@mdi/font/css/materialdesignicons.css'
 import { useUserStore, useCampStore } from './store'
 
 import '@fontsource-variable/m-plus-2' // 'M PLUS 2 Variable'
-import '@fontsource-variable/m-plus-code-latin' // 'M PLUS Code Latin Variable'
+import '@fontsource-variable/m-plus-code-latin/wdth.css' // 'M PLUS Code Latin Variable' の幅広バリアント
 import '@fontsource-variable/reddit-sans' // 'Reddit Sans Variable'
 import '@fontsource-variable/roboto' // 'Roboto Variable'
 
 import App from './App.vue'
-import './styles/main.scss'
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 const app = createApp(App)
