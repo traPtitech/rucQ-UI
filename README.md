@@ -6,8 +6,10 @@
 
 ## 準備
 
-- [Web エンジニアになろう講習会](https://traptitech.github.io/naro-text/chapter1/) に従って環境構築
-- [pnpm](https://pnpm.io/ja/installation) がない場合はインストール。`npm install -g pnpm@10` など
+[Web エンジニアになろう講習会](https://traptitech.github.io/naro-text/chapter1/) に従って環境構築をした場合、fnm（Node.js のバージョン管理ツール）が手元にあるはず
+1. リポジトリルートをターミナルで開いて `fnm use --install-if-missing` を実行
+2. `node -v` を実行して `v22.22.0` と表示されることを確認
+3. `corepack enable && pnpm -v` を実行して `10.28.2` と表示されることを確認
 
 ## 起動
 
