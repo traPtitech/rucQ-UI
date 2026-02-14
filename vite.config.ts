@@ -90,20 +90,30 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       proxy:
-        mode === 'development'
+        mode === 'staging'
           ? {
               '/api': {
-                target: 'http://localhost:8080',
+                target: 'https://rucq-dev.trapti.tech',
                 changeOrigin: true,
-                configure: (proxy) => {
-                  proxy.on('proxyReq', (proxyReq) => {
-                    const traqId = env.MY_TRAQ_ID
-                    if (traqId) proxyReq.setHeader('X-Forwarded-User', traqId)
-                  })
+                headers: {
+                  Cookie: env.STAGING_COOKIE,
                 },
               },
             }
-          : ({} as Record<string, string>),
+          : mode === 'development'
+            ? {
+                '/api': {
+                  target: 'http://localhost:8080',
+                  changeOrigin: true,
+                  configure: (proxy) => {
+                    proxy.on('proxyReq', (proxyReq) => {
+                      const traqId = env.MY_TRAQ_ID
+                      if (traqId) proxyReq.setHeader('X-Forwarded-User', traqId)
+                    })
+                  },
+                },
+              }
+            : ({} as Record<string, string>),
     },
   }
 })

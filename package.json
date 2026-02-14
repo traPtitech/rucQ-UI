@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
+    "dev:staging": "vite --host 0.0.0.0 --mode staging",
     "dev:msw": "vite --host 0.0.0.0 --mode msw",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",

@@ -22,7 +22,22 @@
 1. フロントエンドを起動 `pnpm dev:msw`
 2. <http://localhost:5173> にアクセス
 
+### Staging API を使う方法
+
+開発環境から Staging API（<https://rucq-dev.trapti.tech/api>）にアクセスします。traQ 認証を突破するために Cookie をコピーしてくる必要があります。
+
+1. <https://rucq-dev.trapti.tech/api/me> にアクセスする
+2. DevTool のアプリケーションタブを開き、Cookie 一覧から `_forward_auth` の値を取得する
+3. 空のテキストファイル `.env.local` をルートに作成して以下の内容を書き込む
+   ```sh
+   STAGING_COOKIE="_forward_auth=xxxxx"  # "_forward_auth=" を忘れずに
+   ```
+4. フロントエンドを起動 `pnpm dev:staging`
+5. <http://localhost:5173> にアクセス
+
 ### ローカルでバックエンドを起動する方法
+
+とくに必要がなければ基本的に Mock API または Staging API を使用してください。
 
 1. バックエンドをローカルで起動 `docker compose up --build`
 2. rucQ-Admin（<http://localhost:3003>）から @traq を合宿係に追加
