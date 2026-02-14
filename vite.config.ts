@@ -91,7 +91,7 @@ export default defineConfig(({ mode }) => {
                   maxAgeSeconds: 7 * 24 * 60 * 60, // 1 週間
                 },
                 cacheableResponse: {
-                  statuses: [0, 200],
+                  statuses: [200],
                 },
               },
             },

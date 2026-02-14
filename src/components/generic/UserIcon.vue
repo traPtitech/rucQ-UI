@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useUserStore } from '@/store'
 
 const props = defineProps<{
@@ -20,6 +20,12 @@ const isLoading = ref(true)
 const hasError = ref(false)
 const showSkeleton = computed(() => isLoading.value || hasError.value)
 
+// userId が変更されたときに状態をリセット
+watch(userId, () => {
+  isLoading.value = true
+  hasError.value = false
+})
+
 const handleLoad = () => {
   isLoading.value = false
 }
@@ -39,14 +45,16 @@ const handleError = () => {
         class="w-100 h-100"
         tabindex="0"
         :src="iconUrl"
+        loading="lazy"
         @load="handleLoad"
         @error="handleError"
       />
     </v-avatar>
     <v-tooltip
+      v-if="idTooltip"
       :activator="iconRef"
-      :open-on-hover="idTooltip"
-      :open-on-click="idTooltip"
+      :open-on-hover="true"
+      :open-on-click="true"
       :open-delay="1000"
       location="top"
     >
