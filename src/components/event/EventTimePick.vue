@@ -1,15 +1,9 @@
 <script setup lang="ts">
-import type { components } from '@/api/schema'
 import { nextTick, ref, watch, onMounted } from 'vue'
-import type { VTextField } from 'vuetify/components'
-
-type DurationEvent = components['schemas']['DurationEventResponse']
-type EventColor = DurationEvent['displayColor']
-
-const textFieldRef = ref<VTextField>()
+import type { DurationEvent } from '@/typeAliases'
 
 defineProps<{
-  color: EventColor
+  color: DurationEvent['displayColor']
   label: string
   rule: (minute: number | undefined) => true | string
 }>()

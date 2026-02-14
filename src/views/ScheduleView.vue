@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ScheduleContent from '@/components/event/ScheduleContent.vue'
-import type { components } from '@/api/schema'
+import type { CampEvent } from '@/typeAliases'
 import { computed } from 'vue'
 import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
@@ -8,8 +8,6 @@ import { apiClient } from '@/api/apiClient'
 import EventEditor from '@/components/event/EventEditor.vue'
 import { useQuery } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
-
-type CampEvent = components['schemas']['EventResponse']
 
 const campStore = useCampStore()
 const route = useRoute()

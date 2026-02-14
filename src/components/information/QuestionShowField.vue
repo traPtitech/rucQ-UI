@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import type { components } from '@/api/schema'
 import { computed } from 'vue'
-
-type Question = components['schemas']['QuestionResponse']
+import type { Question } from '@/typeAliases'
 
 const props = defineProps<{
   question: Question
