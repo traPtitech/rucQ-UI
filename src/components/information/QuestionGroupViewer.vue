@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import type { components } from '@/api/schema'
 import QuestionShowField from '@/components/information/QuestionShowField.vue'
 import { computed } from 'vue'
 import AnswersDialog from '@/components/information/AnswersDialog.vue'
-
-type QuestionGroup = components['schemas']['QuestionGroupResponse']
-type Question = components['schemas']['QuestionResponse']
+import type { QuestionGroup, Question } from '@/typeAliases'
 
 type AnswerData = { id?: number; value?: number | string | number[] }
 

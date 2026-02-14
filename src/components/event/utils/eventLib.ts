@@ -1,5 +1,4 @@
-import type { components } from '@/api/schema'
-type CampEvent = components['schemas']['EventResponse']
+import type { CampEvent } from '@/typeAliases'
 
 // イベントの開始時刻（瞬間イベントならその時刻）を返す
 export const getStartTime = (event: CampEvent) => {

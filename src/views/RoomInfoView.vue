@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { apiClient } from '@/api/apiClient'
-import type { components } from '@/api/schema'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { useCampStore, useUserStore } from '@/store'
 import { useRoute } from 'vue-router'
 import { useQuery } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
+import type { Room, RoomGroup } from '@/typeAliases'
 
 const route = useRoute()
 const campStore = useCampStore()
@@ -13,9 +13,7 @@ const userStore = useUserStore()
 
 const displayCamp = campStore.getCampByDisplayId(route.params.campname as string)
 
-type RoomGroup = components['schemas']['RoomGroupResponse']
-
-const isMyRoom = (room: components['schemas']['RoomResponse']) => {
+const isMyRoom = (room: Room) => {
   return room.members.some((member) => member.id === userStore.user.id)
 }
 

@@ -3,14 +3,10 @@ import { computed, ref } from 'vue'
 import { getDayStringNoPad } from '@/utils/date'
 import { getLayout } from '@/components/event/utils/eventLayout'
 import EventBlock from '@/components/event/EventBlock.vue'
-import type { components } from '@/api/schema'
 import type { EventGroup, DurationEventPos } from '@/components/event/utils/eventGrid'
 import EventEditor from './EventEditor.vue'
 import ScheduleRow from './ScheduleRow.vue'
-
-type CampEvent = components['schemas']['EventResponse']
-type DurationEvent = components['schemas']['DurationEventResponse']
-type Camp = components['schemas']['CampResponse']
+import type { Camp, CampEvent, DurationEvent } from '@/typeAliases'
 
 const props = defineProps<{
   events: CampEvent[]

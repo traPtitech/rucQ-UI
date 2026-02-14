@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import type { components } from '@/api/schema'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { useUserStore } from '@/store'
-
-type Room = components['schemas']['RoomResponse']
+import type { Room } from '@/typeAliases'
 
 const userStore = useUserStore()
 

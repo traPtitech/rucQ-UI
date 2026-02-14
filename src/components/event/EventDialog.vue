@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { getTimeStringNoPad } from '@/utils/date'
-import type { components } from '@/api/schema'
+import type { CampEvent } from '@/typeAliases'
 import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
 
@@ -20,7 +20,6 @@ const isOperable = computed(() => {
   return campStore.isOperable(displayCamp.value)
 })
 
-type CampEvent = components['schemas']['EventResponse']
 const props = defineProps<{ event: CampEvent; color: string }>()
 
 // イベントの時刻に関する文字列

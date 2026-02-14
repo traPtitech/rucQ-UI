@@ -3,13 +3,10 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { getDayStringNoPad } from '@/utils/date'
 import EventTimePick from './EventTimePick.vue'
 import EventDeleteDialog from './EventDeleteDialog.vue'
-import type { components } from '@/api/schema'
 import { apiClient } from '@/api/apiClient'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { EVENT_COLORS } from '@/components/event/utils/eventColors'
-
-type DurationEvent = components['schemas']['DurationEventResponse']
-type Camp = components['schemas']['CampResponse']
+import type { Camp, DurationEvent } from '@/typeAliases'
 
 const props = defineProps<{ event: DurationEvent | null; camp: Camp }>()
 const emit = defineEmits(['delete'])

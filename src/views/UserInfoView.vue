@@ -6,15 +6,12 @@ import { apiClient } from '@/api/apiClient'
 import { computed } from 'vue'
 import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
-import type { components } from '@/api/schema'
 import QuestionGroupPanel from '@/components/information/QuestionGroupPanel.vue'
 import RegisterCampButton from '@/components/information/RegisterCampButton.vue'
 import UnregisterCampButton from '@/components/information/UnregisterCampButton.vue'
 import { useQuery } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
-
-type QuestionGroup = components['schemas']['QuestionGroupResponse'][]
-type Dashboard = components['schemas']['DashboardResponse']
+import type { Dashboard, QuestionGroup } from '@/typeAliases'
 
 const campStore = useCampStore()
 const route = useRoute()
@@ -24,7 +21,7 @@ const displayCamp = campStore.getCampByDisplayId(route.params.campname as string
 const isRegistered = computed(() => campStore.hasRegisteredLatest)
 
 // 質問グループ一覧
-const { data: questionGroups } = useQuery<QuestionGroup, Error>({
+const { data: questionGroups } = useQuery<QuestionGroup[], Error>({
   queryKey: qk.camps.questionGroups(displayCamp.id),
   queryFn: async () => {
     const { data, error } = await apiClient.GET('/api/camps/{campId}/question-groups', {

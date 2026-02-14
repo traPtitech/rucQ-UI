@@ -1,12 +1,9 @@
 import { ref, computed, type Ref } from 'vue'
 import { apiClient } from '@/api/apiClient'
 import type { components } from '@/api/schema'
-
-// 同一ユーザーが複数リアクションを送信していない前提
+import type { RollCall, RollCallReaction } from '@/typeAliases'
 
 type RollCallReactionEvent = components['schemas']['RollCallReactionEvent']
-type RollCall = components['schemas']['RollCallResponse']
-type RollCallReaction = components['schemas']['RollCallReactionResponse']
 
 // 点呼リアクションの SSE 購読
 const listenRollCallReactions = (
