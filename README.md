@@ -22,6 +22,8 @@
 1. フロントエンドを起動 `pnpm dev:msw`
 2. <http://localhost:5173> にアクセス
 
+起動は不安定であり、とくに初回は 2, 3 回のリロードを必要とする場合があります。
+
 ### Staging API を使う方法
 
 開発環境から Staging API（<https://rucq-dev.trapti.tech/api>）にアクセスします。traQ 認証を突破するために Cookie をコピーしてくる必要があります。

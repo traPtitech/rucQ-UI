@@ -8,6 +8,7 @@ import { vuetify } from '@/lib/vuetify'
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
 import { useUserStore, useCampStore } from './store'
+import localforage from 'localforage'
 
 import '@fontsource-variable/m-plus-2' // 'M PLUS 2 Variable'
 import '@fontsource-variable/m-plus-code-latin' // 'M PLUS Code Latin Variable'
@@ -31,6 +32,9 @@ app.use(VueQueryPlugin, { queryClient })
 
 async function initializeApp() {
   if (import.meta.env.DEV && import.meta.env.MODE === 'msw') {
+    // 手動リロードによってキャッシュをクリア
+    await localforage.clear()
+    await queryClient.invalidateQueries()
     const { worker } = await import('./mocks/browser')
     await worker.start()
   }
