@@ -80,6 +80,22 @@ export default defineConfig(({ mode }) => {
           disableDevLogs: true, // workbox のログを無効化
           globPatterns: ['**/*.{js,css,html,svg,png,jpg,webp,woff2}'],
           navigateFallbackDenylist: [/^\/api/, /^\/login/],
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/q\.trap\.jp\/api\/v3\/public\/icon\/.*/,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'user-icons',
+                expiration: {
+                  maxEntries: 200,
+                  maxAgeSeconds: 7 * 24 * 60 * 60, // 1 週間
+                },
+                cacheableResponse: {
+                  statuses: [200],
+                },
+              },
+            },
+          ],
         },
         devOptions: { enabled: true },
       }),
