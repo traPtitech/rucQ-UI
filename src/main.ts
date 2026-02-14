@@ -34,7 +34,7 @@ async function initializeApp() {
   if (import.meta.env.DEV && import.meta.env.MODE === 'msw') {
     // 手動リロードによってキャッシュをクリア
     await localforage.clear()
-    await queryClient.invalidateQueries()
+    queryClient.clear()
     const { worker } = await import('./mocks/browser')
     await worker.start()
   }
