@@ -34,6 +34,7 @@ export default defineConfig(({ mode }) => {
         manifest: {
           name: 'rucQ',
           short_name: 'rucQ',
+          theme_color: '#ffffff',
           display: 'standalone',
           start_url: '/',
           scope: '/',

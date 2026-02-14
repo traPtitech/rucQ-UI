@@ -61,8 +61,8 @@ export class DayEventGrid {
 
   // レンダリングの見た目を整えるため、適宜空行を追加
   formatRows(durationStartSet: Set<number>, durationEndSet: Set<number>) {
-    // タイムスタンプの表示の近接を避けるため、連続する瞬間イベントの終わり目に空の領域を挿入
     for (let i = this.rows.length - 1; i > 0; i--) {
+      // タイムスタンプの表示の近接を避けるため、連続する瞬間イベントの終わり目に空の領域を挿入
       if (this.rows[i - 1].events.length === 1 && this.rows[i].events.length === 0) {
         this.rows.splice(i, 0, {
           time: new Date(this.rows[i - 1].time),
@@ -70,6 +70,10 @@ export class DayEventGrid {
           minHeight: 'narrow',
           stampAlign: 'none',
         })
+      }
+      // 逆に瞬間イベントの直前に空の領域がある場合は狭くする
+      if (this.rows[i - 1].events.length === 0 && this.rows[i].events.length === 1) {
+        this.rows[i - 1].minHeight = 'narrow'
       }
     }
 
@@ -141,16 +145,22 @@ export class DayEventGrid {
     let currentGroup: GridRow[] = []
 
     // イベントの途切れ目でグループ分け
-    for (const row of this.rows) {
-      if (row.events.some((event) => event !== null && event.type !== 'moment')) {
-        currentGroup.push(row) // 期間イベントがある行は現在のグループに追加
-      } else {
-        if (currentGroup.length > 0) {
-          groups.push(this.exportGroup(currentGroup))
-        }
-        groups.push(this.exportGroup([row])) // 瞬間イベントの行も新しいグループとして追加
+    for (let i = 0; i < this.rows.length; i++) {
+      const row = this.rows[i]
+
+      // 手前の行と完全に分離されているかどうか
+      const isSeparated = row.events.every((event, index) => {
+        if (i === 0) return true
+        const lastEvent = this.rows[i - 1].events[index]
+        if (event === null || lastEvent === null || lastEvent === undefined) return true
+        return event.id !== lastEvent.id
+      })
+
+      if (isSeparated && currentGroup.length > 0) {
+        groups.push(this.exportGroup(currentGroup))
         currentGroup = []
       }
+      currentGroup.push(row)
     }
 
     if (currentGroup.length > 0) {
