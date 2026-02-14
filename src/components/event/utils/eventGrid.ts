@@ -9,7 +9,7 @@ type CampEvent = MomentEvent | DurationEvent | OfficialEvent
 export type GridRow = {
   time: Date
   events: (CampEvent | null)[]
-  minHeight: 'narrow' | 'wide'
+  minHeight: 'narrow' | 'wide' // 領域ごとの最小の表示高さ
   stampAlign: 'none' | 'start' | 'center'
 }
 
@@ -27,13 +27,13 @@ export type MomentEventPos = {
 }
 
 export type EventGroup = {
-  columns: number // 列数
-  rows: GridRow[] // 領域ごとの最小の表示高さ
+  columns: number
+  rows: GridRow[]
   durationEvents: DurationEventPos[]
   momentEvents: MomentEventPos[]
 }
 
-// 日のイベントを表形式で表現
+/** 日のイベントを表形式で表現 */
 export class DayEventGrid {
   date: Date
   rows: GridRow[]
@@ -59,34 +59,38 @@ export class DayEventGrid {
     return this.rows.findLastIndex((row) => row.time.getTime() === time.getTime())
   }
 
-  // レンダリングの見た目を整えるため、適宜空行を追加
+  /** レンダリングの見た目を整えるため、適宜空行を追加 */
   formatRows(durationStartSet: Set<number>, durationEndSet: Set<number>) {
     for (let i = this.rows.length - 1; i > 0; i--) {
+      const [current, previous] = [this.rows[i]!, this.rows[i - 1]!]
+
       // タイムスタンプの表示の近接を避けるため、連続する瞬間イベントの終わり目に空の領域を挿入
-      if (this.rows[i - 1].events.length === 1 && this.rows[i].events.length === 0) {
+      if (previous.events.length === 1 && current.events.length === 0) {
         this.rows.splice(i, 0, {
-          time: new Date(this.rows[i - 1].time),
+          time: new Date(previous.time),
           events: [],
           minHeight: 'narrow',
           stampAlign: 'none',
         })
       }
       // 逆に瞬間イベントの直前に空の領域がある場合は狭くする
-      if (this.rows[i - 1].events.length === 0 && this.rows[i].events.length === 1) {
-        this.rows[i - 1].minHeight = 'narrow'
+      if (previous.events.length === 0 && current.events.length === 1) {
+        previous.minHeight = 'narrow'
       }
     }
 
     // 隣り合う期間イベントの間に特定条件で空の領域を挿入
     for (let i = this.rows.length - 1; i > 0; i--) {
-      // 手前の時刻から新たに期間イベントが始まる || 後ろの時刻でちょうど期間イベントが終わる
-      if (this.rows[i - 1].events.length === 1 && this.rows[i].events.length === 1) {
-        const prevIsDurationStart = durationStartSet.has(this.rows[i - 1].time.getTime())
-        const nextIsDurationEnd = durationEndSet.has(this.rows[i].time.getTime())
+      const [current, previous] = [this.rows[i]!, this.rows[i - 1]!]
 
+      if (previous.events.length === 1 && current.events.length === 1) {
+        const prevIsDurationStart = durationStartSet.has(previous.time.getTime())
+        const nextIsDurationEnd = durationEndSet.has(current.time.getTime())
+
+        // 手前の時刻から新たに期間イベントが始まる || 後ろの時刻でちょうど期間イベントが終わる
         if (prevIsDurationStart || nextIsDurationEnd) {
           this.rows.splice(i, 0, {
-            time: new Date(this.rows[i - 1].time), // 手前のタイムスタンプに合わせる
+            time: new Date(previous.time), // 手前のタイムスタンプに合わせる
             events: [],
             minHeight: 'narrow',
             stampAlign: 'none',
@@ -96,7 +100,7 @@ export class DayEventGrid {
     }
 
     // 先頭のタイムスタンプの表示位置を期間イベントに揃えるため、期間イベントなら先頭に空の領域を挿入
-    if (this.rows.length > 0 && this.rows[0].events.length === 0) {
+    if (this.rows.length > 0 && this.rows[0]!.events.length === 0) {
       this.rows.unshift({
         time: new Date(0),
         events: [],
@@ -106,9 +110,13 @@ export class DayEventGrid {
     }
   }
 
-  // グリッド行に瞬間のイベントを追加。必ず addDurationEvent に先駆けて呼ぶ
+  /** グリッド行に瞬間のイベントを追加。必ず addDurationEvent に先駆けて呼ぶ */
   addMomentEvent(event: MomentEvent) {
-    const row = this.rows[this.getIndex(getStartTime(event))]
+    const index = this.getIndex(getStartTime(event))
+    if (index === -1) {
+      throw new Error(`${event.name} の開始時刻 ${event.time} に対応するグリッド行が見つかりません`)
+    }
+    const row = this.rows[index]!
     if (row.events.length > 0) {
       throw new Error('MomentEvent を追加する時刻にすでにイベントが存在します')
     }
@@ -116,7 +124,7 @@ export class DayEventGrid {
     row.stampAlign = 'center'
   }
 
-  // グリッド行に期間のあるイベントを追加
+  /** グリッド行に期間のあるイベントを追加 */
   addDurationEvent(event: DurationEvent | OfficialEvent) {
     const startIndex = this.getLastIndex(getStartTime(event))
     const endIndex = this.getIndex(getEndTime(event))
@@ -139,19 +147,19 @@ export class DayEventGrid {
     }
   }
 
-  // グリッドをエクスポート
+  /** グリッドを EventGroup の並びにエクスポート */
   export(): EventGroup[] {
     const groups: EventGroup[] = []
     let currentGroup: GridRow[] = []
 
     // イベントの途切れ目でグループ分け
     for (let i = 0; i < this.rows.length; i++) {
-      const row = this.rows[i]
+      const row = this.rows[i]!
 
       // 手前の行と完全に分離されているかどうか
       const isSeparated = row.events.every((event, index) => {
         if (i === 0) return true
-        const lastEvent = this.rows[i - 1].events[index]
+        const lastEvent = this.rows[i - 1]!.events[index]
         if (event === null || lastEvent === null || lastEvent === undefined) return true
         return event.id !== lastEvent.id
       })
@@ -170,7 +178,7 @@ export class DayEventGrid {
     return groups
   }
 
-  // ある範囲のグリッド行をエクスポートして EventGroup を生成
+  /** ある範囲のグリッド行をエクスポートして EventGroup を生成 */
   exportGroup(rows: GridRow[]): EventGroup {
     const columns = Math.max(...rows.map((row) => row.events.length))
     const durationEvents: DurationEventPos[] = []
@@ -178,7 +186,7 @@ export class DayEventGrid {
     const processedEvents = new Set<CampEvent>()
 
     for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
-      const row = rows[rowIndex]
+      const row = rows[rowIndex]!
 
       for (let colIndex = 0; colIndex < row.events.length; colIndex++) {
         const event = row.events[colIndex]
