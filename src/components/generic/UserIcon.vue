@@ -45,7 +45,6 @@ const handleError = () => {
         class="w-100 h-100"
         tabindex="0"
         :src="iconUrl"
-        loading="lazy"
         @load="handleLoad"
         @error="handleError"
       />
