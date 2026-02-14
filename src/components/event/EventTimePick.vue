@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { nextTick, ref, watch, onMounted } from 'vue'
+import type { VTextField } from 'vuetify/components'
 import type { DurationEvent } from '@/typeAliases'
+
+const textFieldRef = ref<VTextField>()
 
 defineProps<{
   color: DurationEvent['displayColor']
