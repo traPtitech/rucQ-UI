@@ -1,6 +1,5 @@
 @use 'vuetify/settings' with (
-  $body-font-family: (
-    'M PLUS 2 Variable',
-    sans-serif,
-  )
+  $font-size-root: 16px,
+  $body-font-family: ('M PLUS 2 Variable', sans-serif),
+  $line-height-root: 1.6,
 );

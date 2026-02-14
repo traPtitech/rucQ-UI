@@ -71,7 +71,7 @@ export const useCampStore = defineStore('camp', () => {
 
     // index が小さいほど新しい合宿
     allCamps.value = camps
-    latestCamp.value = allCamps.value[0]
+    latestCamp.value = allCamps.value[0]!
 
     const participants = await queryClient.ensureQueryData<components['schemas']['UserResponse'][]>(
       {

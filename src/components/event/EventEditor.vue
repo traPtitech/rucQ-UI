@@ -111,7 +111,7 @@ onMounted(() => {
     dayNum.value = dateDiffInDaysJST(campStartDate, startDate)
   } else {
     organizerId.value = userStore.user.id
-    color.value = EVENT_COLORS[Math.floor(Math.random() * EVENT_COLORS.length)] // 色をランダムで初期化
+    color.value = EVENT_COLORS[Math.floor(Math.random() * EVENT_COLORS.length)] ?? color.value // 色をランダムで初期化
   }
 })
 

@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import MarkdownIt from 'markdown-it'
-import hljs from 'highlight.js'
-import darkStyle from 'highlight.js/styles/github-dark.css?inline'
-import sanitizeHtml from 'sanitize-html'
+import DOMPurify from 'dompurify'
 
 type HeadingInfo = {
   id: string
@@ -21,19 +19,6 @@ const htmltext = ref('')
 const md = new MarkdownIt({
   breaks: true,
   linkify: true,
-  highlight(code, lang) {
-    if (typeof lang === 'string' && lang.includes(':')) {
-      lang = lang.substring(0, lang.indexOf(':'))
-    }
-    if (lang && hljs.getLanguage(lang)) {
-      try {
-        return hljs.highlight(code, { language: lang }).value
-      } catch {
-        // highlight.js が予期せずエラーを起こしても無視する
-      }
-    }
-    return ''
-  },
 })
 
 // mdtext 変更時に HTML と見出し情報を更新
@@ -44,9 +29,9 @@ watch(
     const headingInfos: HeadingInfo[] = []
     let idCounter = 0
 
-    // sanitize-html を使用して HTML をサニタイズ（script 等を除去）
-    const cleanHtml = sanitizeHtml(rawHtml, {
-      allowedTags: [
+    // DOMPurify を使用して HTML をサニタイズ（script 等を除去）
+    const cleanHtml = DOMPurify.sanitize(rawHtml, {
+      ALLOWED_TAGS: [
         'h1',
         'h2',
         'h3',
@@ -71,20 +56,11 @@ watch(
         'td',
         'hr',
         'br',
-        'span', // hljs のシンタックスハイライトで必要
+        'span',
         's',
         'del',
       ],
-      allowedAttributes: {
-        '*': ['class', 'id'],
-        a: ['href'],
-        code: ['class'],
-        pre: ['class'],
-        span: ['class'],
-      },
-      allowedClasses: {
-        '*': ['hljs*'], // hljs で始まるクラス名を許可
-      },
+      ALLOWED_ATTR: ['class', 'id', 'href'],
     })
 
     // DOM パーサーを使用して安全に見出しを処理
@@ -101,25 +77,11 @@ watch(
       headingInfos.push({ id, level, text })
     })
 
-    // コードブロックに hljs クラスを追加
-    const codeElements = doc.querySelectorAll('pre code')
-    codeElements.forEach((code) => {
-      if (!code.className.includes('hljs')) {
-        code.className = `${code.className} hljs`.trim()
-      }
-    })
-
     htmltext.value = doc.body.innerHTML
     headings.value = headingInfos
   },
   { immediate: true },
 )
-
-onMounted(() => {
-  const highlightStyleTag = document.createElement('style')
-  highlightStyleTag.textContent = darkStyle
-  document.head.appendChild(highlightStyleTag)
-})
 </script>
 
 <template>
@@ -133,10 +95,7 @@ onMounted(() => {
 
 <style module>
 .content {
-  width: 100%;
-  height: 100%;
   z-index: -1;
-  overflow-y: auto;
 }
 
 .preview {
@@ -145,6 +104,7 @@ onMounted(() => {
   min-height: 100%;
   max-width: 1000px;
   margin: 0 auto;
+  font-size: 14px;
 }
 
 .preview :global(p) {
@@ -183,27 +143,32 @@ onMounted(() => {
 
 .preview :global(code) {
   font-family: 'M PLUS Code Latin Variable', 'M PLUS 2 Variable';
+  font-variation-settings: 'wdth' 120;
   font-weight: 500;
   font-size: 10pt;
-}
-
-.preview :global(pre code) {
-  margin: 0 0px 8px 0px !important;
-  border-radius: 4px;
-  max-height: 400px;
-  overflow: auto;
-  background-color: #222222 !important;
-}
-
-.preview :global(p code) {
   padding: 2px;
   background-color: #f0f0f0;
   border-radius: 4px;
 }
 
+.preview :global(pre) {
+  margin: 0 0px 8px 0px !important;
+  border-radius: 4px;
+  max-height: 400px;
+  overflow: auto;
+  background-color: #222222;
+  color: #f0f0f0;
+  padding: 12px;
+}
+
+.preview :global(pre code) {
+  background-color: transparent;
+  padding: 0;
+}
+
 .preview :global(ul),
 .preview :global(ol) {
-  padding: 0px 0px 0px 20px;
+  padding: 0px 0px 8px 20px;
 }
 
 /* .preview :global(li) {

@@ -50,6 +50,15 @@ export default defineConfig([
       '@typescript-eslint/consistent-type-definitions': 'off', // interface 推奨を無効化
       '@typescript-eslint/no-unnecessary-condition': 'warn', // 不要な条件分岐の警告
       'no-undef': 'off', // TypeScript の型チェックを信頼する
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          vars: 'all',
+          args: 'after-used',
+          argsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
+      ],
     },
   },
 
