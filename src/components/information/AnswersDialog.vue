@@ -21,6 +21,8 @@ const getAnswers = async (question: Question) => {
     params: { path: { questionId: question.id } },
   })
   if (error) throw new Error(`質問の回答の取得に失敗しました: ${error.message}`)
+
+  // 回答テキスト別 回答者 ID の配列 の連想配列
   const byAnswer: Record<string, string[]> = {}
 
   switch (question.type) {
@@ -28,6 +30,7 @@ const getAnswers = async (question: Question) => {
       for (const option of question.options) byAnswer[option.content] = []
       for (const answer of data) {
         if (answer.type !== 'single') continue
+        byAnswer[answer.selectedOption.content] ??= []
         byAnswer[answer.selectedOption.content]!.push(answer.userId)
       }
       break
@@ -37,6 +40,7 @@ const getAnswers = async (question: Question) => {
       for (const answer of data) {
         if (answer.type !== 'multiple') continue
         for (const selectedOption of answer.selectedOptions) {
+          byAnswer[selectedOption.content] ??= []
           byAnswer[selectedOption.content]!.push(answer.userId)
         }
       }

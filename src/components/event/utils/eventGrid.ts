@@ -112,7 +112,11 @@ export class DayEventGrid {
 
   /** グリッド行に瞬間のイベントを追加。必ず addDurationEvent に先駆けて呼ぶ */
   addMomentEvent(event: MomentEvent) {
-    const row = this.rows[this.getIndex(getStartTime(event))]!
+    const index = this.getIndex(getStartTime(event))
+    if (index === -1) {
+      throw new Error(`${event.name} の開始時刻 ${event.time} に対応するグリッド行が見つかりません`)
+    }
+    const row = this.rows[index]!
     if (row.events.length > 0) {
       throw new Error('MomentEvent を追加する時刻にすでにイベントが存在します')
     }
