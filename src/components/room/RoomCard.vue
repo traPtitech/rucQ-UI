@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { components } from '@/api/schema'
+import RoomStatus from '@/components/room/RoomStatus.vue'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { useUserStore } from '@/store'
 import { computed } from 'vue'
@@ -21,50 +22,59 @@ const lineColorText = computed(() => `rgb(var(--v-theme-${lineColor.value}))`)
 </script>
 
 <template>
-  <v-card
-    elevation="0"
-    :color="isMyRoom(room) ? 'primary' : 'primaryLight'"
-    class="ma-2 pa-2"
-    :class="$style.card"
-  >
-    <div class="h-100 position-relative d-flex flex-column justify-center">
-      <v-card-title class="text-center pa-0">
-        <span
-          :class="$style.roomName"
-          :style="{ color: isMyRoom(room) ? 'white' : 'rgb(var(--v-theme-primary))' }"
-        >
-          {{ room.name }}
-        </span>
-      </v-card-title>
-      <div v-if="isMyRoom(room)" class="w-100 h-100 d-flex flex-wrap justify-center align-center">
-        <user-icon :size="26" class="ma-1" :class="$style.userIcon" />
-        <user-icon
-          v-for="user in room.members.filter((u) => u.id !== userStore.user.id)"
-          :id="user.id"
-          :key="user.id"
-          :size="26"
-          class="ma-1"
-          id-tooltip
-        />
-      </div>
-      <div v-else class="w-100 h-100 d-flex flex-wrap justify-center align-center">
-        <user-icon
-          v-for="user in room.members"
-          :id="user.id"
-          :key="user.id"
-          :size="26"
-          class="ma-1"
-          id-tooltip
-        />
-      </div>
-      <div :class="$style.status">
-        <div :class="[$style.statusMark, 'bg-red']"></div>
-        <span class="text-caption font-weight-medium" :class="$style.statusText">
-          すやすやすやすやすやすやすやすやすやすや
-        </span>
-      </div>
-    </div>
-  </v-card>
+  <v-dialog max-width="800">
+    <template #activator="{ props: activatorProps }">
+      <v-card
+        elevation="0"
+        :color="isMyRoom(room) ? 'primary' : 'primaryLight'"
+        class="ma-2 pa-2"
+        :class="$style.card"
+        v-bind="activatorProps"
+      >
+        <div class="h-100 position-relative d-flex flex-column justify-center">
+          <v-card-title class="text-center pa-0">
+            <span
+              :class="$style.roomName"
+              :style="{ color: isMyRoom(room) ? 'white' : 'rgb(var(--v-theme-primary))' }"
+            >
+              {{ room.name }}
+            </span>
+          </v-card-title>
+          <div
+            v-if="isMyRoom(room)"
+            class="w-100 h-100 d-flex flex-wrap justify-center align-center"
+          >
+            <user-icon :size="26" class="ma-1" :class="$style.userIcon" />
+            <user-icon
+              v-for="user in room.members.filter((u) => u.id !== userStore.user.id)"
+              :id="user.id"
+              :key="user.id"
+              :size="26"
+              class="ma-1"
+            />
+          </div>
+          <div v-else class="w-100 h-100 d-flex flex-wrap justify-center align-center">
+            <user-icon
+              v-for="user in room.members"
+              :id="user.id"
+              :key="user.id"
+              :size="26"
+              class="ma-1"
+            />
+          </div>
+          <div :class="$style.status">
+            <div :class="[$style.statusMark, 'bg-red']"></div>
+            <span class="text-caption font-weight-medium" :class="$style.statusText">
+              すやすやすやすやすやすやすやすやすやすや
+            </span>
+          </div>
+        </div>
+      </v-card>
+    </template>
+    <template #default="{ isActive }">
+      <room-status :room="room" @close="isActive.value = false" />
+    </template>
+  </v-dialog>
 </template>
 
 <style module>
