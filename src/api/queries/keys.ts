@@ -20,6 +20,11 @@ const campKeys = {
   dashboard: (id: number) => ['camps', 'detail', id, 'dashboard'] as const,
 }
 
+const questionKeys = {
+  all: ['questions'] as const,
+  answers: (questionId: number) => ['questions', questionId, 'answers'] as const,
+}
+
 const iconKeys = {
   all: ['icons'] as const,
   user: (id: string) => ['icons', 'user', id] as const,
@@ -28,5 +33,6 @@ const iconKeys = {
 export const qk = {
   me: meKeys,
   camps: campKeys,
+  questions: questionKeys,
   icons: iconKeys,
 }

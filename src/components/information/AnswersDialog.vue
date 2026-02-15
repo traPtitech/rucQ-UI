@@ -2,6 +2,8 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useDisplay } from 'vuetify'
 import { apiClient } from '@/api/apiClient'
+import { qk } from '@/api/queries/keys'
+import { queryClient } from '@/lib/queryClient'
 import AnswersDialogContent from './AnswersDialogContent.vue'
 import type { components } from '@/api/schema'
 const { xs } = useDisplay()
@@ -17,10 +19,16 @@ const openPanel = ref<number | undefined>(0)
 
 // 与えられた質問に対する回答を回答テキスト別 ID の配列として取得
 const getAnswers = async (question: Question) => {
-  const { data, error } = await apiClient.GET('/api/questions/{questionId}/answers', {
-    params: { path: { questionId: question.id } },
+  const data = await queryClient.fetchQuery({
+    queryKey: qk.questions.answers(question.id),
+    queryFn: async () => {
+      const { data, error } = await apiClient.GET('/api/questions/{questionId}/answers', {
+        params: { path: { questionId: question.id } },
+      })
+      if (error) throw new Error(`質問の回答の取得に失敗しました: ${error.message}`)
+      return data
+    },
   })
-  if (error) throw new Error(`質問の回答の取得に失敗しました: ${error.message}`)
 
   // 回答テキスト別 回答者 ID の配列 の連想配列
   const byAnswer: Record<string, string[]> = {}
