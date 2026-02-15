@@ -3,10 +3,12 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useDisplay } from 'vuetify'
 import { apiClient } from '@/api/apiClient'
 import { qk } from '@/api/queries/keys'
-import { queryClient } from '@/lib/queryClient'
+import { useQueryClient } from '@tanstack/vue-query'
 import AnswersDialogContent from './AnswersDialogContent.vue'
 import type { components } from '@/api/schema'
 const { xs } = useDisplay()
+
+const queryClient = useQueryClient()
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Question = components['schemas']['QuestionResponse']
