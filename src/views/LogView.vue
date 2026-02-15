@@ -5,38 +5,47 @@ import { getDayStringNoPad } from '@/utils/date'
 import { computed } from 'vue'
 const dummyLogs = [
   {
+    id: 1,
     type: 'room-reveal' as const,
-    date: new Date('2024-07-01T10:00:00'),
+    time: new Date('2024-07-01T10:00:00'),
   },
   {
-    type: 'transfer-confirmed' as const,
-    date: new Date('2024-07-01T12:30:00'),
-    cost: 15000,
+    id: 2,
+    type: 'transfer-confirm' as const,
+    time: new Date('2024-07-01T12:30:00'),
+    amount: 15000,
   },
   {
+    id: 3,
     type: 'rollcall' as const,
-    date: new Date('2024-07-02T14:00:00'),
-    title: '大学出発時点呼',
-    status: 'answered' as const,
-    rollcallId: 2,
+    time: new Date('2024-07-02T14:00:00'),
+    rollcall_id: 2,
+    name: '大学出発時点呼',
+    is_subject: true,
+    answered: true,
   },
   {
+    id: 4,
     type: 'rollcall' as const,
-    date: new Date('2024-07-02T14:00:00'),
-    title: '宿到着時点呼',
-    status: 'unanswered' as const,
-    rollcallId: 3,
+    time: new Date('2024-07-02T14:00:00'),
+    rollcall_id: 3,
+    name: '宿到着時点呼',
+    is_subject: true,
+    answered: false,
   },
   {
+    id: 5,
     type: 'rollcall' as const,
-    date: new Date('2024-07-02T14:00:00'),
-    title: 'バスを使わなかった人の点呼',
-    status: 'excluded' as const,
-    rollcallId: 3,
+    time: new Date('2024-07-02T14:00:00'),
+    rollcall_id: 4,
+    name: 'バスを使わなかった人の点呼',
+    is_subject: false,
+    answered: false,
   },
   {
+    id: 6,
     type: 'question' as const,
-    date: new Date('2024-07-01T15:30:00'),
+    time: new Date('2024-07-01T15:30:00'),
   },
 ]
 
@@ -44,7 +53,7 @@ const dailyLogs = computed(() => {
   const grouped = new Map<string, typeof dummyLogs>()
 
   for (const log of dummyLogs) {
-    const dateKey = log.date.toDateString()
+    const dateKey = log.time.toDateString()
     if (!grouped.has(dateKey)) {
       grouped.set(dateKey, [])
     }
@@ -54,7 +63,7 @@ const dailyLogs = computed(() => {
   return Array.from(grouped.entries())
     .map(([dateKey, logs]) => ({
       date: new Date(dateKey),
-      logs: logs.sort((a, b) => a.date.getTime() - b.date.getTime()),
+      logs: logs.sort((a, b) => a.time.getTime() - b.time.getTime()),
     }))
     .sort((a, b) => a.date.getTime() - b.date.getTime())
 })
@@ -67,21 +76,21 @@ const dailyLogs = computed(() => {
         {{ getDayStringNoPad(day.date) }}
       </h3>
       <div class="d-flex flex-column ga-3">
-        <template v-for="log in day.logs" :key="log.date.toISOString()">
-          <log-box v-if="log.type === 'room-reveal'" :type="log.type" :date="log.date">
+        <template v-for="log in day.logs" :key="log.time.toISOString()">
+          <log-box v-if="log.type === 'room-reveal'" :type="log.type" :date="log.time">
             <template #default="{ color }">
               <span :class="`text-${color}`"> 部屋情報が公開されました </span>
             </template>
           </log-box>
-          <log-box v-if="log.type === 'transfer-confirmed'" :type="log.type" :date="log.date">
+          <log-box v-if="log.type === 'transfer-confirm'" :type="log.type" :date="log.time">
             <template #default="{ color }">
               <span :class="`text-${color}`">
-                合宿係が {{ log.cost.toLocaleString() }} 円の振込を確認しました
+                合宿係が {{ log.amount.toLocaleString() }} 円の振込を確認しました
               </span>
             </template>
           </log-box>
           <roll-call-log v-if="log.type === 'rollcall'" :log="log" />
-          <log-box v-if="log.type === 'question'" :type="log.type" :date="log.date">
+          <log-box v-if="log.type === 'question'" :type="log.type" :date="log.time">
             <template #default="{ color }">
               <span :class="`text-${color}`">回答項目「バス」</span>
             </template>
