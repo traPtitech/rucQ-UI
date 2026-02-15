@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import MarkdownIt from 'markdown-it'
 import DOMPurify from 'dompurify'
+import { md } from '@/utils/markdown'
 
 type HeadingInfo = {
   id: string
@@ -15,11 +15,6 @@ const props = defineProps<{
 
 const headings = defineModel<HeadingInfo[]>('headings')
 const htmltext = ref('')
-
-const md = new MarkdownIt({
-  breaks: true,
-  linkify: true,
-})
 
 // mdtext 変更時に HTML と見出し情報を更新
 watch(
