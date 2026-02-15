@@ -2,10 +2,11 @@
 import type { components } from '@/api/schema'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { useUserStore } from '@/store'
+import { computed } from 'vue'
 
 type Room = components['schemas']['RoomResponse']
 
-defineProps<{
+const props = defineProps<{
   room: Room
 }>()
 
@@ -14,6 +15,9 @@ const userStore = useUserStore()
 const isMyRoom = (room: Room) => {
   return room.members.some((member) => member.id === userStore.user.id)
 }
+
+const lineColor = computed(() => (isMyRoom(props.room) ? 'primaryLight' : 'primary'))
+const lineColorText = computed(() => `rgb(var(--v-theme-${lineColor.value}))`)
 </script>
 
 <template>
@@ -58,6 +62,17 @@ const isMyRoom = (room: Room) => {
         <span class="text-caption font-weight-medium" :class="$style.statusText">
           すやすやすやすやすやすやすやすやすやすや
         </span>
+        <div :class="$style.editContainer">
+          <div class="position-absolute">
+            <v-btn
+              :color="lineColor"
+              density="compact"
+              variant="text"
+              icon="mdi-square-edit-outline"
+              :class="$style.edit"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </v-card>
@@ -86,8 +101,10 @@ const isMyRoom = (room: Room) => {
 .status {
   width: 100%;
   margin-top: 8px;
-  border-top: 1px solid rgb(var(--v-theme-primary));
-  position: relative;
+  border-top: 1px solid v-bind(lineColorText);
+  display: flex;
+  align-items: center;
+  margin-bottom: -4px;
 }
 
 .statusMark {
@@ -97,7 +114,8 @@ const isMyRoom = (room: Room) => {
   border-radius: 50%;
   margin-right: 4px;
   border: 2px solid white;
-  vertical-align: middle;
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 
 .statusText {
@@ -105,7 +123,18 @@ const isMyRoom = (room: Room) => {
   overflow: hidden;
   text-overflow: ellipsis;
   display: inline-block;
-  max-width: calc(100% - 20px);
   vertical-align: middle;
+}
+
+.editContainer {
+  width: 24px;
+  height: 32px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.edit {
+  top: 0px;
+  left: 0px;
 }
 </style>
