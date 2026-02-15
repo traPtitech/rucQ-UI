@@ -21,7 +21,7 @@ const { grouped, myReaction, chooseOption, init, stop } = stream
 
 // v-radio-group の @update:model-value 用ラッパー
 const handleRadioChange = (value: string | null) => {
-  if (value) void chooseOption(value)
+  if (value !== null) void chooseOption(value)
 }
 
 // 点呼情報を取得
