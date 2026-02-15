@@ -54,11 +54,6 @@ const originalMap = reactive<Record<number, AnswerData>>({})
 
 // getMyAnswers の結果をリアクティブ変数 answersMap に格納する
 const refreshAnswersMap = async () => {
-  // 回答取得クエリキーを invalidate
-  await queryClient.invalidateQueries({
-    queryKey: qk.me.questionGroupAnswers(props.questionGroup.id),
-  })
-
   for (const question of props.questionGroup.questions) {
     switch (question.type) {
       case 'free_text':
@@ -225,11 +220,15 @@ const saveAnswersMutation = useMutation({
     }
   },
   onSuccess: async () => {
+    // 回答を保存した後は必ず最新データを取得するために invalidate
+    await queryClient.invalidateQueries({
+      queryKey: qk.me.questionGroupAnswers(props.questionGroup.id),
+    })
     await quitEditMode()
   },
 })
 
-onMounted(refreshAnswersMap)
+onMounted(refreshAnswersMap) // 初回はクエリの invalidate を行わない
 </script>
 
 <template>
