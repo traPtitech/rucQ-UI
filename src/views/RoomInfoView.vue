@@ -76,12 +76,6 @@ const {
   padding: 32px 8px;
 }
 
-.card {
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1) !important;
-  margin: 0 4px;
-  transition: none !important;
-}
-
 .floorName {
   width: 240px;
   text-align: center;
@@ -103,21 +97,4 @@ const {
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   margin: 8px;
 }
-
-.roomName {
-  font-family: 'Reddit Sans Variable';
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  margin-right: -0.1em;
-}
-
-.userIcon {
-  box-sizing: content-box;
-  border: 2px solid white;
-}
 </style>
-floorName { width: 240px; text-align: center; padding-top: 16px; padding-bottom: 4px; border-bottom:
-1px solid black; } .floorNameText { font-weight: bold; font-size: 16px; letter-spacing: 0.1em;
-margin-right: -0.1em; } .roomGrid { width: 100%; display: grid; grid-template-columns:
-repeat(auto-fit, minmax(160px, 1fr)); margin: 8px
