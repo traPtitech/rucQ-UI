@@ -1,23 +1,18 @@
 <script setup lang="ts">
 import { apiClient } from '@/api/apiClient'
 import type { components } from '@/api/schema'
-import UserIcon from '@/components/generic/UserIcon.vue'
-import { useCampStore, useUserStore } from '@/store'
+import RoomCard from '@/components/room/RoomCard.vue'
+import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
 import { useQuery } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
 
 const route = useRoute()
 const campStore = useCampStore()
-const userStore = useUserStore()
 
 const displayCamp = campStore.getCampByDisplayId(route.params.campname as string)
 
 type RoomGroup = components['schemas']['RoomGroupResponse']
-
-const isMyRoom = (room: components['schemas']['RoomResponse']) => {
-  return room.members.some((member) => member.id === userStore.user.id)
-}
 
 const {
   data: roomGroups,
@@ -66,49 +61,7 @@ const {
           <span :class="$style.floorNameText">{{ group.name }}</span>
         </div>
         <div :class="$style.roomGrid">
-          <v-card
-            v-for="room in group.rooms"
-            :key="room.id"
-            elevation="0"
-            :color="isMyRoom(room) ? 'primary' : 'primaryLight'"
-            class="ma-2 pa-2"
-            :class="$style.card"
-          >
-            <div class="h-100 position-relative d-flex flex-column justify-center">
-              <v-card-title class="text-center pa-0">
-                <span
-                  :class="$style.roomName"
-                  :style="{ color: isMyRoom(room) ? 'white' : 'rgb(var(--v-theme-primary))' }"
-                >
-                  {{ room.name }}
-                </span>
-              </v-card-title>
-              <div
-                v-if="isMyRoom(room)"
-                class="w-100 h-100 d-flex flex-wrap justify-center align-center"
-              >
-                <user-icon :size="26" class="ma-1" :class="$style.userIcon" />
-                <user-icon
-                  v-for="user in room.members.filter((u) => u.id !== userStore.user.id)"
-                  :id="user.id"
-                  :key="user.id"
-                  :size="26"
-                  class="ma-1"
-                  id-tooltip
-                />
-              </div>
-              <div v-else class="w-100 h-100 d-flex flex-wrap justify-center align-center">
-                <user-icon
-                  v-for="user in room.members"
-                  :id="user.id"
-                  :key="user.id"
-                  :size="26"
-                  class="ma-1"
-                  id-tooltip
-                />
-              </div>
-            </div>
-          </v-card>
+          <room-card v-for="room in group.rooms" :key="room.id" :room="room" />
         </div>
       </div>
     </div>
@@ -164,3 +117,7 @@ const {
   border: 2px solid white;
 }
 </style>
+floorName { width: 240px; text-align: center; padding-top: 16px; padding-bottom: 4px; border-bottom:
+1px solid black; } .floorNameText { font-weight: bold; font-size: 16px; letter-spacing: 0.1em;
+margin-right: -0.1em; } .roomGrid { width: 100%; display: grid; grid-template-columns:
+repeat(auto-fit, minmax(160px, 1fr)); margin: 8px
