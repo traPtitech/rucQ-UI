@@ -92,11 +92,7 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
       <div v-if="!isSubject" :class="[$style.notSubject, 'text-primary']">点呼の対象外です</div>
     </div>
     <div :class="$style.body">
-      <v-radio-group
-        :disabled="!isSubject"
-        :model-value="myReaction?.content"
-        @update:model-value="handleRadioChange"
-      >
+      <v-radio-group :model-value="myReaction?.content" @update:model-value="handleRadioChange">
         <v-card
           v-for="opt in grouped.options"
           :key="opt.name"
@@ -106,7 +102,7 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
           :color="myReaction?.content === opt.name ? 'primary' : 'white'"
         >
           <v-card-text class="d-flex justify-space-between py-3 px-2">
-            <v-radio color="white" :value="opt.name" />
+            <v-radio color="white" :value="opt.name" :disabled="!isSubject" />
             <user-response
               :title="opt.name"
               :user-ids="opt.ids"
