@@ -19,6 +19,11 @@ const stream = useRollCallStream(rollcall, userStore.user.id)
 const { grouped, myReaction, chooseOption, init, stop } = stream
 // grouped: 点呼の選択肢ごとにユーザー ID をまとめたオブジェクト
 
+// v-radio-group の @update:model-value 用ラッパー
+const handleRadioChange = (value: string | null) => {
+  if (value) void chooseOption(value)
+}
+
 // 点呼情報を取得
 const getRollCall = async () => {
   const camp = campStore.getCampByDisplayId(route.params.campname as string)
@@ -87,24 +92,29 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
       <div v-if="!isSubject" :class="[$style.notSubject, 'text-primary']">点呼の対象外です</div>
     </div>
     <div :class="$style.body">
-      <v-card
-        v-for="opt in grouped.options"
-        :key="opt.name"
-        variant="flat"
-        :class="$style.shadow"
-        class="mb-5 border border-primary border-opacity-100"
-        :color="myReaction?.content === opt.name ? 'primary' : 'white'"
-        :ripple="isSubject"
-        @click="chooseOption(opt.name)"
+      <v-radio-group
+        :disabled="!isSubject"
+        :model-value="myReaction?.content"
+        @update:model-value="handleRadioChange"
       >
-        <v-card-text class="py-3">
-          <user-response
-            :title="opt.name"
-            :user-ids="opt.ids"
-            :text-color="myReaction?.content === opt.name ? 'white' : 'black'"
-          />
-        </v-card-text>
-      </v-card>
+        <v-card
+          v-for="opt in grouped.options"
+          :key="opt.name"
+          variant="flat"
+          :class="$style.shadow"
+          class="mb-5"
+          :color="myReaction?.content === opt.name ? 'primary' : 'white'"
+        >
+          <v-card-text class="d-flex justify-space-between py-3 px-2">
+            <v-radio color="white" :value="opt.name" />
+            <user-response
+              :title="opt.name"
+              :user-ids="opt.ids"
+              :text-color="myReaction?.content === opt.name ? 'white' : 'black'"
+            />
+          </v-card-text>
+        </v-card>
+      </v-radio-group>
     </div>
   </div>
 </template>
