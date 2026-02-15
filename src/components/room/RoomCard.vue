@@ -22,7 +22,7 @@ const lineColorText = computed(() => `rgb(var(--v-theme-${lineColor.value}))`)
 </script>
 
 <template>
-  <v-dialog max-width="800">
+  <v-dialog max-width="600">
     <template #activator="{ props: activatorProps }">
       <v-card
         elevation="0"
