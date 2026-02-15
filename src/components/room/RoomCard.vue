@@ -62,17 +62,6 @@ const lineColorText = computed(() => `rgb(var(--v-theme-${lineColor.value}))`)
         <span class="text-caption font-weight-medium" :class="$style.statusText">
           すやすやすやすやすやすやすやすやすやすや
         </span>
-        <div :class="$style.editContainer">
-          <div class="position-absolute">
-            <v-btn
-              :color="lineColor"
-              density="compact"
-              variant="text"
-              icon="mdi-square-edit-outline"
-              :class="$style.edit"
-            />
-          </div>
-        </div>
       </div>
     </div>
   </v-card>
@@ -102,9 +91,6 @@ const lineColorText = computed(() => `rgb(var(--v-theme-${lineColor.value}))`)
   width: 100%;
   margin-top: 8px;
   border-top: 1px solid v-bind(lineColorText);
-  display: flex;
-  align-items: center;
-  margin-bottom: -4px;
 }
 
 .statusMark {
@@ -114,8 +100,7 @@ const lineColorText = computed(() => `rgb(var(--v-theme-${lineColor.value}))`)
   border-radius: 50%;
   margin-right: 4px;
   border: 2px solid white;
-  flex-shrink: 0;
-  margin-top: 1px;
+  vertical-align: middle;
 }
 
 .statusText {
@@ -124,17 +109,6 @@ const lineColorText = computed(() => `rgb(var(--v-theme-${lineColor.value}))`)
   text-overflow: ellipsis;
   display: inline-block;
   vertical-align: middle;
-}
-
-.editContainer {
-  width: 24px;
-  height: 32px;
-  flex-shrink: 0;
-  position: relative;
-}
-
-.edit {
-  top: 0px;
-  left: 0px;
+  max-width: calc(100% - 20px);
 }
 </style>
