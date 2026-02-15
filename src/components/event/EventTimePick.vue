@@ -25,7 +25,7 @@ watch(
     if (!timePick.value) return
     if (timePick.value === dummyTime) return
     const [h, m] = timePick.value.split(':').map(Number)
-    minute.value = h * 60 + m
+    minute.value = h! * 60 + m!
   },
 )
 

@@ -30,7 +30,8 @@ coverage
 
 *.tsbuildinfo
 
-.env
+.env.local
+.env.*.local
 
 dev-dist/
 stats.html
