@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import LogBox from '@/components/log/LogLayout.vue'
+import { useRoute } from 'vue-router'
+const route = useRoute()
+
 defineProps<{
   log: {
     type: 'rollcall'
@@ -36,15 +39,11 @@ defineProps<{
           </div>
         </div>
         <v-btn
-          v-if="log.status === 'unanswered'"
-          variant="flat"
+          :variant="log.status === 'unanswered' ? 'flat' : 'outlined'"
           color="primary"
-          :to="`/rollcall/${log.rollcallId}`"
+          :to="`/${route.params.campname as string}/rollcall/${log.rollcallId}`"
         >
-          回答する
-        </v-btn>
-        <v-btn v-else variant="outlined" color="primary" :to="`/rollcall/${log.rollcallId}`">
-          確認する
+          {{ log.status === 'unanswered' ? '回答する' : '確認する' }}
         </v-btn>
       </div>
     </template>
