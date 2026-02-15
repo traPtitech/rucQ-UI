@@ -29,8 +29,9 @@ watch(
     const headingInfos: HeadingInfo[] = []
     let idCounter = 0
 
-    // DOMPurify を使用して HTML をサニタイズ（script 等を除去）
-    const cleanHtml = DOMPurify.sanitize(rawHtml, {
+    // DOMPurify を使用して HTML をサニタイズし、DOM を直接取得
+    const cleanDom = DOMPurify.sanitize(rawHtml, {
+      RETURN_DOM: true,
       ALLOWED_TAGS: [
         'h1',
         'h2',
@@ -61,23 +62,21 @@ watch(
         'del',
       ],
       ALLOWED_ATTR: ['class', 'id', 'href'],
-    })
+    }) as HTMLElement
 
-    // DOM パーサーを使用して安全に見出しを処理
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(cleanHtml, 'text/html')
-    const headingElements = doc.querySelectorAll('h1, h2, h3, h4, h5, h6')
+    // サニタイズされた DOM から見出しを処理
+    const headingElements = cleanDom.querySelectorAll('h1, h2, h3, h4, h5, h6')
 
     headingElements.forEach((heading) => {
       const level = parseInt(heading.tagName.charAt(1))
       const id = `heading-${idCounter++}`
-      const text = heading.textContent ?? ''
+      const text = heading.textContent
 
       heading.setAttribute('id', id)
       headingInfos.push({ id, level, text })
     })
 
-    htmltext.value = doc.body.innerHTML
+    htmltext.value = cleanDom.innerHTML
     headings.value = headingInfos
   },
   { immediate: true },
