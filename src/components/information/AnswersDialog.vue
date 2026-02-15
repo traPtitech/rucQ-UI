@@ -3,11 +3,8 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useDisplay } from 'vuetify'
 import { apiClient } from '@/api/apiClient'
 import AnswersDialogContent from './AnswersDialogContent.vue'
-import type { components } from '@/api/schema'
+import type { QuestionGroup, Question } from '@/typeAliases'
 const { xs } = useDisplay()
-
-type QuestionGroup = components['schemas']['QuestionGroupResponse']
-type Question = components['schemas']['QuestionResponse']
 
 const props = defineProps<{
   questionGroup: QuestionGroup
