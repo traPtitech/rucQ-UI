@@ -53,6 +53,12 @@ const isMyRoom = (room: Room) => {
           id-tooltip
         />
       </div>
+      <div :class="$style.status">
+        <div :class="[$style.statusMark, 'bg-red']"></div>
+        <span class="text-caption font-weight-medium" :class="$style.statusText">
+          すやすやすやすやすやすやすやすやすやすや
+        </span>
+      </div>
     </div>
   </v-card>
 </template>
@@ -75,5 +81,31 @@ const isMyRoom = (room: Room) => {
 .userIcon {
   box-sizing: content-box;
   border: 2px solid white;
+}
+
+.status {
+  width: 100%;
+  margin-top: 8px;
+  border-top: 1px solid rgb(var(--v-theme-primary));
+  position: relative;
+}
+
+.statusMark {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-right: 4px;
+  border: 2px solid white;
+  vertical-align: middle;
+}
+
+.statusText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  max-width: calc(100% - 20px);
+  vertical-align: middle;
 }
 </style>
