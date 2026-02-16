@@ -24,18 +24,34 @@
 
 起動は不安定であり、とくに初回は 2, 3 回のリロードを必要とする場合があります。
 
-### Staging API を使う方法
+### Staging / Production API を使う方法
 
-開発環境から Staging API（<https://rucq-dev.trapti.tech/api>）にアクセスします。traQ 認証を突破するために Cookie をコピーしてくる必要があります。
+開発環境から Staging API（<https://rucq-dev.trapti.tech/api>）または Production API（<https://rucq.trap.jp/api>）にアクセスします。traQ 認証を突破するために Cookie をコピーしてくる必要があります。
 
-1. <https://rucq-dev.trapti.tech/api/me> にアクセスする
+1. [Staging](https://rucq-dev.trapti.tech/api/me) または [Production](https://rucq.trap.jp/api/me) にアクセスする
 2. DevTool のアプリケーションタブを開き、Cookie 一覧から `_forward_auth` の値を取得する
 3. 空のテキストファイル `.env.local` をルートに作成して以下の内容を書き込む
    ```sh
-   STAGING_COOKIE="_forward_auth=xxxxx"  # "_forward_auth=" を忘れずに
+   STAGING_COOKIE="_forward_auth=xxxx" # Staging 用
+   PRODUCTION_COOKIE="_forward_auth=xxxx" # Production 用
    ```
-4. フロントエンドを起動 `pnpm dev:staging`
+   ※ `_forward_auth=` から始まる値をそのまま貼り付けてください。
+
+4. フロントエンドを起動
+   - Staging: `pnpm dev:staging`
+   - Production: `pnpm dev:prod`
 5. <http://localhost:5173> にアクセス
+
+### ビルドとプレビュー（オフライン動作の確認）
+
+ビルドしてプレビューすることで、Service Worker（PWA）を含む本番相当の挙動を確認できます。特に**オフライン時の挙動**を確認したい場合はこの手順を行ってください。
+
+1. ビルドする
+   `pnpm build`
+2. プレビューを起動
+   - Staging: `pnpm preview:staging`
+   - Production: `pnpm preview:prod`
+3. <http://localhost:4173> にアクセス（ポート番号が 5173 ではない点に注意）
 
 ### ローカルでバックエンドを起動する方法
 

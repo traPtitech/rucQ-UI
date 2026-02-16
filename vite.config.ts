@@ -101,7 +101,17 @@ export default defineConfig(({ mode }) => {
                 },
               },
             }
-          : mode === 'development'
+          : mode === 'production'
+            ? {
+                '/api': {
+                  target: 'https://rucq.trap.jp',
+                  changeOrigin: true,
+                  headers: {
+                    Cookie: env.PRODUCTION_COOKIE,
+                  },
+                },
+              }
+            : mode === 'development'
             ? {
                 '/api': {
                   target: 'http://localhost:8080',
