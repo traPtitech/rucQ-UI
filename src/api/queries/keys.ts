@@ -20,13 +20,7 @@ const campKeys = {
   dashboard: (id: number) => ['camps', 'detail', id, 'dashboard'] as const,
 }
 
-const iconKeys = {
-  all: ['icons'] as const,
-  user: (id: string) => ['icons', 'user', id] as const,
-}
-
 export const qk = {
   me: meKeys,
   camps: campKeys,
-  icons: iconKeys,
 }
