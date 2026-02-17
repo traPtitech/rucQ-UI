@@ -31,7 +31,7 @@ const statusColor = computed(() => {
     case 'inactive':
       return 'red'
     default:
-      return 'gray'
+      return 'grey'
   }
 })
 
@@ -84,7 +84,7 @@ const handleUpdated = async () => {
           <div :class="$style.status">
             <div :class="[$style.statusMark, `bg-${statusColor}`]"></div>
             <span class="text-caption font-weight-medium" :class="$style.statusText">
-              {{ room.status.topic }}
+              {{ room.status.topic || '未設定' }}
             </span>
           </div>
         </div>
