@@ -27,7 +27,7 @@ const word = ref('')
     <v-radio-group v-model="status" hide-details class="my-2">
       <div class="d-flex">
         <v-radio label="アクティブ" value="On" color="green" />
-        <v-radio label="非アクティブ" value="Off" color="red" />
+        <v-radio label="休憩中" value="Off" color="red" />
       </div>
     </v-radio-group>
     <v-textarea v-model="word" rows="3" variant="outlined" label="ひとこと" hide-details />
