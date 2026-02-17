@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import type { components } from '@/api/schema'
-import RoomStatus from '@/components/room/RoomStatus.vue'
+import RoomStatusDialog from '@/components/room/RoomStatusDialog.vue'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { useUserStore } from '@/store'
 import { computed } from 'vue'
 
 type Room = components['schemas']['RoomResponse']
-type RoomStatus = components['schemas']['RoomStatus']
 
 const props = defineProps<{
   room: Room
@@ -84,7 +83,7 @@ const statusColor = computed(() => {
       </v-card>
     </template>
     <template #default="{ isActive }">
-      <room-status :room="room" :camp-id="campId" @close="isActive.value = false" />
+      <room-status-dialog :room="room" :camp-id="campId" @close="isActive.value = false" />
     </template>
   </v-dialog>
 </template>
