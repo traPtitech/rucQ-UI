@@ -27,7 +27,7 @@ const isArchived = computed(() => {
 })
 
 const routerViewMargin = computed(() => {
-  return isArchived.value ? '50px' : '0px'
+  return isArchived.value && !xs.value ? '50px' : '0px'
 })
 
 const campName = computed(() => displayCamp.value?.name)
