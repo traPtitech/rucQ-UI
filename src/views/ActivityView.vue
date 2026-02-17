@@ -18,7 +18,11 @@ const route = useRoute()
 
 const displayCamp = computed(() => campStore.getCampByDisplayId(route.params.campname as string))
 
-const { data: activities } = useQuery<Activity[], Error>({
+const {
+  data: activities,
+  isPending,
+  isFetching,
+} = useQuery<Activity[], Error>({
   queryKey: computed(() => qk.camps.activities(displayCamp.value.id)),
   enabled: computed(() => Boolean(displayCamp.value.id)),
   staleTime: 0,
@@ -55,8 +59,28 @@ const dailyActivities = computed(() => {
 </script>
 
 <template>
-  <div class="pa-4" :class="$style.container">
-    <template v-for="day in dailyActivities" :key="day.date.toISOString()">
+  <div class="position-relative w-100 h-100">
+    <!-- Loading -->
+    <div
+      v-if="!activities || (activities.length === 0 && (isPending || isFetching))"
+      class="d-flex flex-column align-center justify-center w-100 h-100"
+    >
+      <v-progress-circular indeterminate size="56" color="primary" class="mb-3" />
+      <h3 class="font-weight-bold">アクティビティを読み込み中…</h3>
+    </div>
+
+    <!-- Empty state -->
+    <div
+      v-else-if="activities && activities.length === 0"
+      class="d-flex flex-column align-center justify-center w-100 h-100"
+    >
+      <v-icon size="64" class="mb-2" icon="mdi-timeline-clock-outline" />
+      <h3 class="font-weight-bold">{{ displayCamp.name }}のアクティビティはまだありません</h3>
+    </div>
+
+    <!-- Content -->
+    <div v-else class="pa-4" :class="$style.container">
+      <template v-for="day in dailyActivities" :key="day.date.toISOString()">
       <h3 class="mb-2 mt-4" :class="$style.dayHeader">
         {{ getDayStringNoPad(day.date) }}
       </h3>
@@ -109,6 +133,7 @@ const dailyActivities = computed(() => {
         </template>
       </div>
     </template>
+    </div>
   </div>
 </template>
 
