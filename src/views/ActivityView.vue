@@ -51,17 +51,17 @@ const dailyLogs = computed(() => {
     .map(([dateKey, activities]) => ({
       date: new Date(dateKey),
       activities: activities.sort(
-        (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
+        (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
       ),
     }))
-    .sort((a, b) => a.date.getTime() - b.date.getTime())
+    .sort((a, b) => b.date.getTime() - a.date.getTime())
 })
 </script>
 
 <template>
   <div class="pa-4" :class="$style.container">
     <template v-for="day in dailyLogs" :key="day.date.toISOString()">
-      <h3 class="mb-2 mt-8" :class="$style.dayHeader">
+      <h3 class="mb-2 mt-4" :class="$style.dayHeader">
         {{ getDayStringNoPad(day.date) }}
       </h3>
       <div class="d-flex flex-column ga-3">

@@ -19,14 +19,14 @@ defineProps<{
     <template #default="{ color }">
       <div class="w-100 h-100 d-flex justify-space-between ga-2 align-center">
         <div>
-          <div :class="`text-${color}`">回答項目「{{ activity.name }}」</div>
-          <div v-if="activity.needsResponse" class="d-flex align-center ga-1">
+          <div :class="[`text-${color}`, $style.mainText]">回答項目「{{ activity.name }}」</div>
+          <div v-if="activity.needsResponse" class="d-flex align-center ga-0">
             <v-icon size="16" icon="mdi-alert-circle-outline" color="red" />
-            <span class="ml-1 text-caption" :class="$style.caption">未回答</span>
+            <span class="text-caption" :class="$style.caption">未回答</span>
           </div>
-          <div v-else class="d-flex align-center ga-1">
+          <div v-else class="d-flex align-center ga-0">
             <v-icon size="16" icon="mdi-check" color="green" />
-            <span class="ml-1 text-caption" :class="$style.caption">回答済み</span>
+            <span class="text-caption" :class="[$style.caption, $style.captionAnswered]">回答済み</span>
           </div>
         </div>
 
@@ -49,7 +49,18 @@ defineProps<{
 </template>
 
 <style module>
+.mainText {
+  font-size: 0.9rem; /* 15px */
+}
+
 .caption {
+  margin-left: 2px;
   margin-bottom: 1.5px;
+  font-weight: 500;
+  font-size: 0.7rem !important;
+}
+
+.captionAnswered {
+  color: rgba(0, 0, 0, 0.72);
 }
 </style>
