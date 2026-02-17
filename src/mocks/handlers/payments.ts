@@ -20,6 +20,7 @@ export const paymentsHandlers = [
           { id: 'kitsne', isStaff: true },
           { id: 'traP', isStaff: true },
         ],
+        status: { type: 'active', topic: '点呼実施中' },
       },
     })
   }),
