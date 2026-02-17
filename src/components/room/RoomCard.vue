@@ -104,7 +104,7 @@ const handleUpdated = async () => {
 }
 
 .roomName {
-  font-family: 'Reddit Sans Variable' 'M PLUS 2 Variable' sans-serif;
+  font-family: 'Reddit Sans Variable', 'M PLUS 2 Variable', sans-serif;
   font-size: 20px;
   font-weight: 800;
   letter-spacing: 0.1em;

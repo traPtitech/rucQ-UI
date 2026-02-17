@@ -28,6 +28,8 @@ watch(
   { immediate: true },
 )
 
+const showHistory = ref(false)
+
 const updateStatus = async () => {
   const { error } = await apiClient.PUT('/api/rooms/{roomId}/status', {
     params: { path: { roomId: props.room.id } },
@@ -64,15 +66,70 @@ const updateStatus = async () => {
       </div>
     </v-radio-group>
     <v-textarea v-model="word" rows="3" variant="outlined" label="ひとこと" hide-details />
+    <v-card
+      class="mt-2 rounded font-weight-medium flex-shrink-0"
+      variant="text"
+      role="button"
+      @click="showHistory = !showHistory"
+    >
+      <div class="w-100 pa-2 d-flex align-center justify-space-between">
+        <div class="d-flex align-center ga-2">
+          <v-icon icon="mdi-history" />
+          履歴を見る
+        </div>
+        <v-icon :icon="showHistory ? 'mdi-chevron-up' : 'mdi-chevron-down'" />
+      </div>
+    </v-card>
+    <v-expand-transition>
+      <div
+        v-show="showHistory"
+        class="rounded overflow-hidden flex-column bg-background"
+        style="display: flex"
+      >
+        <!-- ↑ あえて。 d-dlex を用いると v-show を上書きしてしまう -->
+        <div class="pa-3 overflow-y-auto h-100">
+          <div v-for="i in [1, 2, 3, 4, 5, 6, 7, 8, 9]" :key="i" class="mb-2">
+            <div class="font-weight-bold text-caption text-grey">
+              <span :class="$style.time">9/10 15:00</span>
+            </div>
+            <div :class="$style.status">
+              <div :class="[$style.statusMark, `bg-red`]"></div>
+              <span class="text-body-2 font-weight-medium" :class="$style.statusText">
+                {{ room.status.topic || '未設定' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </v-expand-transition>
     <v-btn class="mt-2" variant="flat" color="primary" @click="updateStatus">更新</v-btn>
   </v-card>
 </template>
 
 <style module>
 .room {
-  font-family: 'Reddit Sans Variable' 'M PLUS 2 Variable' sans-serif;
+  font-family: 'Reddit Sans Variable', 'M PLUS 2 Variable', sans-serif;
   font-size: 24px;
   font-weight: 800;
   letter-spacing: 3px;
+}
+
+.time {
+  font-family: 'Roboto Variable', sans-serif;
+}
+
+.status {
+  margin-top: -4px;
+}
+
+.statusMark {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin-right: 4px;
+  border: 2px solid white;
+  vertical-align: middle;
+  margin-top: -1px;
 }
 </style>
