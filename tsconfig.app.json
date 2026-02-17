@@ -1,13 +1,16 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "src/**/*.d.ts"],
-  "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
-    "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
 
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
+    "strict": true,
+    "noUnusedLocals": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    // 配列の要素へのアクセスが undefined である可能性を考慮する
+
+    "paths": { "@/*": ["./src/*"] }
+  },
+  "include": ["src/**/*"]
 }

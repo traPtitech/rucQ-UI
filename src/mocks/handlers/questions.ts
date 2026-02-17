@@ -2,7 +2,7 @@ import { HttpResponse } from 'msw'
 import { http } from '@/mocks/http'
 
 export const questionsHandlers = [
-  http.get('/api/camps/{campId}/question-groups', async () => {
+  http.get('/api/camps/{campId}/question-groups', () => {
     return HttpResponse.json([
       {
         id: 1,
@@ -138,7 +138,7 @@ export const questionsHandlers = [
               { id: 1, content: '行き' },
               { id: 2, content: '帰り' },
             ],
-            isPublic: true,
+            isPublic: false,
             isOpen: false,
             isRequired: false,
           },
@@ -154,7 +154,7 @@ export const questionsHandlers = [
             id: 13,
             title: 'アレルギー',
             type: 'free_text',
-            isPublic: true,
+            isPublic: false,
             isOpen: true,
             isRequired: false,
           },
@@ -162,7 +162,7 @@ export const questionsHandlers = [
       },
     ])
   }),
-  http.get('/api/me/question-groups/{questionGroupId}/answers', async ({ params }) => {
+  http.get('/api/me/question-groups/{questionGroupId}/answers', ({ params }) => {
     if (params.questionGroupId === '1') {
       return HttpResponse.json([
         {
@@ -259,7 +259,7 @@ export const questionsHandlers = [
 
     return HttpResponse.json([])
   }),
-  http.post('/api/question-groups/{questionGroupId}/answers', async () => {
+  http.post('/api/question-groups/{questionGroupId}/answers', () => {
     const resp = [
       {
         id: 1,
@@ -271,7 +271,7 @@ export const questionsHandlers = [
     ]
     return HttpResponse.json(resp, { status: 201 })
   }),
-  http.put('/api/answers/{answerId}', async () => {
+  http.put('/api/answers/{answerId}', () => {
     const resp = {
       id: 1,
       type: 'free_text' as const,
@@ -281,7 +281,7 @@ export const questionsHandlers = [
     }
     return HttpResponse.json(resp, { status: 200 })
   }),
-  http.get('/api/questions/{questionId}/answers', async ({ params }) => {
+  http.get('/api/questions/{questionId}/answers', ({ params }) => {
     if (params.questionId === '3') {
       return HttpResponse.json([
         {

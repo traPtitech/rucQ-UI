@@ -1,23 +1,18 @@
 <script setup lang="ts">
 import { apiClient } from '@/api/apiClient'
 import type { components } from '@/api/schema'
-import UserIcon from '@/components/generic/UserIcon.vue'
-import { useCampStore, useUserStore } from '@/store'
+import RoomCard from '@/components/room/RoomCard.vue'
+import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
 import { useQuery } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
 
 const route = useRoute()
 const campStore = useCampStore()
-const userStore = useUserStore()
 
 const displayCamp = campStore.getCampByDisplayId(route.params.campname as string)
 
 type RoomGroup = components['schemas']['RoomGroupResponse']
-
-const isMyRoom = (room: components['schemas']['RoomResponse']) => {
-  return room.members.some((member) => member.id === userStore.user.id)
-}
 
 const {
   data: roomGroups,
@@ -29,9 +24,10 @@ const {
     const { data, error } = await apiClient.GET('/api/camps/{campId}/room-groups', {
       params: { path: { campId: displayCamp.id } },
     })
-    if (error || !data) throw error ?? new Error('Failed to fetch room groups')
+    if (error) throw new Error(`部屋割情報の取得に失敗しました: ${error.message}`)
     return data
   },
+  staleTime: 0, // ステータスの変更を即座に反映
 })
 </script>
 
@@ -66,49 +62,12 @@ const {
           <span :class="$style.floorNameText">{{ group.name }}</span>
         </div>
         <div :class="$style.roomGrid">
-          <v-card
+          <room-card
             v-for="room in group.rooms"
             :key="room.id"
-            elevation="0"
-            :color="isMyRoom(room) ? 'primary' : 'primaryLight'"
-            class="ma-2 pa-2"
-            :class="$style.card"
-          >
-            <div class="h-100 position-relative d-flex flex-column justify-center">
-              <v-card-title class="text-center pa-0">
-                <span
-                  :class="$style.roomName"
-                  :style="{ color: isMyRoom(room) ? 'white' : 'rgb(var(--v-theme-primary))' }"
-                >
-                  {{ room.name }}
-                </span>
-              </v-card-title>
-              <div
-                v-if="isMyRoom(room)"
-                class="w-100 h-100 d-flex flex-wrap justify-center align-center"
-              >
-                <user-icon :size="26" class="ma-1" :class="$style.userIcon" />
-                <user-icon
-                  v-for="user in room.members.filter((u) => u.id !== userStore.user.id)"
-                  :id="user.id"
-                  :key="user.id"
-                  :size="26"
-                  class="ma-1"
-                  id-tooltip
-                />
-              </div>
-              <div v-else class="w-100 h-100 d-flex flex-wrap justify-center align-center">
-                <user-icon
-                  v-for="user in room.members"
-                  :id="user.id"
-                  :key="user.id"
-                  :size="26"
-                  class="ma-1"
-                  id-tooltip
-                />
-              </div>
-            </div>
-          </v-card>
+            :room="room"
+            :camp-id="displayCamp.id"
+          />
         </div>
       </div>
     </div>
@@ -121,12 +80,6 @@ const {
   max-width: 600px;
   margin: 0 auto;
   padding: 32px 8px;
-}
-
-.card {
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1) !important;
-  margin: 0 4px;
-  transition: none !important;
 }
 
 .floorName {
@@ -149,18 +102,5 @@ const {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   margin: 8px;
-}
-
-.roomName {
-  font-family: 'Reddit Sans';
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  margin-right: -0.1em;
-}
-
-.userIcon {
-  box-sizing: content-box;
-  border: 2px solid white;
 }
 </style>

@@ -38,8 +38,8 @@ const questionUnits = computed(() => props.getQuestionUnits(props.questionGroup.
 // 各設問の v-model 用 computed（親に更新を委譲）
 const answerModel = (questionId: number) =>
   computed({
-    get: () => props.answersMap[questionId]?.value as string | number | number[] | undefined,
-    set: (v) => emit('update:answer', { questionId, value: v as string | number | number[] }),
+    get: () => props.answersMap[questionId]!.value,
+    set: (v) => emit('update:answer', { questionId, value: v! }),
   })
 </script>
 
@@ -131,7 +131,7 @@ const answerModel = (questionId: number) =>
 }
 
 .deadline {
-  font-family: 'Reddit Sans';
+  font-family: 'Reddit Sans Variable';
   margin-right: 6px;
   font-size: 16px;
   font-weight: bold;

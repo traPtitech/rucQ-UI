@@ -19,6 +19,11 @@ const stream = useRollCallStream(rollcall, userStore.user.id)
 const { grouped, myReaction, chooseOption, init, stop } = stream
 // grouped: 点呼の選択肢ごとにユーザー ID をまとめたオブジェクト
 
+// v-radio-group の @update:model-value 用ラッパー
+const handleRadioChange = (value: string | null) => {
+  if (value !== null) void chooseOption(value)
+}
+
 // 点呼情報を取得
 const getRollCall = async () => {
   const camp = campStore.getCampByDisplayId(route.params.campname as string)
@@ -26,13 +31,13 @@ const getRollCall = async () => {
   const { data, error } = await apiClient.GET('/api/camps/{campId}/roll-calls', {
     params: { path: { campId: camp.id } },
   })
-  if (error || !data) throw error ?? new Error('Failed to fetch roll calls')
+  if (error) throw new Error(`点呼情報の取得に失敗しました: ${error.message}`)
   return data.find((r) => r.id.toString() === route.params.rollcallId)
 }
 
 // ユーザーが点呼の対象かどうか
 const isSubject = computed(() => {
-  if (!rollcall.value || !userStore.user) return false
+  if (!rollcall.value) return false
   return rollcall.value.subjects.includes(userStore.user.id)
 })
 
@@ -87,24 +92,25 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
       <div v-if="!isSubject" :class="[$style.notSubject, 'text-primary']">点呼の対象外です</div>
     </div>
     <div :class="$style.body">
-      <v-card
-        v-for="opt in grouped.options"
-        :key="opt.name"
-        variant="flat"
-        :class="$style.shadow"
-        class="mb-5 border border-primary border-opacity-100"
-        :color="myReaction?.content === opt.name ? 'primary' : 'white'"
-        :ripple="isSubject"
-        @click="chooseOption(opt.name)"
-      >
-        <v-card-text class="py-3">
-          <user-response
-            :title="opt.name"
-            :user-ids="opt.ids"
-            :text-color="myReaction?.content === opt.name ? 'white' : 'black'"
-          />
-        </v-card-text>
-      </v-card>
+      <v-radio-group :model-value="myReaction?.content" @update:model-value="handleRadioChange">
+        <v-card
+          v-for="opt in grouped.options"
+          :key="opt.name"
+          variant="flat"
+          :class="$style.shadow"
+          class="mb-5"
+          :color="myReaction?.content === opt.name ? 'primary' : 'white'"
+        >
+          <v-card-text class="d-flex justify-space-between py-3 px-2">
+            <v-radio color="white" :value="opt.name" :disabled="!isSubject" />
+            <user-response
+              :title="opt.name"
+              :user-ids="opt.ids"
+              :text-color="myReaction?.content === opt.name ? 'white' : 'black'"
+            />
+          </v-card-text>
+        </v-card>
+      </v-radio-group>
     </div>
   </div>
 </template>

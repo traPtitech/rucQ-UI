@@ -11,8 +11,7 @@ const router = useRouter()
 const route = useRoute()
 
 const currentPath = computed(() => route.path)
-const fullPath = (path: string) =>
-  `/${route.params.campname}${path ? `/${path}` : ''}`
+const fullPath = (path: string) => `/${route.params.campname as string}${path ? `/${path}` : ''}`
 const isActive = (itemPath: string) => currentPath.value === fullPath(itemPath)
 
 // 選択されたアイテムの配列を管理
@@ -36,6 +35,12 @@ const navItems = [
     title: '部屋情報',
     iconActive: 'mdi-view-grid',
     icon: 'mdi-view-grid-outline',
+  },
+  {
+    path: 'activities',
+    title: 'アクティビティ',
+    iconActive: 'mdi-email',
+    icon: 'mdi-email-outline',
   },
   {
     path: 'info',
@@ -88,7 +93,7 @@ const navItems = [
           />
           <user-icon
             v-else
-            :size="22"
+            :size="24"
             class="mr-3"
             :style="{ outline: `${isActive(item.path) ? 2 : 1}px solid white` }"
           ></user-icon>
@@ -110,6 +115,7 @@ const navItems = [
   align-items: center;
   gap: 10px;
   margin-left: 30px;
+  height: 28px;
 }
 
 .headerTitle {

@@ -111,7 +111,7 @@ onMounted(() => {
     dayNum.value = dateDiffInDaysJST(campStartDate, startDate)
   } else {
     organizerId.value = userStore.user.id
-    color.value = EVENT_COLORS[Math.floor(Math.random() * EVENT_COLORS.length)] // 色をランダムで初期化
+    color.value = EVENT_COLORS[Math.floor(Math.random() * EVENT_COLORS.length)] ?? color.value // 色をランダムで初期化
   }
 })
 
@@ -123,13 +123,13 @@ const upsertEventMutation = useMutation({
         params: { path: { eventId: props.event.id } },
         body,
       })
-      if (error) throw error
+      if (error) throw new Error(`イベントの更新に失敗しました: ${error.message}`)
     } else {
       const { error } = await apiClient.POST('/api/camps/{campId}/events', {
         params: { path: { campId: displayCamp.value.id } },
         body,
       })
-      if (error) throw error
+      if (error) throw new Error(`イベントの作成に失敗しました: ${error.message}`)
     }
   },
   onSuccess: async () => {
@@ -143,7 +143,7 @@ const deleteEventMutation = useMutation({
     const { error } = await apiClient.DELETE('/api/events/{eventId}', {
       params: { path: { eventId: props.event.id } },
     })
-    if (error) throw error
+    if (error) throw new Error(`イベントの削除に失敗しました: ${error.message}`)
   },
   onSuccess: async () => {
     await queryClient.invalidateQueries({ queryKey: qk.camps.events(displayCamp.value.id) })

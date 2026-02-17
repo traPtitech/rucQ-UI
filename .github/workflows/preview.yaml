@@ -22,8 +22,6 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v3
@@ -40,8 +38,9 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64 # amd64 のみ
           push: true
           tags: ghcr.io/traptitech/${{ env.IMAGE_NAME }}:preview-${{ env.PR_NUMBER }}-${{ github.event.pull_request.head.sha }}
           cache-from: type=registry,ref=ghcr.io/traptitech/${{ env.IMAGE_NAME }}:buildcache
           cache-to: type=registry,ref=ghcr.io/traptitech/${{ env.IMAGE_NAME }}:buildcache,mode=max
+          build-args: COMMIT_HASH=${{ github.event.pull_request.head.sha }}

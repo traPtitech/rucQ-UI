@@ -6,6 +6,10 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/login',
+      redirect: '/',
+    },
+    {
       path: '/',
       component: () => import('@/views/RegistrationView.vue'),
     },
@@ -37,6 +41,11 @@ const router = createRouter({
           path: 'rooms',
           name: '部屋情報',
           component: () => import('@/views/RoomInfoView.vue'),
+        },
+        {
+          path: 'activities',
+          name: 'アクティビティ',
+          component: () => import('@/views/ActivityView.vue'),
         },
       ],
     },

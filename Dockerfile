@@ -4,17 +4,26 @@ FROM node:22-alpine AS builder
 # 作業ディレクトリを設定
 WORKDIR /app
 
-# package.json と package-lock.json をコピー
-COPY package*.json ./
+# pnpm をインストール
+RUN npm install -g pnpm@10.28.2
+
+# package.json と pnpm-lock.yaml をコピー
+COPY package.json pnpm-lock.yaml ./
 
 # 依存関係をインストール
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 # ソースコードをコピー
 COPY . .
 
+# ビルド引数としてコミットハッシュを受け取る
+ARG COMMIT_HASH
+
+# 環境変数としてコミットハッシュを設定
+ENV COMMIT_HASH=$COMMIT_HASH
+
 # アプリケーションをビルド
-RUN npm run build
+RUN pnpm run build
 
 # 本番用のCaddyイメージ
 FROM caddy:2-alpine

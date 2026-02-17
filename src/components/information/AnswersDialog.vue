@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, reactive, ref, watchEffect } from 'vue'
 import { useDisplay } from 'vuetify'
 import { apiClient } from '@/api/apiClient'
+import { qk } from '@/api/queries/keys'
+import { useQueries } from '@tanstack/vue-query'
 import AnswersDialogContent from './AnswersDialogContent.vue'
 import type { components } from '@/api/schema'
 const { xs } = useDisplay()
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Question = components['schemas']['QuestionResponse']
+type AnswerResponse = components['schemas']['AnswerResponse']
 
 const props = defineProps<{
   questionGroup: QuestionGroup
@@ -15,12 +18,8 @@ const props = defineProps<{
 
 const openPanel = ref<number | undefined>(0)
 
-// 与えられた質問に対する回答を回答テキスト別 ID の配列として取得
-const getAnswers = async (question: Question) => {
-  const { data, error } = await apiClient.GET('/api/questions/{questionId}/answers', {
-    params: { path: { questionId: question.id } },
-  })
-  if (error || !data) throw error ?? new Error('Failed to fetch answers')
+// 与えられた質問に対する回答を回答テキスト別 ID の配列として整形
+const mapAnswersByContent = (question: Question, data: AnswerResponse[]) => {
   const byAnswer: Record<string, string[]> = {}
 
   switch (question.type) {
@@ -28,7 +27,8 @@ const getAnswers = async (question: Question) => {
       for (const option of question.options) byAnswer[option.content] = []
       for (const answer of data) {
         if (answer.type !== 'single') continue
-        byAnswer[answer.selectedOption.content].push(answer.userId)
+        byAnswer[answer.selectedOption.content] ??= []
+        byAnswer[answer.selectedOption.content]!.push(answer.userId)
       }
       break
     }
@@ -37,7 +37,8 @@ const getAnswers = async (question: Question) => {
       for (const answer of data) {
         if (answer.type !== 'multiple') continue
         for (const selectedOption of answer.selectedOptions) {
-          byAnswer[selectedOption.content].push(answer.userId)
+          byAnswer[selectedOption.content] ??= []
+          byAnswer[selectedOption.content]!.push(answer.userId)
         }
       }
       break
@@ -46,7 +47,7 @@ const getAnswers = async (question: Question) => {
       for (const answer of data) {
         if (answer.type !== 'free_text') continue
         byAnswer[answer.content] ??= []
-        byAnswer[answer.content].push(answer.userId)
+        byAnswer[answer.content]!.push(answer.userId)
       }
       break
     }
@@ -54,7 +55,7 @@ const getAnswers = async (question: Question) => {
       for (const answer of data) {
         if (answer.type !== 'free_number') continue
         byAnswer[answer.content.toString()] ??= []
-        byAnswer[answer.content.toString()].push(answer.userId)
+        byAnswer[answer.content.toString()]!.push(answer.userId)
       }
       break
     }
@@ -69,10 +70,27 @@ const publicQuestions = computed(() => {
   return props.questionGroup.questions.filter((q) => q.isPublic)
 })
 
-onMounted(async () => {
-  for (const question of props.questionGroup.questions) {
-    if (!question.isPublic) continue
-    traQIDsByAnswer[question.id] = await getAnswers(question)
+// publicQuestions の順序に従って回答を取得
+const answerQueries = useQueries({
+  queries: computed(() =>
+    publicQuestions.value.map((question) => ({
+      queryKey: qk.questions.answers(question.id),
+      queryFn: async () => {
+        const { data, error } = await apiClient.GET('/api/questions/{questionId}/answers', {
+          params: { path: { questionId: question.id } },
+        })
+        if (error) throw new Error(`質問の回答の取得に失敗しました: ${error.message}`)
+        return data
+      },
+    })),
+  ),
+})
+
+watchEffect(() => {
+  for (const [index, question] of publicQuestions.value.entries()) {
+    const result = answerQueries.value[index]
+    if (!result?.data) continue
+    traQIDsByAnswer[question.id] = mapAnswersByContent(question, result.data)
   }
 })
 
@@ -87,6 +105,7 @@ const closeBtnProps = {
 
 <template>
   <v-dialog
+    v-if="publicQuestions.length > 0"
     :fullscreen="xs"
     :transition="xs ? 'dialog-bottom-transition' : undefined"
     :max-width="xs ? undefined : 800"

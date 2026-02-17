@@ -2,7 +2,7 @@ import { HttpResponse } from 'msw'
 import { http } from '@/mocks/http'
 
 export const paymentsHandlers = [
-  http.get('/api/camps/{campId}/me', async ({ params }) => {
+  http.get('/api/camps/{campId}/me', ({ params }) => {
     return HttpResponse.json({
       id: 'traP',
       payment: {
@@ -20,6 +20,7 @@ export const paymentsHandlers = [
           { id: 'kitsne', isStaff: true },
           { id: 'traP', isStaff: true },
         ],
+        status: { type: 'active', topic: '点呼実施中' },
       },
     })
   }),

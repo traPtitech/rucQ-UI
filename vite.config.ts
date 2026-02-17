@@ -1,7 +1,7 @@
 import pkg from './package.json'
 import { fileURLToPath, URL } from 'node:url'
 
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv, type PluginOption } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import vuetify from 'vite-plugin-vuetify'
@@ -9,12 +9,19 @@ import { VitePWA } from 'vite-plugin-pwa'
 import { visualizer } from 'rollup-plugin-visualizer'
 
 export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  const hash = env.COMMIT_HASH?.slice(0, 7)
+  // 環境変数からコミットハッシュの先頭 7 文字を取得
+
+  if (hash) console.log(`v${pkg.version}, hash: ${hash}`)
+
   return {
     define: {
       __APP_VERSION__: JSON.stringify(pkg.version),
+      __COMMIT_HASH__: hash ? JSON.stringify(hash) : undefined,
     },
     plugins: [
-      visualizer(),
+      visualizer() as PluginOption,
       vue(),
       vueDevTools(),
       vuetify({
@@ -27,6 +34,7 @@ export default defineConfig(({ mode }) => {
         manifest: {
           name: 'rucQ',
           short_name: 'rucQ',
+          theme_color: '#ffffff',
           display: 'standalone',
           start_url: '/',
           scope: '/',
@@ -69,21 +77,9 @@ export default defineConfig(({ mode }) => {
         ],
         // Service Worker
         workbox: {
+          disableDevLogs: true, // workbox のログを無効化
           globPatterns: ['**/*.{js,css,html,svg,png,jpg,webp,woff2}'],
-          runtimeCaching: [
-            {
-              // フォント
-              urlPattern: ({ request }) => request.destination === 'font',
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'fonts-cache',
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 60 * 60 * 24 * 365, // 1年
-                },
-              },
-            },
-          ],
+          navigateFallbackDenylist: [/^\/api/, /^\/login/],
         },
         devOptions: { enabled: true },
       }),
@@ -100,9 +96,35 @@ export default defineConfig(({ mode }) => {
               '/api': {
                 target: 'https://rucq-dev.trapti.tech',
                 changeOrigin: true,
+                headers: {
+                  Cookie: env.STAGING_COOKIE,
+                },
               },
             }
-          : ({} as Record<string, string>),
+          : mode === 'production'
+            ? {
+                '/api': {
+                  target: 'https://rucq.trap.jp',
+                  changeOrigin: true,
+                  headers: {
+                    Cookie: env.PRODUCTION_COOKIE,
+                  },
+                },
+              }
+            : mode === 'development'
+              ? {
+                  '/api': {
+                    target: 'http://localhost:8080',
+                    changeOrigin: true,
+                    configure: (proxy) => {
+                      proxy.on('proxyReq', (proxyReq) => {
+                        const traqId = env.MY_TRAQ_ID
+                        if (traqId) proxyReq.setHeader('X-Forwarded-User', traqId)
+                      })
+                    },
+                  },
+                }
+              : ({} as Record<string, string>),
     },
   }
 })

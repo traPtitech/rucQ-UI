@@ -23,18 +23,14 @@ const isOperable = computed(() => {
 })
 
 const { data: events } = useQuery<CampEvent[], Error>({
-  queryKey: computed(() =>
-    displayCamp.value
-      ? qk.camps.events(displayCamp.value.id)
-      : ['camps', 'detail', 'events', 'disabled'],
-  ),
+  queryKey: computed(() => qk.camps.events(displayCamp.value.id)),
   enabled: computed(() => Boolean(displayCamp.value)),
   staleTime: 10 * 60 * 1000, // 10m
   queryFn: async () => {
     const { data, error } = await apiClient.GET('/api/camps/{campId}/events', {
-      params: { path: { campId: displayCamp.value!.id } },
+      params: { path: { campId: displayCamp.value.id } },
     })
-    if (error || !data) throw error ?? new Error('Failed to fetch events')
+    if (error) throw new Error(`イベント情報の取得に失敗しました: ${error.message}`)
     return data
   },
 })

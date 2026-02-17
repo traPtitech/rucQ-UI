@@ -25,7 +25,7 @@ watch(
     if (!timePick.value) return
     if (timePick.value === dummyTime) return
     const [h, m] = timePick.value.split(':').map(Number)
-    minute.value = h * 60 + m
+    minute.value = h! * 60 + m!
   },
 )
 
@@ -47,11 +47,11 @@ const getDialogProps = (props: Record<string, any>) => {
 }
 
 // バリデーションを行う関数
-const validate = async () => {
+const validate = () => {
   if (!timePick.value) return
   const temp = timePick.value
   timePick.value = dummyTime // 一時的に値を変化させてバリデーションを起動
-  nextTick(() => (timePick.value = temp))
+  void nextTick(() => (timePick.value = temp))
 }
 
 defineExpose({ validate })
