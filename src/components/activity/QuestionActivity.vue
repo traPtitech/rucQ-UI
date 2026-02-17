@@ -26,7 +26,9 @@ defineProps<{
           </div>
           <div v-else class="d-flex align-center ga-0">
             <v-icon size="16" icon="mdi-check" color="green" />
-            <span class="text-caption" :class="[$style.caption, $style.captionAnswered]">回答済み</span>
+            <span class="text-caption" :class="[$style.caption, $style.captionAnswered]"
+              >回答済み</span
+            >
           </div>
         </div>
 
@@ -50,7 +52,7 @@ defineProps<{
 
 <style module>
 .mainText {
-  font-size: 0.9rem; /* 15px */
+  font-size: 0.9rem;
 }
 
 .caption {

@@ -16,14 +16,10 @@ type Activity = components['schemas']['ActivityResponse']
 const campStore = useCampStore()
 const route = useRoute()
 
-const displayCamp = computed(() =>
-  campStore.getCampByDisplayId(route.params.campname as string),
-)
+const displayCamp = computed(() => campStore.getCampByDisplayId(route.params.campname as string))
 
 const { data: activities } = useQuery<Activity[], Error>({
-  queryKey: computed(() =>
-    qk.camps.activities(displayCamp.value.id),
-  ),
+  queryKey: computed(() => qk.camps.activities(displayCamp.value.id)),
   enabled: computed(() => Boolean(displayCamp.value.id)),
   staleTime: 0,
   queryFn: async () => {
@@ -35,7 +31,7 @@ const { data: activities } = useQuery<Activity[], Error>({
   },
 })
 
-const dailyLogs = computed(() => {
+const dailyActivities = computed(() => {
   if (!activities.value) return []
   const grouped = new Map<string, Activity[]>()
 
@@ -60,32 +56,48 @@ const dailyLogs = computed(() => {
 
 <template>
   <div class="pa-4" :class="$style.container">
-    <template v-for="day in dailyLogs" :key="day.date.toISOString()">
+    <template v-for="day in dailyActivities" :key="day.date.toISOString()">
       <h3 class="mb-2 mt-4" :class="$style.dayHeader">
         {{ getDayStringNoPad(day.date) }}
       </h3>
       <div class="d-flex flex-column ga-3">
         <template v-for="activity in day.activities" :key="`${activity.id}-${activity.time}`">
-          <activity-layout v-if="activity.type === 'room_created'" :type="activity.type" :date="new Date(activity.time)">
+          <activity-layout
+            v-if="activity.type === 'room_created'"
+            :type="activity.type"
+            :date="new Date(activity.time)"
+          >
             <template #default="{ color }">
               <span :class="`text-${color}`"> 部屋情報が公開されました </span>
             </template>
           </activity-layout>
-          <activity-layout v-if="activity.type === 'payment_created'" :type="activity.type" :date="new Date(activity.time)">
+          <activity-layout
+            v-if="activity.type === 'payment_created'"
+            :type="activity.type"
+            :date="new Date(activity.time)"
+          >
             <template #default="{ color }">
               <span :class="`text-${color}`">
                 {{ activity.amount.toLocaleString() }} 円の支払いが作成されました
               </span>
             </template>
           </activity-layout>
-          <activity-layout v-if="activity.type === 'payment_amount_changed'" :type="activity.type" :date="new Date(activity.time)">
+          <activity-layout
+            v-if="activity.type === 'payment_amount_changed'"
+            :type="activity.type"
+            :date="new Date(activity.time)"
+          >
             <template #default="{ color }">
               <span :class="`text-${color}`">
                 支払い金額が {{ activity.amount.toLocaleString() }} 円に変更されました
               </span>
             </template>
           </activity-layout>
-          <activity-layout v-if="activity.type === 'payment_paid_changed'" :type="activity.type" :date="new Date(activity.time)">
+          <activity-layout
+            v-if="activity.type === 'payment_paid_changed'"
+            :type="activity.type"
+            :date="new Date(activity.time)"
+          >
             <template #default="{ color }">
               <span :class="`text-${color}`">
                 合宿係が {{ activity.amount.toLocaleString() }} 円の振込を確認しました
