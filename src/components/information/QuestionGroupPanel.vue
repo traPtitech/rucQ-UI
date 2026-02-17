@@ -224,6 +224,12 @@ const saveAnswersMutation = useMutation({
     await queryClient.invalidateQueries({
       queryKey: qk.me.questionGroupAnswers(props.questionGroup.id),
     })
+    // 質問グループに含まれる全質問の回答データも無効化し、AnswersDialog に反映
+    for (const question of props.questionGroup.questions) {
+      await queryClient.invalidateQueries({
+        queryKey: qk.questions.answers(question.id),
+      })
+    }
     await quitEditMode()
   },
 })

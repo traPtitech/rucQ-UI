@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, reactive, ref, watchEffect } from 'vue'
 import { useDisplay } from 'vuetify'
 import { apiClient } from '@/api/apiClient'
+import { qk } from '@/api/queries/keys'
+import { useQueries } from '@tanstack/vue-query'
 import AnswersDialogContent from './AnswersDialogContent.vue'
 import type { components } from '@/api/schema'
 const { xs } = useDisplay()
 
 type QuestionGroup = components['schemas']['QuestionGroupResponse']
 type Question = components['schemas']['QuestionResponse']
+type AnswerResponse = components['schemas']['AnswerResponse']
 
 const props = defineProps<{
   questionGroup: QuestionGroup
@@ -15,14 +18,8 @@ const props = defineProps<{
 
 const openPanel = ref<number | undefined>(0)
 
-// 与えられた質問に対する回答を回答テキスト別 ID の配列として取得
-const getAnswers = async (question: Question) => {
-  const { data, error } = await apiClient.GET('/api/questions/{questionId}/answers', {
-    params: { path: { questionId: question.id } },
-  })
-  if (error) throw new Error(`質問の回答の取得に失敗しました: ${error.message}`)
-
-  // 回答テキスト別 回答者 ID の配列 の連想配列
+// 与えられた質問に対する回答を回答テキスト別 ID の配列として整形
+const mapAnswersByContent = (question: Question, data: AnswerResponse[]) => {
   const byAnswer: Record<string, string[]> = {}
 
   switch (question.type) {
@@ -73,10 +70,27 @@ const publicQuestions = computed(() => {
   return props.questionGroup.questions.filter((q) => q.isPublic)
 })
 
-onMounted(async () => {
-  for (const question of props.questionGroup.questions) {
-    if (!question.isPublic) continue
-    traQIDsByAnswer[question.id] = await getAnswers(question)
+// publicQuestions の順序に従って回答を取得
+const answerQueries = useQueries({
+  queries: computed(() =>
+    publicQuestions.value.map((question) => ({
+      queryKey: qk.questions.answers(question.id),
+      queryFn: async () => {
+        const { data, error } = await apiClient.GET('/api/questions/{questionId}/answers', {
+          params: { path: { questionId: question.id } },
+        })
+        if (error) throw new Error(`質問の回答の取得に失敗しました: ${error.message}`)
+        return data
+      },
+    })),
+  ),
+})
+
+watchEffect(() => {
+  for (const [index, question] of publicQuestions.value.entries()) {
+    const result = answerQueries.value[index]
+    if (!result?.data) continue
+    traQIDsByAnswer[question.id] = mapAnswersByContent(question, result.data)
   }
 })
 
