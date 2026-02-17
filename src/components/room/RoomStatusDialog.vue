@@ -62,6 +62,9 @@ const getStatusColor = (type: RoomStatus['type']) => {
   }
 }
 
+// 64 文字制限。超えると Bad Request
+const isWordTooLong = computed(() => Array.from(word.value).length > 64)
+
 const updateStatus = async () => {
   const { error } = await apiClient.PUT('/api/rooms/{roomId}/status', {
     params: { path: { roomId: props.room.id } },
@@ -98,7 +101,13 @@ const updateStatus = async () => {
         <v-radio label="休憩中" value="inactive" color="red" />
       </div>
     </v-radio-group>
-    <v-textarea v-model="word" rows="3" variant="outlined" label="ひとこと" hide-details />
+    <v-textarea
+      v-model="word"
+      rows="3"
+      variant="outlined"
+      label="ひとこと"
+      :rules="[(value) => !isWordTooLong || 'ひとことが長すぎます']"
+    />
     <v-card
       v-if="statusHistory && statusHistory.length > 0"
       class="mt-2 rounded font-weight-medium flex-shrink-0"
@@ -136,7 +145,15 @@ const updateStatus = async () => {
         </div>
       </div>
     </v-expand-transition>
-    <v-btn class="mt-2" variant="flat" color="primary" @click="updateStatus">更新</v-btn>
+    <v-btn
+      class="mt-2"
+      variant="flat"
+      color="primary"
+      :disabled="isWordTooLong"
+      @click="updateStatus"
+    >
+      更新
+    </v-btn>
   </v-card>
 </template>
 
