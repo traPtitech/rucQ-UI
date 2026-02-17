@@ -28,6 +28,8 @@
 
 開発環境から Staging API（<https://rucq-dev.trapti.tech/api>）または Production API（<https://rucq.trap.jp/api>）にアクセスします。traQ 認証を突破するために Cookie をコピーしてくる必要があります。
 
+**注意: 本番環境は実際のデータを使用しているため、閲覧以外の操作はなるべく行わないでください。データが実際に書き換わります。**
+
 1. [Staging](https://rucq-dev.trapti.tech/api/me) または [Production](https://rucq.trap.jp/api/me) にアクセスする
 2. DevTool のアプリケーションタブを開き、Cookie 一覧から `_forward_auth` の値を取得する
 3. 空のテキストファイル `.env.local` をルートに作成して以下の内容を書き込む
