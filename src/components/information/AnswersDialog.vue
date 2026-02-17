@@ -3,7 +3,7 @@ import { computed, reactive, ref, watchEffect } from 'vue'
 import { useDisplay } from 'vuetify'
 import { apiClient } from '@/api/apiClient'
 import { qk } from '@/api/queries/keys'
-import { useQuery } from '@tanstack/vue-query'
+import { useQueries } from '@tanstack/vue-query'
 import AnswersDialogContent from './AnswersDialogContent.vue'
 import type { components } from '@/api/schema'
 const { xs } = useDisplay()
@@ -70,9 +70,10 @@ const publicQuestions = computed(() => {
   return props.questionGroup.questions.filter((q) => q.isPublic)
 })
 
-watchEffect(() => {
-  for (const question of publicQuestions.value) {
-    const data = useQuery<AnswerResponse[], Error>({
+// publicQuestions の順序に従って回答を取得
+const answerQueries = useQueries({
+  queries: computed(() =>
+    publicQuestions.value.map((question) => ({
       queryKey: qk.questions.answers(question.id),
       queryFn: async () => {
         const { data, error } = await apiClient.GET('/api/questions/{questionId}/answers', {
@@ -81,9 +82,15 @@ watchEffect(() => {
         if (error) throw new Error(`質問の回答の取得に失敗しました: ${error.message}`)
         return data
       },
-    }).data.value
-    if (!data) return
-    traQIDsByAnswer[question.id] = mapAnswersByContent(question, data)
+    })),
+  ),
+})
+
+watchEffect(() => {
+  for (const [index, question] of publicQuestions.value.entries()) {
+    const result = answerQueries.value[index]
+    if (!result?.data) continue
+    traQIDsByAnswer[question.id] = mapAnswersByContent(question, result.data)
   }
 })
 
