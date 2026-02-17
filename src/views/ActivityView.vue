@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ActivityLayout from '@/components/activity/ActivityLayout.vue'
 import RollCallActivity from '@/components/activity/RollCallActivity.vue'
+import QuestionActivity from '@/components/activity/QuestionActivity.vue'
 import { apiClient } from '@/api/apiClient'
 import { qk } from '@/api/queries/keys'
 import type { components } from '@/api/schema'
@@ -92,11 +93,7 @@ const dailyLogs = computed(() => {
             </template>
           </activity-layout>
           <roll-call-activity v-if="activity.type === 'roll_call_created'" :activity="activity" />
-          <activity-layout v-if="activity.type === 'question_created'" :type="activity.type" :date="new Date(activity.time)">
-            <template #default="{ color }">
-              <span :class="`text-${color}`">回答項目「{{ activity.name ?? '' }}」</span>
-            </template>
-          </activity-layout>
+          <question-activity v-if="activity.type === 'question_created'" :activity="activity" />
         </template>
       </div>
     </template>

@@ -14,6 +14,10 @@ export const getDayString = (date: Readonly<Date>) =>
 export const getDayStringNoPad = (date: Readonly<Date>) =>
   (date.getMonth() + 1).toString() + '/' + date.getDate().toString().padStart(2, '0')
 
+// 月/日をゼロ埋めせずに表示 (例: 8/3)
+export const getMonthDayStringNoPad = (date: Readonly<Date>) =>
+  (date.getMonth() + 1).toString() + '/' + date.getDate().toString()
+
 export const getFullDayString = (date: Readonly<Date>) =>
   date.getFullYear() + '/' + getDayString(date)
 
