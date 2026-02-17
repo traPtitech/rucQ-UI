@@ -40,7 +40,7 @@ const campName = computed(() => displayCamp.value?.name)
   <v-main>
     <div
       v-if="isArchived && !xs"
-      :class="[$style.banner, $style.bannerDesktop]"
+      :class="[$style.banner]"
       class="bg-primaryLight"
     >
       <v-icon>mdi-archive</v-icon>
@@ -52,6 +52,10 @@ const campName = computed(() => displayCamp.value?.name)
 
 <style module>
 .banner {
+  position: fixed;
+  top: 0;
+  left: 270px;
+  right: 0;
   height: 50px;
   display: flex;
   align-items: center;
@@ -63,17 +67,9 @@ const campName = computed(() => displayCamp.value?.name)
   z-index: 1;
 }
 
-.bannerDesktop {
-  position: fixed;
-  top: 0;
-  left: 270px;
-  right: 0;
-}
 
-.bannerMobile {
-  position: fixed;
-  top: 56px; /* v-app-barの高さ分下げる */
-  left: 0;
-  right: 0;
-}
+
+
+
+
 </style>
