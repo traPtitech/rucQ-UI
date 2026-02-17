@@ -74,7 +74,7 @@ const dailyActivities = computed(() => {
       v-else-if="activities && activities.length === 0"
       class="d-flex flex-column align-center justify-center w-100 h-100"
     >
-      <v-icon size="64" class="mb-2" icon="mdi-timeline-clock-outline" />
+      <v-icon size="64" class="mb-2" icon="mdi-email-outline" />
       <h3 class="font-weight-bold">{{ displayCamp.name }}のアクティビティはまだありません</h3>
     </div>
 
