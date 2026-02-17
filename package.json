@@ -6,9 +6,12 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "dev:staging": "vite --host 0.0.0.0 --mode staging",
+    "dev:prod": "vite --host 0.0.0.0 --mode production",
     "dev:msw": "vite --host 0.0.0.0 --mode msw",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
+    "preview:staging": "vite preview --mode staging",
+    "preview:prod": "vite preview --mode production",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",

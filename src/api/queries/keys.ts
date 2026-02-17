@@ -25,8 +25,14 @@ const iconKeys = {
   user: (id: string) => ['icons', 'user', id] as const,
 }
 
+const roomKeys = {
+  all: ['rooms'] as const,
+  statusLogs: (roomId: number) => ['rooms', roomId, 'status-logs'] as const,
+}
+
 export const qk = {
   me: meKeys,
   camps: campKeys,
   icons: iconKeys,
+  rooms: roomKeys,
 }
