@@ -112,19 +112,19 @@ export default defineConfig(({ mode }) => {
                 },
               }
             : mode === 'development'
-            ? {
-                '/api': {
-                  target: 'http://localhost:8080',
-                  changeOrigin: true,
-                  configure: (proxy) => {
-                    proxy.on('proxyReq', (proxyReq) => {
-                      const traqId = env.MY_TRAQ_ID
-                      if (traqId) proxyReq.setHeader('X-Forwarded-User', traqId)
-                    })
+              ? {
+                  '/api': {
+                    target: 'http://localhost:8080',
+                    changeOrigin: true,
+                    configure: (proxy) => {
+                      proxy.on('proxyReq', (proxyReq) => {
+                        const traqId = env.MY_TRAQ_ID
+                        if (traqId) proxyReq.setHeader('X-Forwarded-User', traqId)
+                      })
+                    },
                   },
-                },
-              }
-            : ({} as Record<string, string>),
+                }
+              : ({} as Record<string, string>),
     },
   }
 })
