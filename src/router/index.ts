@@ -44,7 +44,7 @@ const router = createRouter({
         },
         {
           path: 'activities',
-          name: 'ログ',
+          name: 'アクティビティ',
           component: () => import('@/views/ActivityView.vue'),
         },
       ],
