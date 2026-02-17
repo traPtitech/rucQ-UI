@@ -44,7 +44,7 @@ const router = createRouter({
         },
         {
           path: 'log',
-          name: '通知',
+          name: 'ログ',
           component: () => import('@/views/LogView.vue'),
         },
       ],
