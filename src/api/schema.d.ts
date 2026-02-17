@@ -632,6 +632,62 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/rooms/{roomId}/status': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** 部屋のステータスを設定・更新 */
+    put: operations['putRoomStatus']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/rooms/{roomId}/status-logs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * 部屋のステータス履歴を取得
+     * @description 現在のステータスを含む、これまでのステータス変更履歴を取得します。
+     *     未設定の場合は空配列が返されます。順番は`updatedAt`の降順です。
+     *
+     */
+    get: operations['getRoomStatusLogs']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/camps/{campId}/activities': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** アクティビティの一覧を取得 */
+    get: operations['getActivities']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/camps/{campId}/images': {
     parameters: {
       query?: never
@@ -1103,10 +1159,24 @@ export interface components {
       roomGroupId: number
       memberIds: string[]
     }
+    RoomStatus: {
+      /** @enum {string|null} */
+      type: 'active' | 'inactive' | null
+      topic: string
+    }
+    RoomStatusLog: {
+      /** @enum {string|null} */
+      type: 'active' | 'inactive' | null
+      topic: string
+      operatorId: string
+      /** Format: date-time */
+      updatedAt: string
+    }
     RoomResponse: {
       id: number
       name: string
       members: components['schemas']['UserResponse'][]
+      status: components['schemas']['RoomStatus']
     }
     ImageResponse: {
       id: number
@@ -1154,6 +1224,74 @@ export interface components {
       | components['schemas']['RollCallReactionCreatedEvent']
       | components['schemas']['RollCallReactionUpdatedEvent']
       | components['schemas']['RollCallReactionDeletedEvent']
+    ActivityResponse:
+      | components['schemas']['RoomCreatedActivity']
+      | components['schemas']['PaymentCreatedActivity']
+      | components['schemas']['PaymentAmountChangedActivity']
+      | components['schemas']['PaymentPaidChangedActivity']
+      | components['schemas']['RollCallCreatedActivity']
+      | components['schemas']['QuestionCreatedActivity']
+    /** @description ユーザーが所属する部屋が作成されたアクティビティ */
+    RoomCreatedActivity: {
+      id: number
+      /** @enum {string} */
+      type: 'room_created'
+      /** Format: date-time */
+      time: string
+    }
+    /** @description 支払い情報が作成されたアクティビティ */
+    PaymentCreatedActivity: {
+      id: number
+      /** @enum {string} */
+      type: 'payment_created'
+      /** Format: date-time */
+      time: string
+      amount: number
+    }
+    /** @description ユーザーが支払うべき金額が変更されたアクティビティ */
+    PaymentAmountChangedActivity: {
+      id: number
+      /** @enum {string} */
+      type: 'payment_amount_changed'
+      /** Format: date-time */
+      time: string
+      amount: number
+    }
+    /** @description 合宿係がユーザーの支払い済み金額を変更したアクティビティ */
+    PaymentPaidChangedActivity: {
+      id: number
+      /** @enum {string} */
+      type: 'payment_paid_changed'
+      /** Format: date-time */
+      time: string
+      amount: number
+    }
+    /** @description 点呼が作成されたアクティビティ */
+    RollCallCreatedActivity: {
+      id: number
+      /** @enum {string} */
+      type: 'roll_call_created'
+      /** Format: date-time */
+      time: string
+      rollCallId: number
+      name: string
+      isSubject: boolean
+      answered: boolean
+    }
+    /** @description 質問グループが作成されたアクティビティ */
+    QuestionCreatedActivity: {
+      id: number
+      /** @enum {string} */
+      type: 'question_created'
+      /** Format: date-time */
+      time: string
+      questionGroupId: number
+      name: string
+      /** Format: date */
+      due: string
+      /** @description 必須だがまだ回答していない質問がある場合true */
+      needsResponse: boolean
+    }
   }
   responses: {
     /** @description Accepted */
@@ -2515,6 +2653,84 @@ export interface operations {
       400: components['responses']['BadRequest']
       403: components['responses']['Forbidden']
       404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  putRoomStatus: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 部屋ID */
+        roomId: components['parameters']['RoomId']
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RoomStatus']
+      }
+    }
+    responses: {
+      204: components['responses']['NoContent']
+      400: components['responses']['BadRequest']
+      403: components['responses']['Forbidden']
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  getRoomStatusLogs: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description 部屋ID */
+        roomId: components['parameters']['RoomId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RoomStatusLog'][]
+        }
+      }
+      404: components['responses']['NotFound']
+      500: components['responses']['InternalServerError']
+    }
+  }
+  getActivities: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description ログインしているユーザーのtraQ ID（NeoShowcaseが自動で付与） */
+        'X-Forwarded-User'?: components['parameters']['X-Forwarded-User']
+      }
+      path: {
+        /** @description 合宿ID */
+        campId: components['parameters']['CampId']
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ActivityResponse'][]
+        }
+      }
       500: components['responses']['InternalServerError']
     }
   }
