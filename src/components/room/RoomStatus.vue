@@ -1,19 +1,23 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { components } from '@/api/schema'
 import { apiClient } from '@/api/apiClient'
 import UserIcon from '@/components/generic/UserIcon.vue'
+import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import { qk } from '@/api/queries/keys'
+import { getDisplayDate } from '@/utils/date'
 
 type Room = components['schemas']['RoomResponse']
 type RoomStatus = components['schemas']['RoomStatus']
+type RoomStatusLog = components['schemas']['RoomStatusLog']
 
 const props = defineProps<{
   room: Room
+  campId: number
 }>()
 
 const emit = defineEmits<{
   close: []
-  updated: []
 }>()
 
 const status = ref<RoomStatus['type']>(null)
@@ -30,6 +34,34 @@ watch(
 
 const showHistory = ref(false)
 
+const queryClient = useQueryClient()
+
+const { data: statusHistory } = useQuery<RoomStatusLog[], Error>({
+  queryKey: computed(() => qk.rooms.statusLogs(props.room.id)),
+  enabled: computed(() => Boolean(props.room.id)),
+  staleTime: 0,
+  queryFn: async () => {
+    const { data, error } = await apiClient.GET('/api/rooms/{roomId}/status-logs', {
+      params: { path: { roomId: props.room.id } },
+    })
+    if (error) throw new Error(`部屋ステータス履歴の取得に失敗しました: ${error.message}`)
+    return data
+  },
+})
+
+const formatStatusTime = (updatedAt: string) => getDisplayDate(new Date(updatedAt))
+
+const getStatusColor = (type: RoomStatus['type']) => {
+  switch (type) {
+    case 'active':
+      return 'green'
+    case 'inactive':
+      return 'red'
+    default:
+      return 'grey'
+  }
+}
+
 const updateStatus = async () => {
   const { error } = await apiClient.PUT('/api/rooms/{roomId}/status', {
     params: { path: { roomId: props.room.id } },
@@ -40,7 +72,8 @@ const updateStatus = async () => {
   })
   if (error) throw new Error(`部屋ステータスの更新に失敗しました: ${error.message}`)
 
-  emit('updated')
+  await queryClient.invalidateQueries({ queryKey: qk.rooms.statusLogs(props.room.id) })
+  await queryClient.invalidateQueries({ queryKey: qk.camps.roomGroups(props.campId) })
   emit('close') // 更新後すぐダイアログを閉じる
 }
 </script>
@@ -67,6 +100,7 @@ const updateStatus = async () => {
     </v-radio-group>
     <v-textarea v-model="word" rows="3" variant="outlined" label="ひとこと" hide-details />
     <v-card
+      v-if="statusHistory && statusHistory.length > 0"
       class="mt-2 rounded font-weight-medium flex-shrink-0"
       variant="text"
       role="button"
@@ -86,16 +120,16 @@ const updateStatus = async () => {
         class="rounded overflow-hidden flex-column bg-background"
         style="display: flex"
       >
-        <!-- ↑ あえて。 d-dlex を用いると v-show を上書きしてしまう -->
-        <div class="pa-3 overflow-y-auto h-100">
-          <div v-for="i in [1, 2, 3, 4, 5, 6, 7, 8, 9]" :key="i" class="mb-2">
+        <!-- d-flex を用いると v-show を上書きしてしまう -->
+        <div class="pa-3 overflow-y-auto h-100 d-flex flex-column ga-2">
+          <div v-for="log in statusHistory" :key="log.updatedAt">
             <div class="font-weight-bold text-caption text-grey">
-              <span :class="$style.time">9/10 15:00</span>
+              {{ formatStatusTime(log.updatedAt) }}
             </div>
-            <div :class="$style.status">
-              <div :class="[$style.statusMark, `bg-red`]"></div>
+            <div :class="$style.status" class="d-flex">
+              <div :class="[$style.statusMark, `bg-${getStatusColor(log.type)}`]"></div>
               <span class="text-body-2 font-weight-medium" :class="$style.statusText">
-                {{ room.status.topic || '未設定' }}
+                {{ log.topic || '未設定' }}
               </span>
             </div>
           </div>
@@ -114,22 +148,23 @@ const updateStatus = async () => {
   letter-spacing: 3px;
 }
 
-.time {
-  font-family: 'Roboto Variable', sans-serif;
-}
-
 .status {
-  margin-top: -4px;
+  margin-top: 0px;
 }
 
 .statusMark {
-  display: inline-block;
+  flex-shrink: 0;
   width: 18px;
   height: 18px;
   border-radius: 50%;
   margin-right: 4px;
   border: 2px solid white;
   vertical-align: middle;
-  margin-top: -1px;
+  margin-top: 2px;
+}
+
+.statusText {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 </style>

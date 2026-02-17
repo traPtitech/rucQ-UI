@@ -4,8 +4,6 @@ import RoomStatus from '@/components/room/RoomStatus.vue'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { useUserStore } from '@/store'
 import { computed } from 'vue'
-import { useQueryClient } from '@tanstack/vue-query'
-import { qk } from '@/api/queries/keys'
 
 type Room = components['schemas']['RoomResponse']
 type RoomStatus = components['schemas']['RoomStatus']
@@ -16,7 +14,6 @@ const props = defineProps<{
 }>()
 
 const userStore = useUserStore()
-const queryClient = useQueryClient()
 
 const isMyRoom = (room: Room) => {
   return room.members.some((member) => member.id === userStore.user.id)
@@ -34,10 +31,6 @@ const statusColor = computed(() => {
       return 'grey'
   }
 })
-
-const handleUpdated = async () => {
-  await queryClient.invalidateQueries({ queryKey: qk.camps.roomGroups(props.campId) })
-}
 </script>
 
 <template>
@@ -91,7 +84,7 @@ const handleUpdated = async () => {
       </v-card>
     </template>
     <template #default="{ isActive }">
-      <room-status :room="room" @updated="handleUpdated" @close="isActive.value = false" />
+      <room-status :room="room" :camp-id="campId" @close="isActive.value = false" />
     </template>
   </v-dialog>
 </template>
