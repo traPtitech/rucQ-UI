@@ -27,6 +27,7 @@ const {
     if (error) throw new Error(`部屋割情報の取得に失敗しました: ${error.message}`)
     return data
   },
+  staleTime: 0, // ステータスの変更を即座に反映
 })
 </script>
 
@@ -61,7 +62,12 @@ const {
           <span :class="$style.floorNameText">{{ group.name }}</span>
         </div>
         <div :class="$style.roomGrid">
-          <room-card v-for="room in group.rooms" :key="room.id" :room="room" />
+          <room-card
+            v-for="room in group.rooms"
+            :key="room.id"
+            :room="room"
+            :camp-id="displayCamp.id"
+          />
         </div>
       </div>
     </div>

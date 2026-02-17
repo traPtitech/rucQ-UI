@@ -4,14 +4,19 @@ import RoomStatus from '@/components/room/RoomStatus.vue'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { useUserStore } from '@/store'
 import { computed } from 'vue'
+import { useQueryClient } from '@tanstack/vue-query'
+import { qk } from '@/api/queries/keys'
 
 type Room = components['schemas']['RoomResponse']
+type RoomStatus = components['schemas']['RoomStatus']
 
 const props = defineProps<{
   room: Room
+  campId: number
 }>()
 
 const userStore = useUserStore()
+const queryClient = useQueryClient()
 
 const isMyRoom = (room: Room) => {
   return room.members.some((member) => member.id === userStore.user.id)
@@ -19,6 +24,20 @@ const isMyRoom = (room: Room) => {
 
 const lineColor = computed(() => (isMyRoom(props.room) ? 'primaryLight' : 'primary'))
 const lineColorText = computed(() => `rgb(var(--v-theme-${lineColor.value}))`)
+const statusColor = computed(() => {
+  switch (props.room.status.type) {
+    case 'active':
+      return 'green'
+    case 'inactive':
+      return 'red'
+    default:
+      return 'gray'
+  }
+})
+
+const handleUpdated = async () => {
+  await queryClient.invalidateQueries({ queryKey: qk.camps.roomGroups(props.campId) })
+}
 </script>
 
 <template>
@@ -63,16 +82,16 @@ const lineColorText = computed(() => `rgb(var(--v-theme-${lineColor.value}))`)
             />
           </div>
           <div :class="$style.status">
-            <div :class="[$style.statusMark, 'bg-red']"></div>
+            <div :class="[$style.statusMark, `bg-${statusColor}`]"></div>
             <span class="text-caption font-weight-medium" :class="$style.statusText">
-              すやすやすやすやすやすやすやすやすやすや
+              {{ room.status.topic }}
             </span>
           </div>
         </div>
       </v-card>
     </template>
     <template #default="{ isActive }">
-      <room-status :room="room" @close="isActive.value = false" />
+      <room-status :room="room" @updated="handleUpdated" @close="isActive.value = false" />
     </template>
   </v-dialog>
 </template>
@@ -85,7 +104,7 @@ const lineColorText = computed(() => `rgb(var(--v-theme-${lineColor.value}))`)
 }
 
 .roomName {
-  font-family: 'Reddit Sans Variable';
+  font-family: 'Reddit Sans Variable' 'M PLUS 2 Variable' sans-serif;
   font-size: 20px;
   font-weight: 800;
   letter-spacing: 0.1em;
