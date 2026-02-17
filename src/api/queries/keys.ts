@@ -14,6 +14,7 @@ const campKeys = {
   detail: (id: number) => ['camps', 'detail', id] as const,
 
   participants: (id: number) => ['camps', 'detail', id, 'participants'] as const,
+  activities: (id: number) => ['camps', 'detail', id, 'activities'] as const,
   events: (id: number) => ['camps', 'detail', id, 'events'] as const,
   roomGroups: (id: number) => ['camps', 'detail', id, 'room-groups'] as const,
   questionGroups: (id: number) => ['camps', 'detail', id, 'question-groups'] as const,

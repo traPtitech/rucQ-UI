@@ -1,69 +1,57 @@
 <script setup lang="ts">
 import ActivityLayout from '@/components/activity/ActivityLayout.vue'
 import RollCallActivity from '@/components/activity/RollCallActivity.vue'
+import { apiClient } from '@/api/apiClient'
+import { qk } from '@/api/queries/keys'
+import type { components } from '@/api/schema'
 import { getDayStringNoPad } from '@/utils/date'
 import { computed } from 'vue'
-const dummyLogs = [
-  {
-    id: 1,
-    type: 'room-reveal' as const,
-    time: new Date('2024-07-01T10:00:00'),
+import { useQuery } from '@tanstack/vue-query'
+import { useCampStore } from '@/store'
+import { useRoute } from 'vue-router'
+
+type Activity = components['schemas']['ActivityResponse']
+
+const campStore = useCampStore()
+const route = useRoute()
+
+const displayCamp = computed(() =>
+  campStore.getCampByDisplayId(route.params.campname as string),
+)
+
+const { data: activities } = useQuery<Activity[], Error>({
+  queryKey: computed(() =>
+    qk.camps.activities(displayCamp.value.id),
+  ),
+  enabled: computed(() => Boolean(displayCamp.value.id)),
+  staleTime: 0,
+  queryFn: async () => {
+    const { data, error } = await apiClient.GET('/api/camps/{campId}/activities', {
+      params: { path: { campId: displayCamp.value.id } },
+    })
+    if (error) throw new Error(`アクティビティの取得に失敗しました: ${error.message}`)
+    return data
   },
-  {
-    id: 2,
-    type: 'transfer-confirm' as const,
-    time: new Date('2024-07-01T12:30:00'),
-    amount: 15000,
-  },
-  {
-    id: 3,
-    type: 'rollcall' as const,
-    time: new Date('2024-07-02T14:00:00'),
-    rollcall_id: 2,
-    name: '大学出発時点呼',
-    is_subject: true,
-    answered: true,
-  },
-  {
-    id: 4,
-    type: 'rollcall' as const,
-    time: new Date('2024-07-02T14:00:00'),
-    rollcall_id: 3,
-    name: '宿到着時点呼',
-    is_subject: true,
-    answered: false,
-  },
-  {
-    id: 5,
-    type: 'rollcall' as const,
-    time: new Date('2024-07-02T14:00:00'),
-    rollcall_id: 4,
-    name: 'バスを使わなかった人の点呼',
-    is_subject: false,
-    answered: false,
-  },
-  {
-    id: 6,
-    type: 'question' as const,
-    time: new Date('2024-07-01T15:30:00'),
-  },
-]
+})
 
 const dailyLogs = computed(() => {
-  const grouped = new Map<string, typeof dummyLogs>()
+  if (!activities.value) return []
+  const grouped = new Map<string, Activity[]>()
 
-  for (const log of dummyLogs) {
-    const dateKey = log.time.toDateString()
+  for (const activity of activities.value) {
+    const dateKey = new Date(activity.time).toDateString()
     if (!grouped.has(dateKey)) {
       grouped.set(dateKey, [])
     }
-    grouped.get(dateKey)!.push(log)
+    grouped.get(dateKey)!.push(activity)
   }
 
   return Array.from(grouped.entries())
-    .map(([dateKey, logs]) => ({
+    .map(([dateKey, activities]) => ({
       date: new Date(dateKey),
-      logs: logs.sort((a, b) => a.time.getTime() - b.time.getTime()),
+      activities: activities.sort(
+        (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
+      ),
     }))
     .sort((a, b) => a.date.getTime() - b.date.getTime())
 })
@@ -76,23 +64,37 @@ const dailyLogs = computed(() => {
         {{ getDayStringNoPad(day.date) }}
       </h3>
       <div class="d-flex flex-column ga-3">
-        <template v-for="log in day.logs" :key="log.time.toISOString()">
-          <activity-layout v-if="log.type === 'room-reveal'" :type="log.type" :date="log.time">
+        <template v-for="activity in day.activities" :key="`${activity.id}-${activity.time}`">
+          <activity-layout v-if="activity.type === 'room_created'" :type="activity.type" :date="new Date(activity.time)">
             <template #default="{ color }">
               <span :class="`text-${color}`"> 部屋情報が公開されました </span>
             </template>
           </activity-layout>
-          <activity-layout v-if="log.type === 'transfer-confirm'" :type="log.type" :date="log.time">
+          <activity-layout v-if="activity.type === 'payment_created'" :type="activity.type" :date="new Date(activity.time)">
             <template #default="{ color }">
               <span :class="`text-${color}`">
-                合宿係が {{ log.amount.toLocaleString() }} 円の振込を確認しました
+                {{ activity.amount.toLocaleString() }} 円の支払いが作成されました
               </span>
             </template>
           </activity-layout>
-          <roll-call-activity v-if="log.type === 'rollcall'" :log="log" />
-          <activity-layout v-if="log.type === 'question'" :type="log.type" :date="log.time">
+          <activity-layout v-if="activity.type === 'payment_amount_changed'" :type="activity.type" :date="new Date(activity.time)">
             <template #default="{ color }">
-              <span :class="`text-${color}`">回答項目「バス」</span>
+              <span :class="`text-${color}`">
+                支払い金額が {{ activity.amount.toLocaleString() }} 円に変更されました
+              </span>
+            </template>
+          </activity-layout>
+          <activity-layout v-if="activity.type === 'payment_paid_changed'" :type="activity.type" :date="new Date(activity.time)">
+            <template #default="{ color }">
+              <span :class="`text-${color}`">
+                合宿係が {{ activity.amount.toLocaleString() }} 円の振込を確認しました
+              </span>
+            </template>
+          </activity-layout>
+          <roll-call-activity v-if="activity.type === 'roll_call_created'" :activity="activity" />
+          <activity-layout v-if="activity.type === 'question_created'" :type="activity.type" :date="new Date(activity.time)">
+            <template #default="{ color }">
+              <span :class="`text-${color}`">回答項目「{{ activity.name ?? '' }}」</span>
             </template>
           </activity-layout>
         </template>

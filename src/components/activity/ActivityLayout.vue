@@ -4,10 +4,12 @@ import { getTimeStringNoPad } from '@/utils/date'
 
 // prettier-ignore
 const logTypes = {
-  'transfer-confirm': { color: 'green', pale: undefined, icon: 'mdi-currency-jpy' },
-  'room-reveal'     : { color: 'pink', pale: undefined, icon: 'mdi-view-grid' },
-  'rollcall'        : { color: 'primary', pale: 'primaryLight', icon: 'mdi-hand-back-left-outline' },
-  'question'        : { color: 'blue', pale: 'blue-lighten-4', icon: 'mdi-format-list-checks' },
+  'room_created'            : { color: 'pink', pale: undefined, icon: 'mdi-view-grid' },
+  'payment_created'         : { color: 'green', pale: undefined, icon: 'mdi-currency-jpy' },
+  'payment_amount_changed'  : { color: 'green', pale: undefined, icon: 'mdi-currency-jpy' },
+  'payment_paid_changed'    : { color: 'green', pale: undefined, icon: 'mdi-currency-jpy' },
+  'roll_call_created'       : { color: 'primary', pale: 'primaryLight', icon: 'mdi-hand-back-left-outline' },
+  'question_created'        : { color: 'blue', pale: 'blue-lighten-4', icon: 'mdi-format-list-checks' },
 } as const
 
 const props = withDefaults(
