@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { getTimeStringNoPad } from '@/utils/date'
 
 // prettier-ignore
-const logTypes = {
+const activityTypes = {
   'room_created'            : { color: 'pink', pale: undefined, icon: 'mdi-view-grid' },
   'payment_created'         : { color: 'green', pale: undefined, icon: 'mdi-currency-jpy' },
   'payment_amount_changed'  : { color: 'green', pale: undefined, icon: 'mdi-currency-jpy' },
@@ -14,7 +14,7 @@ const logTypes = {
 
 const props = withDefaults(
   defineProps<{
-    type: keyof typeof logTypes
+    type: keyof typeof activityTypes
     active?: boolean
     date: Date
   }>(),
@@ -22,16 +22,16 @@ const props = withDefaults(
 )
 
 const color = computed(() => {
-  const pale = logTypes[props.type].pale
-  if (!pale) return logTypes[props.type].color
-  return props.active ? logTypes[props.type].color : pale
+  const pale = activityTypes[props.type].pale
+  if (!pale) return activityTypes[props.type].color
+  return props.active ? activityTypes[props.type].color : pale
 })
 
 const surface = computed(() => {
-  return props.active ? 'white' : logTypes[props.type].color
+  return props.active ? 'white' : activityTypes[props.type].color
 })
 
-const icon = computed(() => logTypes[props.type].icon)
+const icon = computed(() => activityTypes[props.type].icon)
 </script>
 
 <template>
@@ -47,7 +47,7 @@ const icon = computed(() => logTypes[props.type].icon)
       <div
         :class="[`px-3 py-1 flex-grow-1 d-flex align-center font-weight-medium`, $style.content]"
       >
-        <slot :color="logTypes[props.type].color" />
+        <slot :color="activityTypes[props.type].color" />
       </div>
     </div>
   </v-card>
