@@ -50,4 +50,22 @@ export const activities: ActivityResponse[] = [
     due: '2024-07-01',
     needsResponse: false,
   },
+  {
+    id: 7,
+    type: 'question_created',
+    time: '2024-07-01T15:31:00+09:00',
+    questionGroupId: 2,
+    name: 'スキー',
+    due: '2024-07-30',
+    needsResponse: false,
+  },
+  {
+    id: 8,
+    type: 'question_created',
+    time: '2024-07-01T15:32:00+09:00',
+    questionGroupId: 3,
+    name: '2日目に行きたい場所',
+    due: '2024-08-03',
+    needsResponse: true,
+  },
 ]
