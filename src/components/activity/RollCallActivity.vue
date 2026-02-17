@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import LogBox from '@/components/log/LogLayout.vue'
+import ActivityLayout from '@/components/activity/ActivityLayout.vue'
 import { useRoute } from 'vue-router'
 const route = useRoute()
 
@@ -17,7 +17,7 @@ defineProps<{
 </script>
 
 <template>
-  <log-box :type="log.type" :date="log.time" :active="log.is_subject">
+  <activity-layout :type="log.type" :date="log.time" :active="log.is_subject">
     <template #default="{ color }">
       <div class="w-100 h-100 d-flex justify-space-between ga-2 align-center">
         <div>
@@ -44,7 +44,7 @@ defineProps<{
         </v-btn>
       </div>
     </template>
-  </log-box>
+  </activity-layout>
 </template>
 
 <style module>

@@ -37,8 +37,8 @@ const navItems = [
     icon: 'mdi-view-grid-outline',
   },
   {
-    path: 'log',
-    title: 'ログ',
+    path: 'activities',
+    title: 'アクティビティ',
     iconActive: 'mdi-email',
     icon: 'mdi-email-outline',
   },

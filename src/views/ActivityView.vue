@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import LogBox from '@/components/log/LogLayout.vue'
-import RollCallLog from '@/components/log/RollCallLog.vue'
+import ActivityLayout from '@/components/activity/ActivityLayout.vue'
+import RollCallActivity from '@/components/activity/RollCallActivity.vue'
 import { getDayStringNoPad } from '@/utils/date'
 import { computed } from 'vue'
 const dummyLogs = [
@@ -77,24 +77,24 @@ const dailyLogs = computed(() => {
       </h3>
       <div class="d-flex flex-column ga-3">
         <template v-for="log in day.logs" :key="log.time.toISOString()">
-          <log-box v-if="log.type === 'room-reveal'" :type="log.type" :date="log.time">
+          <activity-layout v-if="log.type === 'room-reveal'" :type="log.type" :date="log.time">
             <template #default="{ color }">
               <span :class="`text-${color}`"> 部屋情報が公開されました </span>
             </template>
-          </log-box>
-          <log-box v-if="log.type === 'transfer-confirm'" :type="log.type" :date="log.time">
+          </activity-layout>
+          <activity-layout v-if="log.type === 'transfer-confirm'" :type="log.type" :date="log.time">
             <template #default="{ color }">
               <span :class="`text-${color}`">
                 合宿係が {{ log.amount.toLocaleString() }} 円の振込を確認しました
               </span>
             </template>
-          </log-box>
-          <roll-call-log v-if="log.type === 'rollcall'" :log="log" />
-          <log-box v-if="log.type === 'question'" :type="log.type" :date="log.time">
+          </activity-layout>
+          <roll-call-activity v-if="log.type === 'rollcall'" :log="log" />
+          <activity-layout v-if="log.type === 'question'" :type="log.type" :date="log.time">
             <template #default="{ color }">
               <span :class="`text-${color}`">回答項目「バス」</span>
             </template>
-          </log-box>
+          </activity-layout>
         </template>
       </div>
     </template>

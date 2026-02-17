@@ -43,9 +43,9 @@ const router = createRouter({
           component: () => import('@/views/RoomInfoView.vue'),
         },
         {
-          path: 'log',
+          path: 'activities',
           name: 'ログ',
-          component: () => import('@/views/LogView.vue'),
+          component: () => import('@/views/ActivityView.vue'),
         },
       ],
     },
