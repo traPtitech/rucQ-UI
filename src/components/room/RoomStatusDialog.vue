@@ -65,6 +65,12 @@ const getStatusColor = (type: RoomStatus['type']) => {
 // 64 文字制限。超えると Bad Request
 const isWordTooLong = computed(() => Array.from(word.value).length > 64)
 
+const isDisabled = computed(() => {
+  const statusChanged = status.value !== props.room.status.type
+  const topicChanged = word.value !== props.room.status.topic
+  return isWordTooLong.value || (!statusChanged && !topicChanged)
+})
+
 const updateStatus = async () => {
   const { error } = await apiClient.PUT('/api/rooms/{roomId}/status', {
     params: { path: { roomId: props.room.id } },
@@ -145,13 +151,7 @@ const updateStatus = async () => {
         </div>
       </div>
     </v-expand-transition>
-    <v-btn
-      class="mt-2"
-      variant="flat"
-      color="primary"
-      :disabled="isWordTooLong"
-      @click="updateStatus"
-    >
+    <v-btn class="mt-2" variant="flat" color="primary" :disabled="isDisabled" @click="updateStatus">
       更新
     </v-btn>
   </v-card>
