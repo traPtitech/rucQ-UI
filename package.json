@@ -18,7 +18,7 @@
     "format": "prettier --write src/",
     "generate:api": "npx openapi-typescript https://raw.githubusercontent.com/traPtitech/rucQ/main/openapi.yaml -o src/api/schema.d.ts && pnpm format"
   },
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@11.5.0",
   "engines": {
     "node": "^22.11.0"
   },

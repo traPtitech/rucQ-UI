@@ -1,0 +1,19 @@
+# サプライチェーン攻撃対策
+# https://pnpm.io/ja/settings
+
+# リリースから 7 日以内のパッケージのインストールを禁止
+minimumReleaseAge: 10080
+
+# 厳格に禁止
+minimumReleaseAgeStrict: true
+
+# npm レジストリ以外のサブ依存関係のインストールを禁止
+blockExoticSubdeps: true
+
+# インストール時にスクリプト実行を伴うパッケージ
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: false
+  msw: false
+  sharp: false
+  vue-demi: false
