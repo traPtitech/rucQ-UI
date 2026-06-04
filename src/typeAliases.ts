@@ -7,6 +7,7 @@ export type CampEvent = components['schemas']['EventResponse']
 export type MomentEvent = components['schemas']['MomentEventResponse']
 export type DurationEvent = components['schemas']['DurationEventResponse']
 export type OfficialEvent = components['schemas']['OfficialEventResponse']
+export type DurationEventRequestBody = components['schemas']['DurationEventRequest']
 
 export type QuestionGroup = components['schemas']['QuestionGroupResponse']
 export type Question = components['schemas']['QuestionResponse']
@@ -18,3 +19,4 @@ export type Room = components['schemas']['RoomResponse']
 
 export type RollCall = components['schemas']['RollCallResponse']
 export type RollCallReaction = components['schemas']['RollCallReactionResponse']
+export type RollCallReactionEvent = components['schemas']['RollCallReactionEvent']

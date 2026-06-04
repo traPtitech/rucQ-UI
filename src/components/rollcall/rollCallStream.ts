@@ -1,9 +1,7 @@
 import { ref, computed, type Ref } from 'vue'
 import { apiClient } from '@/api/apiClient'
-import type { components } from '@/api/schema'
+import type { RollCallReactionEvent } from '@/typeAliases'
 import type { RollCall, RollCallReaction } from '@/typeAliases'
-
-type RollCallReactionEvent = components['schemas']['RollCallReactionEvent']
 
 // 点呼リアクションの SSE 購読
 const listenRollCallReactions = (

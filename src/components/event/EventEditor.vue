@@ -7,7 +7,7 @@ const { smAndDown } = useDisplay()
 import { apiClient } from '@/api/apiClient'
 import { useCampStore, useUserStore } from '@/store'
 import { useRoute } from 'vue-router'
-import type { components } from '@/api/schema'
+import type { DurationEventRequestBody } from '@/typeAliases'
 import { dateToText, dateDiffInDaysJST, getJSTDate } from '@/utils/date'
 import { EVENT_COLORS } from '@/components/event/utils/eventColors'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
@@ -114,8 +114,6 @@ onMounted(() => {
     color.value = EVENT_COLORS[Math.floor(Math.random() * EVENT_COLORS.length)] ?? color.value // 色をランダムで初期化
   }
 })
-
-type DurationEventRequestBody = components['schemas']['DurationEventRequest']
 
 // Mutations
 const upsertEventMutation = useMutation({
