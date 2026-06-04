@@ -8,7 +8,7 @@ WORKDIR /app
 RUN npm install -g pnpm@11.5.0
 
 # package.json と pnpm-lock.yaml をコピー
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # 依存関係をインストール
 RUN pnpm install --frozen-lockfile
