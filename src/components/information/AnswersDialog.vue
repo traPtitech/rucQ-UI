@@ -8,6 +8,7 @@ import AnswersDialogContent from './AnswersDialogContent.vue'
 import type { QuestionGroup, Question, Answer } from '@/typeAliases'
 const { xs } = useDisplay()
 
+
 const props = defineProps<{
   questionGroup: QuestionGroup
 }>()
