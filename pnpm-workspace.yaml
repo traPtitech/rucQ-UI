@@ -1,0 +1,11 @@
+# サプライチェーン攻撃対策
+# https://pnpm.io/ja/settings
+
+# リリースから 7 日以内のパッケージのインストールを禁止
+minimumReleaseAge: 10080
+# 厳格に禁止
+minimumReleaseAgeStrict: true
+# 信頼レベルが低まるリリースを採用しない
+trustPolicy: no-downgrade
+# npm レジストリ以外のサブ依存関係のインストールを禁止
+blockExoticSubdeps: true
