@@ -14,10 +14,16 @@ const campKeys = {
   detail: (id: number) => ['camps', 'detail', id] as const,
 
   participants: (id: number) => ['camps', 'detail', id, 'participants'] as const,
+  activities: (id: number) => ['camps', 'detail', id, 'activities'] as const,
   events: (id: number) => ['camps', 'detail', id, 'events'] as const,
   roomGroups: (id: number) => ['camps', 'detail', id, 'room-groups'] as const,
   questionGroups: (id: number) => ['camps', 'detail', id, 'question-groups'] as const,
   dashboard: (id: number) => ['camps', 'detail', id, 'dashboard'] as const,
+}
+
+const questionKeys = {
+  all: ['questions'] as const,
+  answers: (questionId: number) => ['questions', questionId, 'answers'] as const,
 }
 
 const iconKeys = {
@@ -25,8 +31,15 @@ const iconKeys = {
   user: (id: string) => ['icons', 'user', id] as const,
 }
 
+const roomKeys = {
+  all: ['rooms'] as const,
+  statusLogs: (roomId: number) => ['rooms', roomId, 'status-logs'] as const,
+}
+
 export const qk = {
   me: meKeys,
   camps: campKeys,
+  questions: questionKeys,
   icons: iconKeys,
+  rooms: roomKeys,
 }

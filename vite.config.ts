@@ -101,20 +101,30 @@ export default defineConfig(({ mode }) => {
                 },
               },
             }
-          : mode === 'development'
+          : mode === 'production'
             ? {
                 '/api': {
-                  target: 'http://localhost:8080',
+                  target: 'https://rucq.trap.jp',
                   changeOrigin: true,
-                  configure: (proxy) => {
-                    proxy.on('proxyReq', (proxyReq) => {
-                      const traqId = env.MY_TRAQ_ID
-                      if (traqId) proxyReq.setHeader('X-Forwarded-User', traqId)
-                    })
+                  headers: {
+                    Cookie: env.PRODUCTION_COOKIE,
                   },
                 },
               }
-            : ({} as Record<string, string>),
+            : mode === 'development'
+              ? {
+                  '/api': {
+                    target: 'http://localhost:8080',
+                    changeOrigin: true,
+                    configure: (proxy) => {
+                      proxy.on('proxyReq', (proxyReq) => {
+                        const traqId = env.MY_TRAQ_ID
+                        if (traqId) proxyReq.setHeader('X-Forwarded-User', traqId)
+                      })
+                    },
+                  },
+                }
+              : ({} as Record<string, string>),
     },
   }
 })

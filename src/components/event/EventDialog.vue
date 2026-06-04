@@ -101,6 +101,7 @@ const planner = computed(() => {
 .location {
   margin-left: 6px;
   font-weight: 500;
+  font-size: 14px;
 }
 
 .plannerId {

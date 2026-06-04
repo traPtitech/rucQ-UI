@@ -1,3 +1,4 @@
+import { activitiesHandlers } from './activities'
 import { campsHandlers } from './camps'
 import { eventsHandlers } from './events'
 import { imagesHandlers } from './images'
@@ -8,6 +9,7 @@ import { roomsHandlers } from './rooms'
 import { usersHandlers } from './users'
 
 export const handlers = [
+  ...activitiesHandlers,
   ...campsHandlers,
   ...eventsHandlers,
   ...imagesHandlers,

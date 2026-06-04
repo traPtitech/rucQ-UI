@@ -1,5 +1,5 @@
 # Node.js のベースイメージを使用（LTS版）
-FROM node:22-alpine AS builder
+FROM node:22-alpine@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920 AS builder
 
 # 作業ディレクトリを設定
 WORKDIR /app
@@ -26,7 +26,7 @@ ENV COMMIT_HASH=$COMMIT_HASH
 RUN pnpm run build
 
 # 本番用のCaddyイメージ
-FROM caddy:2-alpine
+FROM caddy:2-alpine@sha256:86deaf5e3d3408a6ccec08fbb79989783dd26e206ae10bcf78a801dc8c9ab794
 
 # CaddyfileをコピーしてSPAルーティングを有効化
 COPY Caddyfile /etc/caddy/Caddyfile

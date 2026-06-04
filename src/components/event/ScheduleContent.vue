@@ -78,6 +78,7 @@ const enterEditMode = (event: CampEvent) => {
 }
 
 .dayTitle {
+  font-size: 22px;
   margin: 20px 0 10px 0;
   font-weight: 900;
 }

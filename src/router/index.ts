@@ -42,6 +42,11 @@ const router = createRouter({
           name: '部屋情報',
           component: () => import('@/views/RoomInfoView.vue'),
         },
+        {
+          path: 'activities',
+          name: 'アクティビティ',
+          component: () => import('@/views/ActivityView.vue'),
+        },
       ],
     },
     {
