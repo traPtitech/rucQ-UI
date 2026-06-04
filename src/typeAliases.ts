@@ -11,7 +11,7 @@ export type DurationEventRequestBody = components['schemas']['DurationEventReque
 
 export type QuestionGroup = components['schemas']['QuestionGroupResponse']
 export type Question = components['schemas']['QuestionResponse']
-export type AnswerResponse = components['schemas']['AnswerResponse']
+export type Answer = components['schemas']['AnswerResponse']
 
 export type Dashboard = components['schemas']['DashboardResponse']
 export type Payment = components['schemas']['PaymentResponse']

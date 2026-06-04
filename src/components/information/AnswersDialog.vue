@@ -5,7 +5,7 @@ import { apiClient } from '@/api/apiClient'
 import { qk } from '@/api/queries/keys'
 import { useQueries } from '@tanstack/vue-query'
 import AnswersDialogContent from './AnswersDialogContent.vue'
-import type { QuestionGroup, Question, AnswerResponse } from '@/typeAliases'
+import type { QuestionGroup, Question, Answer } from '@/typeAliases'
 const { xs } = useDisplay()
 
 const props = defineProps<{
@@ -15,7 +15,7 @@ const props = defineProps<{
 const openPanel = ref<number | undefined>(0)
 
 // 与えられた質問に対する回答を回答テキスト別 ID の配列として整形
-const mapAnswersByContent = (question: Question, data: AnswerResponse[]) => {
+const mapAnswersByContent = (question: Question, data: Answer[]) => {
   const byAnswer: Record<string, string[]> = {}
 
   switch (question.type) {
