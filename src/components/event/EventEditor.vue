@@ -7,11 +7,10 @@ const { smAndDown } = useDisplay()
 import { apiClient } from '@/api/apiClient'
 import { useCampStore, useUserStore } from '@/store'
 import { useRoute } from 'vue-router'
-import type { DurationEventRequestBody } from '@/typeAliases'
 import { dateToText, dateDiffInDaysJST, getJSTDate } from '@/utils/date'
 import { EVENT_COLORS } from '@/components/event/utils/eventColors'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
-import type { DurationEvent } from '@/typeAliases'
+import type { DurationEvent, DurationEventRequestBody } from '@/typeAliases'
 
 import { qk } from '@/api/queries/keys'
 
