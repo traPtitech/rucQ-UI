@@ -5,7 +5,7 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 
 # pnpm をインストール
-RUN npm install -g pnpm@10.28.2
+RUN npm install -g pnpm@11.5.0
 
 # package.json と pnpm-lock.yaml をコピー
 COPY package.json pnpm-lock.yaml ./
