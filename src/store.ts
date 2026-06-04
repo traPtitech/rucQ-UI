@@ -1,12 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { components } from '@/api/schema'
 import { apiClient } from '@/api/apiClient'
 import { useQueryClient } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
-
-type User = components['schemas']['UserResponse']
-type Camp = components['schemas']['CampResponse']
+import type { User, Camp } from '@/typeAliases'
 
 export const useUserStore = defineStore('user', () => {
   const user = ref<User>()
@@ -73,18 +70,16 @@ export const useCampStore = defineStore('camp', () => {
     allCamps.value = camps
     latestCamp.value = allCamps.value[0]!
 
-    const participants = await queryClient.ensureQueryData<components['schemas']['UserResponse'][]>(
-      {
-        queryKey: qk.camps.participants(latestCamp.value.id),
-        queryFn: async () => {
-          const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
-            params: { path: { campId: latestCamp.value!.id } },
-          })
-          if (error) throw new Error(`合宿参加者情報の取得に失敗しました: ${error.message}`)
-          return data
-        },
+    const participants = await queryClient.ensureQueryData<User[]>({
+      queryKey: qk.camps.participants(latestCamp.value.id),
+      queryFn: async () => {
+        const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
+          params: { path: { campId: latestCamp.value!.id } },
+        })
+        if (error) throw new Error(`合宿参加者情報の取得に失敗しました: ${error.message}`)
+        return data
       },
-    )
+    })
     hasRegisteredLatest.value = participants.some((user) => user.id === me.id)
   }
 

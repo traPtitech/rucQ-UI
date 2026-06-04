@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import type { components } from '@/api/schema'
 import { useDisplay } from 'vuetify'
 import UserIcon from '@/components/generic/UserIcon.vue'
-const { xs } = useDisplay()
+import type { Question } from '@/typeAliases'
 
-type Question = components['schemas']['QuestionResponse']
+const { xs } = useDisplay()
 
 defineProps<{
   question: Question

@@ -7,10 +7,10 @@ const { smAndDown } = useDisplay()
 import { apiClient } from '@/api/apiClient'
 import { useCampStore, useUserStore } from '@/store'
 import { useRoute } from 'vue-router'
-import type { components } from '@/api/schema'
 import { dateToText, dateDiffInDaysJST, getJSTDate } from '@/utils/date'
 import { EVENT_COLORS } from '@/components/event/utils/eventColors'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
+import type { DurationEvent, DurationEventRequest } from '@/typeAliases'
 
 import { qk } from '@/api/queries/keys'
 
@@ -27,7 +27,6 @@ const displayCamp = computed(() => {
 const emit = defineEmits(['close'])
 
 // rucQ-UI で編集可能なのは DurationEvent のみ。他は rucQ-Admin で編集
-type DurationEvent = components['schemas']['DurationEventResponse']
 const props = defineProps<{ event: DurationEvent | null }>()
 
 const isValid = computed(() => {
@@ -117,7 +116,7 @@ onMounted(() => {
 
 // Mutations
 const upsertEventMutation = useMutation({
-  mutationFn: async (body: components['schemas']['DurationEventRequest']) => {
+  mutationFn: async (body: DurationEventRequest) => {
     if (props.event) {
       const { error } = await apiClient.PUT('/api/events/{eventId}', {
         params: { path: { eventId: props.event.id } },

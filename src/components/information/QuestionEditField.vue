@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import type { components } from '@/api/schema'
-
-type Question = components['schemas']['QuestionResponse']
+import type { Question } from '@/typeAliases'
 
 defineProps<{ question: Question }>()
 const value = defineModel<string | number | number[]>('value')

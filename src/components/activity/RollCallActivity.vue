@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import ActivityLayout from '@/components/activity/ActivityLayout.vue'
-import type { components } from '@/api/schema'
 import { useRoute } from 'vue-router'
-
-type RollCallCreatedActivity = components['schemas']['RollCallCreatedActivity']
+import type { RollCallCreatedActivity } from '@/typeAliases'
 
 const route = useRoute()
 
