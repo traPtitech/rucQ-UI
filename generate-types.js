@@ -4,6 +4,7 @@
 import { execSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
+import process from 'node:process'
 
 const SCHEMA_URL = 'https://raw.githubusercontent.com/traPtitech/rucQ/main/openapi.yaml'
 const OUTPUT_DIR = './src/api'
@@ -39,4 +40,5 @@ try {
 } catch (error) {
   console.error('型定義の生成中にエラーが発生しました:', error)
   if (fs.existsSync(TEMP_FILE)) fs.unlinkSync(TEMP_FILE)
+  process.exitCode = 1
 }
