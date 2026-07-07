@@ -34,6 +34,7 @@ async function initializeApp() {
   if (window.location.pathname === '/login') {
     alert('ログインされました！ トップページにリダイレクトします')
     window.location.href = '/'
+    return
   }
 
   if (import.meta.env.DEV && import.meta.env.MODE === 'msw') {
