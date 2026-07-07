@@ -35,10 +35,7 @@ const campName = computed(() => displayCamp.value?.name)
 </script>
 
 <template>
-  <div v-if="!displayCamp">
-    <not-found-view />
-  </div>
-  <div v-else>
+  <template v-if="displayCamp">
     <background-pattern variant="light" />
     <header-button />
     <page-navigation />
@@ -49,7 +46,10 @@ const campName = computed(() => displayCamp.value?.name)
       </div>
       <router-view :style="{ marginTop: routerViewMargin }" />
     </v-main>
-  </div>
+  </template>
+  <template v-else>
+    <not-found-view />
+  </template>
 </template>
 
 <style module>
