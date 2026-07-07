@@ -32,7 +32,9 @@ export const useUserStore = defineStore('user', () => {
                 'Cookie が環境変数として正しく設定されていないか、古すぎる可能性があります。',
               ].join(''),
             )
-            return
+            return new Promise<never>(() => {
+              // アプリの初期化を中断
+            })
           }
 
           window.location.href = '/login'
