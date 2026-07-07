@@ -6,6 +6,7 @@ import { useCampStore, useTimeStore } from '@/store'
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
 import { useDisplay } from 'vuetify'
+import NotFoundView from '@/views/NotFoundView.vue'
 
 const campStore = useCampStore()
 const timeStore = useTimeStore()
@@ -34,20 +35,21 @@ const campName = computed(() => displayCamp.value?.name)
 </script>
 
 <template>
-  <background-pattern variant="light" />
-  <header-button />
-  <page-navigation />
-  <v-main>
-    <div
-      v-if="isArchived && !xs"
-      :class="[$style.banner]"
-      class="bg-primaryLight"
-    >
-      <v-icon>mdi-archive</v-icon>
-      <span>{{ campName }} はアーカイブ済みです</span>
-    </div>
-    <router-view :style="{ marginTop: routerViewMargin }" />
-  </v-main>
+  <template v-if="displayCamp">
+    <background-pattern variant="light" />
+    <header-button />
+    <page-navigation />
+    <v-main>
+      <div v-if="isArchived && !xs" :class="[$style.banner]" class="bg-primaryLight">
+        <v-icon>mdi-archive</v-icon>
+        <span>{{ campName }} はアーカイブ済みです</span>
+      </div>
+      <router-view :style="{ marginTop: routerViewMargin }" />
+    </v-main>
+  </template>
+  <template v-else>
+    <not-found-view />
+  </template>
 </template>
 
 <style module>
@@ -66,10 +68,4 @@ const campName = computed(() => displayCamp.value?.name)
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
-
-
-
-
-
-
 </style>
