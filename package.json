@@ -16,7 +16,7 @@
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",
     "format": "prettier --write src/",
-    "generate:api": "npx openapi-typescript https://raw.githubusercontent.com/traPtitech/rucQ/main/openapi.yaml -o src/api/schema.d.ts && pnpm format"
+    "generate:api": "node generate-types.js && prettier --write src/api/schema.d.ts"
   },
   "packageManager": "pnpm@11.5.0",
   "engines": {
