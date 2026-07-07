@@ -32,24 +32,6 @@ app.use(VueQueryPlugin, { queryClient })
 
 async function initializeApp() {
   if (window.location.pathname === '/login') {
-    if (import.meta.env.DEV) {
-      // 開発環境の場合、/login にリダイレクトしても traQ 認証が挟まるわけではない
-      // 無限ループしてしまうので、Cookie が適切に設定されているかどうかの確認を求め、
-      // ここでアプリケーションを終了する
-
-      alert(
-        [
-          '開発環境から Staging / Production API へのアクセスを試み、ログインに失敗しました。',
-          'Cookie が環境変数として正しく設定されていないか、古すぎる可能性があります。',
-        ].join(''),
-      )
-      return
-    }
-
-    // 本番環境の場合、サービスワーカーのキャッシュが更新されないことが問題であり、
-    // /login にアクセス出来たことは再度 rucQ サーバーに接続できたことを意味するので、
-    // トップページにリダイレクトする
-
     alert('ログインされました！ トップページにリダイレクトします')
     window.location.href = '/'
   }
