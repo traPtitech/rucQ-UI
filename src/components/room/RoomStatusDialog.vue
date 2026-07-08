@@ -139,7 +139,7 @@ const updateStatus = async () => {
         <div class="pa-3 overflow-y-auto h-100 d-flex flex-column ga-2">
           <div v-for="log in statusHistory" :key="log.updatedAt">
             <div class="font-weight-bold text-caption text-grey">
-              {{ formatStatusTime(log.updatedAt) }}
+              {{ formatStatusTime(log.updatedAt) }} - {{ log.operatorId }}
             </div>
             <div :class="$style.status" class="d-flex">
               <div :class="[$style.statusMark, `bg-${getStatusColor(log.type)}`]"></div>
