@@ -133,20 +133,18 @@ const closeBtnProps = {
           </v-expansion-panels>
         </div>
         <div v-else>
-          <v-card>
-            <div :class="$style.heading">
-              <v-btn v-bind="closeBtnProps" @click="isActive.value = false" />
-            </div>
-            <v-expansion-panels v-model="openPanel" variant="accordion">
-              <answers-dialog-content
-                v-for="q in publicQuestions"
-                :key="q.id"
-                :question="q"
-                :answers="traQIDsByAnswer[q.id]"
-                :is-selected="openPanel === publicQuestions.indexOf(q)"
-              />
-            </v-expansion-panels>
-          </v-card>
+          <div :class="$style.heading">
+            <v-btn v-bind="closeBtnProps" @click="isActive.value = false" />
+          </div>
+          <v-expansion-panels v-model="openPanel" variant="accordion">
+            <answers-dialog-content
+              v-for="q in publicQuestions"
+              :key="q.id"
+              :question="q"
+              :answers="traQIDsByAnswer[q.id]"
+              :is-selected="openPanel === publicQuestions.indexOf(q)"
+            />
+          </v-expansion-panels>
         </div>
       </v-card>
     </template>
