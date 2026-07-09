@@ -117,22 +117,8 @@ const closeBtnProps = {
     </template>
 
     <template #default="{ isActive }">
-      <div v-if="xs" class="bg-white h-100">
-        <div :class="$style.heading">
-          <v-btn v-bind="closeBtnProps" @click="isActive.value = false" />
-        </div>
-        <v-expansion-panels v-model="openPanel" variant="accordion">
-          <answers-dialog-content
-            v-for="q in publicQuestions"
-            :key="q.id"
-            :question="q"
-            :answers="traQIDsByAnswer[q.id]"
-            :is-selected="openPanel === publicQuestions.indexOf(q)"
-          />
-        </v-expansion-panels>
-      </div>
-      <div v-else>
-        <v-card>
+      <v-card>
+        <div v-if="xs" class="bg-white h-100">
           <div :class="$style.heading">
             <v-btn v-bind="closeBtnProps" @click="isActive.value = false" />
           </div>
@@ -145,8 +131,22 @@ const closeBtnProps = {
               :is-selected="openPanel === publicQuestions.indexOf(q)"
             />
           </v-expansion-panels>
-        </v-card>
-      </div>
+        </div>
+        <div v-else>
+          <div :class="$style.heading">
+            <v-btn v-bind="closeBtnProps" @click="isActive.value = false" />
+          </div>
+          <v-expansion-panels v-model="openPanel" variant="accordion">
+            <answers-dialog-content
+              v-for="q in publicQuestions"
+              :key="q.id"
+              :question="q"
+              :answers="traQIDsByAnswer[q.id]"
+              :is-selected="openPanel === publicQuestions.indexOf(q)"
+            />
+          </v-expansion-panels>
+        </div>
+      </v-card>
     </template>
   </v-dialog>
 </template>
