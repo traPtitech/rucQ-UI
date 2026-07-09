@@ -1,3 +1,0 @@
-[tools]
-# NOTE: keep this in sync with .node-version (used by fnm)
-node = "22.22.0"

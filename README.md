@@ -9,8 +9,9 @@
 [Web エンジニアになろう講習会](https://traptitech.github.io/naro-text/chapter1/) に従って環境構築をした場合、mise（開発ツールのバージョン管理ツール）が手元にあるはず
 
 ### miseを使っている場合:
-1. `mise install` を実行
-2. `node -v` を実行して `v22.22.0` と表示されることを確認
+1. `mise settings add idiomatic_version_file_enable_tools node`を実行
+2. `mise install` を実行
+3. `node -v` を実行して `v22.22.0` と表示されることを確認
 3. `corepack enable && pnpm -v` を実行して `11.5.0` と表示されることを確認
 
 ### fnmを使っている場合: 
