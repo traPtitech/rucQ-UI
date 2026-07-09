@@ -38,7 +38,7 @@ defineProps<{ room?: Room }>()
 }
 
 .room {
-  font-family: 'Reddit Sans Variable';
+  font-family: 'Reddit Sans Variable', 'M PLUS 2 Variable', sans-serif;
   font-size: 30px;
   font-weight: 800;
   letter-spacing: 3px;
