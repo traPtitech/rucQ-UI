@@ -34,7 +34,7 @@ const orderedUserIds = computed(() => {
         :key="id"
         id-tooltip
         :size="28"
-        :class="[id === userStore.user.id ? $style.myIcon : '', 'mr-2']"
+        :class="[id === userStore.user.id ? $style.myIcon : '', 'ml-1 mr-1']"
       />
       <v-dialog max-width="800">
         <template #activator="{ props: activatorProps }">
