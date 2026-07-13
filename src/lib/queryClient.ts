@@ -21,7 +21,8 @@ const [, restorePromise] = persistQueryClient({
   queryClient,
   persister: asyncPersister,
   maxAge: 7 * 24 * 60 * 60 * 1000, // 永続化キャッシュの寿命
-  buster: __APP_VERSION__, // package.json のバージョンを自動反映
+  // API の接続先ごとにキャッシュを分離する。
+  buster: `${__APP_VERSION__}:${import.meta.env.MODE}`,
   dehydrateOptions: {
     // データを持つクエリは永続化する
     shouldDehydrateQuery: (query) => query.state.data !== undefined,
