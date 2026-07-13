@@ -23,7 +23,7 @@ export const getLayout = (events: CampEvent[], camp: Camp) => {
       undefined,
       // TODO: 現在時刻がその日に含まれているなら表示に含める
     )
-    return { date: day.date, eventGroups } as DayEventGroups
+    return { date: day.date, eventGroups }
   })
 }
 

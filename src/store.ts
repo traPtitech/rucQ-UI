@@ -161,7 +161,7 @@ export const useCampStore = defineStore('camp', () => {
 
   const isOperable = (camp: Camp) => {
     // 最新の合宿かつ登録済みで、かつ終了していない場合のみ操作可能
-    if (!latestCamp.value || latestCamp.value.id !== camp.id) return false
+    if (latestCamp.value?.id !== camp.id) return false
     return hasRegisteredLatest.value && !timeStore.isCampEnded(camp)
   }
 

@@ -64,7 +64,7 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
         const idx = reactions.value.findIndex((r) => r.userId === ev.userId)
         const entry = { id: ev.id, userId: ev.userId, content: ev.content }
         if (idx >= 0) reactions.value[idx] = entry
-        else reactions.value.push(entry as RollCallReaction)
+        else reactions.value.push(entry)
         break
       }
       case 'updated': {
@@ -74,7 +74,7 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
             id: ev.id,
             userId: ev.userId,
             content: ev.content,
-          } as RollCallReaction
+          }
         break
       }
       case 'deleted': {
@@ -105,7 +105,7 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
   const chooseOption = async (content: string) => {
     if (!rollcall.value) return
     if (!rollcall.value.subjects.includes(userId)) return
-    if (myReaction.value && myReaction.value.content === content) return
+    if (myReaction.value?.content === content) return
     if (inFlight.value) return // いずれかの操作中は他の操作を禁止
 
     try {
