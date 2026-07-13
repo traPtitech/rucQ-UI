@@ -54,7 +54,7 @@ const navItems = [
 <template>
   <v-bottom-navigation
     v-if="xs"
-    v-model="currentPath"
+    :model-value="currentPath"
     color="primary"
     mandatory
     grow
@@ -77,7 +77,7 @@ const navItems = [
   <v-navigation-drawer v-else width="270" color="primary" permanent :class="$style.drawer" app>
     <background-pattern style="z-index: -1" variant="primary" />
     <img src="/logo/logo-white.svg" alt="rucQ Icon" :class="$style.logo" />
-    <v-list v-model:selected="selectedItems" dense mandatory>
+    <v-list :selected="selectedItems" dense mandatory>
       <v-list-item
         v-for="item in navItems"
         :key="item.path"
