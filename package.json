@@ -20,7 +20,7 @@
   },
   "packageManager": "pnpm@11.5.0",
   "engines": {
-    "node": "^22.11.0"
+    "node": "^24.18.0"
   },
   "dependencies": {
     "@fontsource-variable/m-plus-2": "^5.2.9",
@@ -52,10 +52,10 @@
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@mdi/font": "^7.4.47",
-    "@tsconfig/node22": "^22.0.0",
+    "@tsconfig/node24": "^24.0.4",
     "@types/dompurify": "^3.0.5",
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^22.10.2",
+    "@types/node": "24.13.2",
     "@vite-pwa/assets-generator": "^0.2.6",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/eslint-config-prettier": "^10.1.0",
