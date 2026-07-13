@@ -40,14 +40,14 @@ const {
   data: dashboard,
   isPending: isPendingDashboard,
   isFetching: isFetchingDashboard,
-} = useQuery<Dashboard, Error>({
+} = useQuery<Dashboard | null, Error>({
   queryKey: qk.camps.dashboard(displayCamp.id),
-  // 404 は未参加を表すため、既定のリトライを行わない。
-  retry: false,
   queryFn: async () => {
-    const { data, error } = await apiClient.GET('/api/camps/{campId}/me', {
+    const { data, error, response } = await apiClient.GET('/api/camps/{campId}/me', {
       params: { path: { campId: displayCamp.id } },
     })
+    // 404 は未参加を表すため、成功扱いで空のダッシュボードを返す。
+    if (response.status === 404) return null
     if (error) throw new Error(`ダッシュボード情報の取得に失敗しました: ${error.message}`)
     return data
   },
