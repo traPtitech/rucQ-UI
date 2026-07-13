@@ -141,7 +141,7 @@ const allChecked = computed(() => {
   let result = true
   for (const question of props.questionGroup.questions) {
     const answer = answersMap[question.id]
-    if (!answer || answer.value === undefined || answer.value === null) {
+    if (answer?.value === undefined) {
       result = false // multiple の [], free_text の '' は falsy だが回答済みとみなす
       break
     }
