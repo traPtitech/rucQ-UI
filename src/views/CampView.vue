@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { useCampStore, useTimeStore } from '@/store'
+import { useCampStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { getDayStringNoPad } from '@/utils/date'
-import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import { useRouter } from 'vue-router'
 import type { components } from '@/api/schema'
 import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
@@ -14,9 +13,8 @@ type Camp = components['schemas']['CampResponse']
 
 const router = useRouter()
 const campStore = useCampStore()
-const timeStore = useTimeStore()
 
-const { allCamps, hasRegisteredLatest } = storeToRefs(campStore)
+const { allCamps } = storeToRefs(campStore)
 
 // RegistrationView においてだけは latestCamp が存在しない可能性があるので、ラップする
 const latestCamp = computed(() => {
@@ -28,16 +26,6 @@ const latestCamp = computed(() => {
   }
 })
 
-const isLatestCampEnded = computed(() => {
-  if (!latestCamp.value) return false
-  return timeStore.isCampEnded(latestCamp.value)
-})
-
-const registerAndOpen = async () => {
-  if (!latestCamp.value) return
-  await openCamp(latestCamp.value)
-}
-
 const openCamp = async (camp: Camp) => {
   await router.push(`/${camp.displayId}/info`)
 }
@@ -48,52 +36,17 @@ const openCamp = async (camp: Camp) => {
   <div :class="$style.container">
     <template v-if="latestCamp">
       <img :src="`/logo/logo-white.svg`" :class="$style.logo" />
-      <v-expansion-panels>
-        <v-expansion-panel :class="$style.panel">
-          <v-expansion-panel-title>
-            <div :class="$style.title">
-              <span :class="$style.titleText">{{ latestCamp.name }}</span>
-              <span>
-                {{ getDayStringNoPad(new Date(latestCamp.dateStart)) }} -
-                {{ getDayStringNoPad(new Date(latestCamp.dateEnd)) }}
-              </span>
-            </div>
-          </v-expansion-panel-title>
-          <v-expansion-panel-text>
-            <div :class="$style.content">
-              <div :class="$style.guidebook">
-                <markdown-preview :mdtext="latestCamp.guidebook" />
-              </div>
-              <v-btn
-                elevation="0"
-                prepend-icon="mdi-arrow-right"
-                base-color="transparent"
-                variant="flat"
-                color="primary"
-                :class="[$style.save, 'font-weight-bold']"
-                @click="registerAndOpen"
-              >
-                <span
-                  v-if="!hasRegisteredLatest && latestCamp.isRegistrationOpen"
-                  class="font-weight-medium"
-                  >合宿を表示する（参加受付中）</span
-                >
-                <span
-                  v-else-if="hasRegisteredLatest && !isLatestCampEnded"
-                  class="font-weight-medium"
-                  >参加中の合宿を開く</span
-                >
-                <span
-                  v-else-if="!hasRegisteredLatest && !isLatestCampEnded"
-                  class="font-weight-medium"
-                  >開催中の合宿を閲覧する</span
-                >
-                <span v-else class="font-weight-medium">終了した合宿を見る</span>
-              </v-btn>
-            </div>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels>
+      <v-card :class="$style.panel" link elevation="2" @click="openCamp(latestCamp)">
+        <div :class="$style.panelTitle">
+          <div :class="$style.title">
+            <span :class="$style.titleText">{{ latestCamp.name }}</span>
+            <span>
+              {{ getDayStringNoPad(new Date(latestCamp.dateStart)) }} -
+              {{ getDayStringNoPad(new Date(latestCamp.dateEnd)) }}
+            </span>
+          </div>
+        </div>
+      </v-card>
       <div v-if="allCamps.length > 1" :class="$style.archives">
         <span :class="$style.head">合宿アーカイブ</span>
         <div :class="$style.archiveList">
@@ -156,24 +109,15 @@ const openCamp = async (camp: Camp) => {
 .panel {
   margin-top: 40px;
   max-width: 600px !important;
-  width: 80%;
+  width: 100%;
 }
 
-.content {
-  position: relative;
-}
-
-.save {
-  position: absolute;
-  bottom: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.guidebook {
-  height: 480px;
-  overflow: auto;
-  padding-bottom: 40px;
+.panelTitle {
+  align-items: center;
+  display: flex;
+  font-size: 0.9375rem;
+  line-height: 1;
+  padding: 16px 24px;
 }
 
 .title {

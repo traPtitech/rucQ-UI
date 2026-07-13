@@ -1,13 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useCampStore } from '@/store'
-import { storeToRefs } from 'pinia'
+import { useCampStore, useTimeStore } from '@/store'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      component: () => import('@/views/RegistrationView.vue'),
+      component: () => import('@/views/CampView.vue'),
     },
     {
       path: '/:campname/rollcall/:rollcallId',
@@ -60,7 +59,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   try {
     const campStore = useCampStore()
-    const { hasRegisteredLatest } = storeToRefs(campStore)
+    const timeStore = useTimeStore()
 
     // トップページの場合
     if (to.path === '/') {
@@ -69,9 +68,9 @@ router.beforeEach((to, from, next) => {
         return
       }
 
-      if (hasRegisteredLatest.value) {
+      // 公開済みの最新合宿は、参加登録の有無に関わらず終了までは直接開く
+      if (!timeStore.isCampEnded(campStore.latestCamp)) {
         next(`/${campStore.latestCamp.displayId}`)
-        // 登録済みの場合は最新合宿のページにリダイレクト
         // latestCamp が存在しない場合、campStore.latestCamp の呼び出し時点でエラーが生じ、
         // 外側の try-catch によってトップページに導かれる
         // 各コンポーネントにおける latestCamp の存在が保証され、エラーハンドリングを書く必要がなくて嬉しい
