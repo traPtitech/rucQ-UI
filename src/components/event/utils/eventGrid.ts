@@ -1,10 +1,5 @@
-import type { components } from '@/api/schema'
 import { getStartTime, getEndTime } from '@/components/event/utils/eventLib'
-
-type MomentEvent = components['schemas']['MomentEventResponse']
-type DurationEvent = components['schemas']['DurationEventResponse']
-type OfficialEvent = components['schemas']['OfficialEventResponse']
-type CampEvent = MomentEvent | DurationEvent | OfficialEvent
+import type { CampEvent, DurationEvent, MomentEvent, OfficialEvent } from '@/typeAliases'
 
 export type GridRow = {
   time: Date

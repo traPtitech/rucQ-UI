@@ -1,8 +1,6 @@
-import type { components } from '@/api/schema'
+import type { Activity } from '@/typeAliases'
 
-type ActivityResponse = components['schemas']['ActivityResponse']
-
-export const activities: ActivityResponse[] = [
+export const activities: Activity[] = [
   {
     id: 1,
     type: 'room_created',

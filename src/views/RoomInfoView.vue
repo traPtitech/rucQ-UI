@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import { apiClient } from '@/api/apiClient'
-import type { components } from '@/api/schema'
 import RoomCard from '@/components/room/RoomCard.vue'
 import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
 import { useQuery } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
+import type { RoomGroup } from '@/typeAliases'
 
 const route = useRoute()
 const campStore = useCampStore()
 
 const displayCamp = campStore.getCampByDisplayId(route.params.campname as string)
-
-type RoomGroup = components['schemas']['RoomGroupResponse']
 
 const {
   data: roomGroups,

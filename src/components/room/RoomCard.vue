@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import type { components } from '@/api/schema'
 import RoomStatusDialog from '@/components/room/RoomStatusDialog.vue'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { useUserStore } from '@/store'
 import { computed } from 'vue'
-
-type Room = components['schemas']['RoomResponse']
+import type { Room } from '@/typeAliases'
 
 const props = defineProps<{
   room: Room

@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { components } from '@/api/schema'
 import EventDialog from './EventDialog.vue'
+import type { DurationEvent, OfficialEvent } from '@/typeAliases'
 
-type DurationEvent = components['schemas']['DurationEventResponse']
-type OfficialEvent = components['schemas']['OfficialEventResponse']
 const props = defineProps<{ event: DurationEvent | OfficialEvent }>()
 
 const eventColor = computed(() => {
