@@ -42,6 +42,8 @@ const {
   isFetching: isFetchingDashboard,
 } = useQuery<Dashboard, Error>({
   queryKey: qk.camps.dashboard(displayCamp.id),
+  // 404 は未参加を表すため、既定のリトライを行わない。
+  retry: false,
   queryFn: async () => {
     const { data, error } = await apiClient.GET('/api/camps/{campId}/me', {
       params: { path: { campId: displayCamp.id } },
