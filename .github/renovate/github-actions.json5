@@ -1,6 +1,45 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "customManagers": [
+    // 定期実行ワークフローで使用するRenovate本体（Dockerイメージのバージョンとダイジェスト）
+    {
+      "customType": "regex",
+      "description": "Update the Renovate image used by the GitHub Action",
+      "managerFilePatterns": [".github/workflows/renovate.yaml"],
+      "matchStrings": [
+        "renovate-version: (?<currentValue>[^@\\s]+)@(?<currentDigest>sha256:[a-f0-9]+)",
+      ],
+      "depNameTemplate": "ghcr.io/renovatebot/renovate",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker",
+    },
+    // 設定検証ワークフローでnpx経由で使用するRenovate CLI（npmパッケージのバージョン）
+    {
+      "customType": "regex",
+      "description": "Update the Renovate config validator",
+      "managerFilePatterns": [
+        ".github/workflows/renovate-config-validator-ci.yaml",
+      ],
+      "matchStrings": ["renovate@(?<currentValue>[^\\s]+)"],
+      "depNameTemplate": "renovate",
+      "datasourceTemplate": "npm",
+    },
+  ],
   "packageRules": [
+    {
+      "description": "Keep the Renovate runner and validator in one update",
+      "matchManagers": ["custom.regex"],
+      "matchPackageNames": ["ghcr.io/renovatebot/renovate", "renovate"],
+      "groupName": "Renovate",
+    },
+    {
+      "description": "Automerge non-major Renovate updates",
+      "matchManagers": ["custom.regex"],
+      "matchPackageNames": ["ghcr.io/renovatebot/renovate", "renovate"],
+      "matchUpdateTypes": ["minor", "patch", "digest", "pinDigest"],
+      "automerge": true,
+      "automergeType": "pr",
+    },
     {
       "description": "Group GitHub Actions non-major and digest updates",
       "matchManagers": ["github-actions"],

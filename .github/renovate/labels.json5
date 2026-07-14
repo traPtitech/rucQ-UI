@@ -15,7 +15,7 @@
       "addLabels": ["type/patch"],
     },
     {
-      "matchManagers": ["npm"],
+      "matchDatasources": ["npm"],
       "addLabels": ["renovate/npm"],
     },
     {
