@@ -81,58 +81,58 @@ const dailyActivities = computed(() => {
     <!-- Content -->
     <div v-else class="pa-4" :class="$style.container">
       <template v-for="day in dailyActivities" :key="day.date.toISOString()">
-      <h3 class="mb-2 mt-4" :class="$style.dayHeader">
-        {{ getDayStringNoPad(day.date) }}
-      </h3>
-      <div class="d-flex flex-column ga-3">
-        <template v-for="activity in day.activities" :key="`${activity.id}-${activity.time}`">
-          <activity-layout
-            v-if="activity.type === 'room_created'"
-            :type="activity.type"
-            :date="new Date(activity.time)"
-          >
-            <template #default="{ color }">
-              <span :class="`text-${color}`"> 部屋情報が公開されました </span>
-            </template>
-          </activity-layout>
-          <activity-layout
-            v-if="activity.type === 'payment_created'"
-            :type="activity.type"
-            :date="new Date(activity.time)"
-          >
-            <template #default="{ color }">
-              <span :class="`text-${color}`">
-                {{ activity.amount.toLocaleString() }} 円の支払いが作成されました
-              </span>
-            </template>
-          </activity-layout>
-          <activity-layout
-            v-if="activity.type === 'payment_amount_changed'"
-            :type="activity.type"
-            :date="new Date(activity.time)"
-          >
-            <template #default="{ color }">
-              <span :class="`text-${color}`">
-                支払い金額が {{ activity.amount.toLocaleString() }} 円に変更されました
-              </span>
-            </template>
-          </activity-layout>
-          <activity-layout
-            v-if="activity.type === 'payment_paid_changed'"
-            :type="activity.type"
-            :date="new Date(activity.time)"
-          >
-            <template #default="{ color }">
-              <span :class="`text-${color}`">
-                合宿係が {{ activity.amount.toLocaleString() }} 円の振込を確認しました
-              </span>
-            </template>
-          </activity-layout>
-          <roll-call-activity v-if="activity.type === 'roll_call_created'" :activity="activity" />
-          <question-activity v-if="activity.type === 'question_created'" :activity="activity" />
-        </template>
-      </div>
-    </template>
+        <h3 class="mb-2 mt-4" :class="$style.dayHeader">
+          {{ getDayStringNoPad(day.date) }}
+        </h3>
+        <div class="d-flex flex-column ga-3">
+          <template v-for="activity in day.activities" :key="`${activity.id}-${activity.time}`">
+            <activity-layout
+              v-if="activity.type === 'room_created'"
+              :type="activity.type"
+              :date="new Date(activity.time)"
+            >
+              <template #default="{ color }">
+                <span :class="`text-${color}`"> 部屋情報が公開されました </span>
+              </template>
+            </activity-layout>
+            <activity-layout
+              v-if="activity.type === 'payment_created'"
+              :type="activity.type"
+              :date="new Date(activity.time)"
+            >
+              <template #default="{ color }">
+                <span :class="`text-${color}`">
+                  {{ activity.amount.toLocaleString() }} 円の支払いが作成されました
+                </span>
+              </template>
+            </activity-layout>
+            <activity-layout
+              v-if="activity.type === 'payment_amount_changed'"
+              :type="activity.type"
+              :date="new Date(activity.time)"
+            >
+              <template #default="{ color }">
+                <span :class="`text-${color}`">
+                  支払い金額が {{ activity.amount.toLocaleString() }} 円に変更されました
+                </span>
+              </template>
+            </activity-layout>
+            <activity-layout
+              v-if="activity.type === 'payment_paid_changed'"
+              :type="activity.type"
+              :date="new Date(activity.time)"
+            >
+              <template #default="{ color }">
+                <span :class="`text-${color}`">
+                  合宿係が {{ activity.amount.toLocaleString() }} 円の振込を確認しました
+                </span>
+              </template>
+            </activity-layout>
+            <roll-call-activity v-if="activity.type === 'roll_call_created'" :activity="activity" />
+            <question-activity v-if="activity.type === 'question_created'" :activity="activity" />
+          </template>
+        </div>
+      </template>
     </div>
   </div>
 </template>
