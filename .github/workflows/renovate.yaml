@@ -1,0 +1,52 @@
+name: Renovate
+
+on:
+  push:
+    branches: ["main"]
+
+  schedule:
+    # Every day at 5 a.m. JST
+    - cron: "0 20 * * *"
+
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: Enable debug logging
+        type: boolean
+        default: false
+      dry_run:
+        description: Run in dry-run mode
+        type: boolean
+        default: true
+
+concurrency:
+  group: renovate
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.RENOVATE_APP_ID }}
+          private-key: ${{ secrets.RENOVATE_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - uses: renovatebot/github-action@22e0a16091fc706b04affe6ae53d5e3358ac4023 # v46.1.19
+        with:
+          configurationFile: .github/renovate-bot.json5
+          renovate-version: 43.261.4@sha256:adc66d8ffba5d835b9ef27768bd3176d07e7ea98c8dba274b07f511beea5fe81
+          token: ${{ steps.generate-token.outputs.token }}
+        env:
+          LOG_LEVEL: ${{ inputs.debug && 'debug' || 'info' }}
+          RENOVATE_DRY_RUN: ${{ inputs.dry_run && 'full' || '' }}

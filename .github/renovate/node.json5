@@ -1,0 +1,19 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["replacements:tsconfig-bases-node"],
+  "packageRules": [
+    {
+      "description": "Keep Node.js versions in one update",
+      "matchPackageNames": ["node", "@types/node", "@tsconfig/node**"],
+      "groupName": "Node.js",
+      "rangeStrategy": "bump",
+    },
+    {
+      "description": "Automerge non-major Node.js updates",
+      "matchPackageNames": ["node", "@types/node", "@tsconfig/node**"],
+      "matchUpdateTypes": ["minor", "patch", "digest", "pinDigest"],
+      "automerge": true,
+      "automergeType": "pr",
+    },
+  ],
+}
