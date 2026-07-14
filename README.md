@@ -12,7 +12,7 @@
 1. `mise settings add idiomatic_version_file_enable_tools node`を実行
 2. `mise install` を実行
 3. `node -v` を実行し、`.node-version` で指定したバージョンと一致することを確認
-3. `corepack enable && pnpm -v` を実行し、`package.json` の `packageManager` で指定したバージョンと一致することを確認
+4. `corepack enable && pnpm -v` を実行し、`package.json` の `packageManager` で指定したバージョンと一致することを確認
 
 ### fnmを使っている場合: 
 1. リポジトリルートをターミナルで開いて `fnm use --install-if-missing` を実行
