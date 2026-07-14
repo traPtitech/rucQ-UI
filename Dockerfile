@@ -1,11 +1,11 @@
 # Node.js のベースイメージを使用（LTS版）
-FROM node:22-alpine@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920 AS builder
+FROM node:22.22.0-alpine@sha256:e4bf2a82ad0a4037d28035ae71529873c069b13eb0455466ae0bc13363826e34 AS builder
 
 # 作業ディレクトリを設定
 WORKDIR /app
 
-# pnpm をインストール
-RUN npm install -g pnpm@11.5.0
+# package.json の packageManager で指定した pnpm を有効化
+RUN corepack enable
 
 # package.json と pnpm-lock.yaml をコピー
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
