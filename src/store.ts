@@ -66,13 +66,12 @@ export const useUserStore = defineStore('user', () => {
 
 export const useCampStore = defineStore('camp', () => {
   const queryClient = useQueryClient()
+  const userStore = useUserStore()
   const latestCamp = ref<Camp>()
   const allCamps = ref<Camp[]>([])
   const hasRegisteredLatest = ref(false) // 最新の合宿に参加登録済みかどうか
-  let currentUser: User
 
-  const initCamp = async (me: User) => {
-    currentUser = me
+  const initCamp = async () => {
     const camps = await queryClient.ensureQueryData<Camp[]>({
       queryKey: qk.camps.lists(),
       queryFn: async () => {
@@ -102,7 +101,7 @@ export const useCampStore = defineStore('camp', () => {
         },
       },
     )
-    hasRegisteredLatest.value = participants.some((user) => user.id === me.id)
+    hasRegisteredLatest.value = participants.some((user) => user.id === userStore.user.id)
   }
 
   // パスパラメータから合宿を取得する関数
@@ -125,10 +124,10 @@ export const useCampStore = defineStore('camp', () => {
     const participantsKey = qk.camps.participants(campId)
     queryClient.setQueryData<User[]>(participantsKey, (participants) => {
       if (!participants) return participants
-      if (participants.some((participant) => participant.id === currentUser.id)) {
+      if (participants.some((participant) => participant.id === userStore.user.id)) {
         return participants
       }
-      return [...participants, currentUser]
+      return [...participants, userStore.user]
     })
   }
 
@@ -142,7 +141,7 @@ export const useCampStore = defineStore('camp', () => {
     // 参加取り消し後は参加者リストのキャッシュから自分を除外
     const participantsKey = qk.camps.participants(campId)
     queryClient.setQueryData<User[]>(participantsKey, (participants) =>
-      participants?.filter((participant) => participant.id !== currentUser.id),
+      participants?.filter((participant) => participant.id !== userStore.user.id),
     )
   }
 
