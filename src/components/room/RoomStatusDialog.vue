@@ -1,15 +1,11 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import type { components } from '@/api/schema'
 import { apiClient } from '@/api/apiClient'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
 import { getDisplayDate } from '@/utils/date'
-
-type Room = components['schemas']['RoomResponse']
-type RoomStatus = components['schemas']['RoomStatus']
-type RoomStatusLog = components['schemas']['RoomStatusLog']
+import type { Room, RoomStatus, RoomStatusLog } from '@/typeAliases'
 
 const props = defineProps<{
   room: Room

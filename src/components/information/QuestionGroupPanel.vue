@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { components } from '@/api/schema'
 import { apiClient } from '@/api/apiClient'
 import { ref, computed, onMounted, reactive, toRaw } from 'vue'
 import { useCampStore } from '@/store'
@@ -7,10 +6,7 @@ import QuestionGroupEditor from '@/components/information/QuestionGroupEditor.vu
 import QuestionGroupViewer from '@/components/information/QuestionGroupViewer.vue'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
-
-type QuestionGroup = components['schemas']['QuestionGroupResponse']
-type Question = components['schemas']['QuestionResponse']
-type Camp = components['schemas']['CampResponse']
+import type { QuestionGroup, Question, Camp } from '@/typeAliases'
 
 const queryClient = useQueryClient()
 

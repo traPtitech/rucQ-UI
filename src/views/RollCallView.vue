@@ -3,12 +3,10 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCampStore, useUserStore } from '@/store'
 import { apiClient } from '@/api/apiClient'
-import type { components } from '@/api/schema'
 import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
 import UserResponse from '@/components/rollcall/UserResponse.vue'
 import { useRollCallStream } from '@/components/rollcall/rollCallStream'
-
-type RollCall = components['schemas']['RollCallResponse']
+import type { RollCall } from '@/typeAliases'
 
 const route = useRoute()
 const campStore = useCampStore()

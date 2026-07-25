@@ -5,12 +5,10 @@ import { computed } from 'vue'
 import { getDayStringNoPad } from '@/utils/date'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import { useRouter } from 'vue-router'
-import type { components } from '@/api/schema'
 import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
+import type { Camp } from '@/typeAliases'
 
 const version = __APP_VERSION__
-
-type Camp = components['schemas']['CampResponse']
 
 const router = useRouter()
 const campStore = useCampStore()
