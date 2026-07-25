@@ -50,7 +50,7 @@ async function initializeApp() {
     const userStore = useUserStore()
     const campStore = useCampStore()
     await userStore.initUser()
-    await campStore.initCamp(userStore.user)
+    await campStore.initCamp()
   } catch (error) {
     console.error(error)
   }
