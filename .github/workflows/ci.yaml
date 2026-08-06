@@ -27,15 +27,13 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
-      - name: Restore quality caches
+      - name: Restore ESLint cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: |
-            .eslintcache
-            .prettier-cache
-          key: quality-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'package.json', 'eslint.config.js', '.prettierrc.json', '.prettierignore') }}-${{ github.sha }}
+          path: .eslintcache
+          key: eslint-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'eslint.config.js') }}-${{ github.sha }}
           restore-keys: |
-            quality-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'package.json', 'eslint.config.js', '.prettierrc.json', '.prettierignore') }}-
+            eslint-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'eslint.config.js') }}-
       - name: Install dependencies
         run: pnpm ci
       - name: Run ESLint

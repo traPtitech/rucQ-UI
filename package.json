@@ -14,10 +14,10 @@
     "preview:prod": "vite preview --mode production",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
-    "lint": "eslint . --fix",
-    "lint:check": "eslint . --cache --cache-location .eslintcache --max-warnings=0",
+    "lint": "eslint . --cache --cache-strategy content --cache-location .eslintcache --fix",
+    "lint:check": "eslint . --cache --cache-strategy content --cache-location .eslintcache --max-warnings=0",
     "format": "prettier --write .",
-    "format:check": "prettier --cache --cache-location .prettier-cache --check .",
+    "format:check": "prettier --check .",
     "generate:api": "npx openapi-typescript https://raw.githubusercontent.com/traPtitech/rucQ/main/openapi.yaml -o src/api/schema.d.ts && pnpm format"
   },
   "packageManager": "pnpm@11.5.0",
