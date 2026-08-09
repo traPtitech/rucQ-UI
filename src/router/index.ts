@@ -6,7 +6,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      component: () => import('@/views/CampView.vue'),
+      component: () => import('@/views/TopView.vue'),
     },
     {
       path: '/:campname/rollcall/:rollcallId',
