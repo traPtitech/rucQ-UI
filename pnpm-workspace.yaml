@@ -13,7 +13,6 @@ blockExoticSubdeps: true
 # インストール時にスクリプト実行を伴うパッケージ
 allowBuilds:
   '@parcel/watcher': false
-  esbuild: true
   msw: true
-  sharp: true
+  sharp: false
   vue-demi: false
