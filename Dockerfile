@@ -4,8 +4,8 @@ FROM node:24.18.0-alpine@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a
 # 作業ディレクトリを設定
 WORKDIR /app
 
-# pnpm をインストール
-RUN npm install -g pnpm@11.5.0
+# package.json の packageManager で指定した pnpm を有効化
+RUN corepack enable
 
 # package.json と pnpm-lock.yaml をコピー
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./

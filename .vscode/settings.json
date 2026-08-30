@@ -4,4 +4,17 @@
     "editor.formatOnSave": true
   },
   "js/ts.tsdk.path": "node_modules/typescript/lib"
+  "json.schemaDownload.trustedDomains": {
+    "https://docs.renovatebot.com/": true
+  },
+  "json5.schemas": [
+    {
+      "fileMatch": ["/.github/renovate-bot.json5"],
+      "url": "https://docs.renovatebot.com/renovate-global-schema.json"
+    },
+    {
+      "fileMatch": ["/.github/renovate/*.json5"],
+      "url": "https://docs.renovatebot.com/renovate-schema.json"
+    }
+  ],
 }

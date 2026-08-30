@@ -30,6 +30,9 @@ export default defineConfig(({ mode }) => {
         },
       }),
       VitePWA({
+        // MSW は同じ scope の Service Worker を登録する。MSW モードでは PWA 自体を
+        // 無効化して、開発用・ビルド時のどちらでも Worker を生成・登録させない。
+        disable: mode === 'msw',
         registerType: 'autoUpdate',
         manifest: {
           name: 'rucQ',
