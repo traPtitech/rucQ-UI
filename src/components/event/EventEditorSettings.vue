@@ -139,10 +139,9 @@ onMounted(async () => {
     >
       <template #item="{ props: itemProps }">
         <v-list-item v-bind="itemProps">
-          <div class="d-flex align-center">
+          <template #prepend>
             <user-icon :id="String(itemProps.title)" :size="24" class="mr-2" />
-            <v-list-item-title :class="$style.itemTitle">{{ itemProps.title }}</v-list-item-title>
-          </div>
+          </template>
         </v-list-item>
       </template>
     </v-autocomplete>
