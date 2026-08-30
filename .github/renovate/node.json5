@@ -1,23 +1,23 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["replacements:tsconfig-bases-node"],
-  "packageRules": [
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: ['replacements:tsconfig-bases-node'],
+  packageRules: [
     {
-      "description": "Keep Node.js versions in one update",
+      description: 'Keep Node.js versions in one update',
       // Dockerfile、.node-version、package.jsonなど、以下のマネージャーが対応する
       // Node.jsの更新はここで一元的に管理する。
-      "matchManagers": ["dockerfile", "nodenv", "npm"],
-      "matchPackageNames": ["node", "@types/node", "@tsconfig/node**"],
-      "groupName": "Node.js",
-      "rangeStrategy": "bump",
+      matchManagers: ['dockerfile', 'nodenv', 'npm'],
+      matchPackageNames: ['node', '@types/node', '@tsconfig/node**'],
+      groupName: 'Node.js',
+      rangeStrategy: 'bump',
     },
     {
-      "description": "Automerge non-major Node.js updates",
-      "matchManagers": ["dockerfile", "nodenv", "npm"],
-      "matchPackageNames": ["node", "@types/node", "@tsconfig/node**"],
-      "matchUpdateTypes": ["minor", "patch", "digest", "pinDigest"],
-      "automerge": false,
-      "automergeType": "pr",
+      description: 'Automerge non-major Node.js updates',
+      matchManagers: ['dockerfile', 'nodenv', 'npm'],
+      matchPackageNames: ['node', '@types/node', '@tsconfig/node**'],
+      matchUpdateTypes: ['minor', 'patch', 'digest', 'pinDigest'],
+      automerge: false,
+      automergeType: 'pr',
     },
   ],
 }

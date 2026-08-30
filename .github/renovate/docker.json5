@@ -1,16 +1,16 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "packageRules": [
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  packageRules: [
     {
-      "description": "Group Docker non-major and digest updates",
-      "matchManagers": ["dockerfile"],
+      description: 'Group Docker non-major and digest updates',
+      matchManagers: ['dockerfile'],
       // Node.jsのDockerイメージはnode.json5でまとめて管理するため、ここでは除外する。
-      "matchPackageNames": ["!node"],
-      "matchUpdateTypes": ["minor", "patch", "digest", "pinDigest"],
-      "groupName": "Docker non-major dependencies",
+      matchPackageNames: ['!node'],
+      matchUpdateTypes: ['minor', 'patch', 'digest', 'pinDigest'],
+      groupName: 'Docker non-major dependencies',
       // 現在は無効化中。将来再開する場合はtrueに変更する。
-      "automerge": false,
-      "automergeType": "pr",
+      automerge: false,
+      automergeType: 'pr',
     },
   ],
 }
