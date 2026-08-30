@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "private": true,
   "type": "module",
   "scripts": {
@@ -18,7 +18,7 @@
     "lint:check": "eslint . --cache --cache-strategy content --cache-location .eslintcache --max-warnings=0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "generate:api": "npx openapi-typescript https://raw.githubusercontent.com/traPtitech/rucQ/main/openapi.yaml -o src/api/schema.d.ts && pnpm format"
+    "generate:api": "openapi-typescript https://raw.githubusercontent.com/traPtitech/rucQ/main/openapi.yaml -o src/api/schema.d.ts && pnpm format"
   },
   "packageManager": "pnpm@11.5.0",
   "engines": {

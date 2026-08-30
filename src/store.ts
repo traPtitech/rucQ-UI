@@ -66,11 +66,12 @@ export const useUserStore = defineStore('user', () => {
 
 export const useCampStore = defineStore('camp', () => {
   const queryClient = useQueryClient()
+  const userStore = useUserStore()
   const latestCamp = ref<Camp>()
   const allCamps = ref<Camp[]>([])
   const hasRegisteredLatest = ref(false) // 最新の合宿に参加登録済みかどうか
 
-  const initCamp = async (me: User) => {
+  const initCamp = async () => {
     const camps = await queryClient.ensureQueryData<Camp[]>({
       queryKey: qk.camps.lists(),
       queryFn: async () => {
@@ -100,7 +101,7 @@ export const useCampStore = defineStore('camp', () => {
         },
       },
     )
-    hasRegisteredLatest.value = participants.some((user) => user.id === me.id)
+    hasRegisteredLatest.value = participants.some((user) => user.id === userStore.user.id)
   }
 
   // パスパラメータから合宿を取得する関数
@@ -118,18 +119,15 @@ export const useCampStore = defineStore('camp', () => {
     })
     if (error) throw new Error(`合宿参加登録に失敗しました: ${error.message}`)
     hasRegisteredLatest.value = true
-    // 参加登録後は参加者リストを即時更新
-    const participantsKey = qk.camps.participants(campId)
 
-    await queryClient.fetchQuery({
-      queryKey: participantsKey,
-      queryFn: async () => {
-        const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
-          params: { path: { campId } },
-        })
-        if (error) throw new Error(`合宿参加者情報の取得に失敗しました: ${error.message}`)
-        return data
-      },
+    // 参加登録後は参加者リストのキャッシュに自分を追加
+    const participantsKey = qk.camps.participants(campId)
+    queryClient.setQueryData<User[]>(participantsKey, (participants) => {
+      if (!participants) return participants
+      if (participants.some((participant) => participant.id === userStore.user.id)) {
+        return participants
+      }
+      return [...participants, userStore.user]
     })
   }
 
@@ -139,19 +137,12 @@ export const useCampStore = defineStore('camp', () => {
     })
     if (error) throw new Error(`合宿参加取り消しに失敗しました: ${error.message}`)
     hasRegisteredLatest.value = false
-    // 参加取り消し後は参加者リストを即時更新
-    const participantsKey = qk.camps.participants(campId)
 
-    await queryClient.fetchQuery({
-      queryKey: participantsKey,
-      queryFn: async () => {
-        const { data, error } = await apiClient.GET('/api/camps/{campId}/participants', {
-          params: { path: { campId } },
-        })
-        if (error) throw new Error(`合宿参加者情報の取得に失敗しました: ${error.message}`)
-        return data
-      },
-    })
+    // 参加取り消し後は参加者リストのキャッシュから自分を除外
+    const participantsKey = qk.camps.participants(campId)
+    queryClient.setQueryData<User[]>(participantsKey, (participants) =>
+      participants?.filter((participant) => participant.id !== userStore.user.id),
+    )
   }
 
   // 指定した合宿がユーザーにとって操作可能かどうかを判定
