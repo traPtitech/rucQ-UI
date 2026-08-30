@@ -4,15 +4,19 @@
   "packageRules": [
     {
       "description": "Keep Node.js versions in one update",
+      // Dockerfile、.node-version、package.jsonなど、以下のマネージャーが対応する
+      // Node.jsの更新はここで一元的に管理する。
+      "matchManagers": ["dockerfile", "nodenv", "npm"],
       "matchPackageNames": ["node", "@types/node", "@tsconfig/node**"],
       "groupName": "Node.js",
       "rangeStrategy": "bump",
     },
     {
       "description": "Automerge non-major Node.js updates",
+      "matchManagers": ["dockerfile", "nodenv", "npm"],
       "matchPackageNames": ["node", "@types/node", "@tsconfig/node**"],
       "matchUpdateTypes": ["minor", "patch", "digest", "pinDigest"],
-      "automerge": true,
+      "automerge": false,
       "automergeType": "pr",
     },
   ],
