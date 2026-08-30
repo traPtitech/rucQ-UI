@@ -16,7 +16,7 @@ const campStore = useCampStore()
 
 const { allCamps } = storeToRefs(campStore)
 
-// RegistrationView においてだけは latestCamp が存在しない可能性があるので、ラップする
+// TopViewではlatestCampが存在しない可能性があるため、ラップする
 const latestCamp = computed(() => {
   try {
     return campStore.latestCamp
