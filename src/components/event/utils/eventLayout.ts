@@ -15,7 +15,7 @@ export type DayEventGroups = {
 }
 
 // events をグリッド上に配置し、日付ごと > まとまりごとに返す
-export const getLayout = (events: CampEvent[], camp: Camp) => {
+export const getLayout = (events: CampEvent[], camp: Camp): DayEventGroups[] => {
   return getDaysWithEvents(events, camp).map((day) => {
     const eventGroups = arrangeEvents(
       day.date,
