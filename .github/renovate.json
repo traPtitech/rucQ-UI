@@ -9,11 +9,12 @@
     "github>traPtitech/rucQ-UI//.github/renovate/labels.json5"
   ],
   "timezone": "Asia/Tokyo",
-  "minimumReleaseAge": "3 days",
+  "minimumReleaseAge": "7 days",
   "internalChecksFilter": "strict",
+  "automerge": false,
+  "automergeType": "pr",
   "prHourlyLimit": 5,
   "prConcurrentLimit": 10,
-  "labels": ["dependencies"],
   "vulnerabilityAlerts": {
     "enabled": true,
     "addLabels": ["security"]
