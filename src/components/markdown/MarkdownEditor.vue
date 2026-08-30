@@ -209,6 +209,9 @@ const enclose = (symbol: string) => {
   width: 100%;
   height: 100%;
   resize: none;
+  background-color: transparent;
+  border-style: none;
+  outline: none;
   line-height: 1.4;
   z-index: 1;
   color: transparent;
