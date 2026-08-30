@@ -19,12 +19,8 @@ const emit = defineEmits(['edit'])
     <v-dialog max-width="800">
       <template #activator="{ props: activatorProps }">
         <v-card link :color="eventColor" variant="flat" class="pa-2 h-100" v-bind="activatorProps">
-          <h4 :class="[$style.eventName, 'text-body-2 font-weight-bold text-white text-break']">
-            {{ props.event.name }}
-          </h4>
-          <h5
-            :class="[$style.eventLocation, 'text-caption font-weight-medium text-white text-break']"
-          >
+          <h4 class="text-body-2 font-weight-bold white text-break">{{ props.event.name }}</h4>
+          <h5 class="text-caption font-weight-medium white text-break">
             {{ props.event.location }}
           </h5>
         </v-card>
@@ -40,10 +36,3 @@ const emit = defineEmits(['edit'])
     </v-dialog>
   </div>
 </template>
-
-<style module>
-.eventName,
-.eventLocation {
-  line-height: 1.25rem;
-}
-</style>

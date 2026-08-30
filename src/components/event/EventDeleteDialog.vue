@@ -45,8 +45,6 @@ const emit = defineEmits(['delete'])
 
 <style module>
 .text {
-  border: none;
-  background: transparent;
   display: block;
   width: fit-content;
   text-align: center;

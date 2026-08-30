@@ -82,6 +82,10 @@ onMounted(async () => {
   participantIds.value = (await getParticipants(props.camp)).map((p) => p.id)
 })
 
+const getListItemProps = (props: Record<string, unknown>) => {
+  return { ...props, title: '' } // デフォルトのタイトル表示を抑制し、手前にユーザーアイコンを差し込む
+}
+
 </script>
 
 <template>
@@ -137,11 +141,12 @@ onMounted(async () => {
       variant="underlined"
       required
     >
-      <template #item="{ props: itemProps }">
-        <v-list-item v-bind="itemProps">
-          <template #prepend>
-            <user-icon :id="String(itemProps.title)" :size="24" class="mr-2" />
-          </template>
+      <template #item="{ props: itemProps, item }">
+        <v-list-item v-bind="getListItemProps(itemProps)">
+          <div class="d-flex align-center">
+            <user-icon :id="item.value" :size="24" class="mr-2" />
+            <v-list-item-title :class="$style.itemTitle">{{ item.value }}</v-list-item-title>
+          </div>
         </v-list-item>
       </template>
     </v-autocomplete>
