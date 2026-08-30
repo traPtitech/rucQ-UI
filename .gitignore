@@ -31,7 +31,6 @@ coverage
 *.tsbuildinfo
 
 .eslintcache
-.prettier-cache
 
 .env.local
 .env.*.local

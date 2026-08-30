@@ -1,4 +1,4 @@
-name: CI
+name: Lint and Format
 
 on:
   pull_request:
@@ -10,8 +10,8 @@ permissions:
   contents: read
 
 jobs:
-  quality:
-    name: Code quality
+  lint-and-format:
+    name: Lint and Format
     runs-on: ubuntu-24.04
 
     steps:
