@@ -85,7 +85,6 @@ onMounted(async () => {
 const getListItemProps = (props: Record<string, unknown>) => {
   return { ...props, title: '' } // デフォルトのタイトル表示を抑制し、手前にユーザーアイコンを差し込む
 }
-
 </script>
 
 <template>
