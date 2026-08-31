@@ -17,3 +17,6 @@ allowBuilds:
   msw: false
   sharp: false
   vue-demi: false
+minimumReleaseAgeExclude:
+  # Renovate security update: markdown-it@14.2.0
+  - markdown-it@14.2.0
