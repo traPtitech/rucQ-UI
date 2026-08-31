@@ -17,3 +17,6 @@ allowBuilds:
   msw: false
   sharp: false
   vue-demi: false
+minimumReleaseAgeExclude:
+  # Renovate security update: axios@1.18.0
+  - axios@1.18.0
