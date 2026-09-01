@@ -3,6 +3,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true
   },
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
   "json.schemaDownload.trustedDomains": {
     "https://docs.renovatebot.com/": true
   },
@@ -15,6 +16,5 @@
       "fileMatch": ["/.github/renovate/*.json5"],
       "url": "https://docs.renovatebot.com/renovate-schema.json"
     }
-  ],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  ]
 }

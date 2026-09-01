@@ -36,13 +36,7 @@ const campIconUrl = computed(() => {
 <template>
   <v-app-bar v-if="xs" elevation="2" color="white" density="comfortable" :class="$style.appBar">
     <template #prepend>
-      <img
-        :src="campIconUrl"
-        alt="rucQ Icon"
-        width="44"
-        height="44"
-        :class="$style.icon"
-      />
+      <img :src="campIconUrl" alt="rucQ Icon" width="44" height="44" :class="$style.icon" />
     </template>
     <v-app-bar-title :class="isArchived ? $style.archivedTitle : 'text-primary'">
       <span :class="$style.routeTitle">{{ route.name }} </span>

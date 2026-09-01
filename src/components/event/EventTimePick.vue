@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import type { components } from '@/api/schema'
 import { nextTick, ref, watch, onMounted } from 'vue'
-import type { VTextField } from 'vuetify/components'
 
 type DurationEvent = components['schemas']['DurationEventResponse']
 type EventColor = DurationEvent['displayColor']
-
-const textFieldRef = ref<VTextField>()
 
 defineProps<{
   color: EventColor
@@ -61,7 +58,6 @@ defineExpose({ validate })
   <v-dialog ref="dialog" persistent :v-model:prop-name="timePick">
     <template #activator="{ props: activatorProps }">
       <v-text-field
-        ref="textFieldRef"
         v-model="timePick"
         :label="label"
         prepend-inner-icon="mdi-clock-time-four-outline"

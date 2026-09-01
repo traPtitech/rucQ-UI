@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MasonryWall from '@yeger/vue-masonry-wall'
+import { MasonryWall } from '@yeger/vue-masonry-wall'
 import PaymentInfo from '@/components/information/PaymentInfo.vue'
 import RoomInfo from '@/components/information/RoomInfo.vue'
 import { apiClient } from '@/api/apiClient'

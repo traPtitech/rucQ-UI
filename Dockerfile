@@ -1,5 +1,5 @@
 # Node.js のベースイメージを使用（LTS版）
-FROM node:22.22.0-alpine@sha256:e4bf2a82ad0a4037d28035ae71529873c069b13eb0455466ae0bc13363826e34 AS builder
+FROM node:24.18.0-alpine@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd AS builder
 
 # 作業ディレクトリを設定
 WORKDIR /app
