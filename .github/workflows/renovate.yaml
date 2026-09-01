@@ -2,11 +2,11 @@ name: Renovate
 
 on:
   push:
-    branches: ["main"]
+    branches: ['main']
 
   schedule:
     # Every day at 5 a.m. JST
-    - cron: "0 20 * * *"
+    - cron: '0 20 * * *'
 
   workflow_dispatch:
     inputs:
@@ -37,7 +37,7 @@ jobs:
         with:
           app-id: ${{ secrets.RENOVATE_APP_ID }}
           private-key: ${{ secrets.RENOVATE_APP_PRIVATE_KEY }}
-          repositories: "rucQ-UI"
+          repositories: 'rucQ-UI'
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
