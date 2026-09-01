@@ -16,3 +16,6 @@ allowBuilds:
   msw: true
   sharp: false
   vue-demi: false
+minimumReleaseAgeExclude:
+  # Renovate security update: dompurify@3.4.13
+  - dompurify@3.4.13
