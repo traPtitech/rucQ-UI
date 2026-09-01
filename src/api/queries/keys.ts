@@ -28,7 +28,7 @@ const questionKeys = {
 
 const iconKeys = {
   all: ['icons'] as const,
-  user: (id: string) => ['icons', 'user', id] as const,
+  user: (id: string, size: number) => ['icons', 'user', id, size] as const,
 }
 
 const roomKeys = {

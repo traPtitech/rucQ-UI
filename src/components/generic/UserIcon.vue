@@ -20,7 +20,11 @@ const imageStyle = {
   cursor: props.idTooltip ? 'pointer' : 'default',
 }
 
-const directUrl = `https://q.trap.jp/api/v3/public/icon/${userId}`
+const proxyUrl = new URL(`https://image-proxy.trap.jp/icon/${userId}`)
+const fetchSize = props.size * 2 // 等倍だと画質が荒いので倍にしておく
+proxyUrl.searchParams.set('width', String(fetchSize))
+proxyUrl.searchParams.set('height', String(fetchSize))
+proxyUrl.searchParams.set('format', 'webp')
 
 const {
   data: cachedIconUrl,
@@ -28,23 +32,22 @@ const {
   isFetching,
   isError,
 } = useQuery<string, Error>({
-  queryKey: qk.icons.user(userId),
+  queryKey: qk.icons.user(userId, props.size),
   staleTime: 24 * 60 * 60_000, // 24h
   gcTime: 24 * 60 * 60_000, // 24h
   retry: 0,
   // データURLで保存する
   queryFn: async () => {
-    const res = await fetch(directUrl)
+    const res = await fetch(proxyUrl)
     if (!res.ok) throw new Error(`アイコンを取得できませんでした: ${res.status}`)
 
     const blob = await res.blob()
-    const dataUrl = await new Promise<string>((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
       const reader = new FileReader()
       reader.onloadend = () => resolve(reader.result as string)
       reader.onerror = () => reject(new Error('アイコンの変換に失敗しました'))
       reader.readAsDataURL(blob)
     })
-    return dataUrl
   },
 })
 
