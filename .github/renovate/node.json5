@@ -9,7 +9,6 @@
       matchManagers: ['dockerfile', 'nodenv', 'npm'],
       matchPackageNames: ['node', '@types/node', '@tsconfig/node**'],
       groupName: 'Node.js',
-      rangeStrategy: 'bump',
     },
     {
       description: 'Automerge non-major Node.js updates',

@@ -8,6 +8,7 @@
     "github>traPtitech/rucQ-UI//.github/renovate/node.json5",
     "github>traPtitech/rucQ-UI//.github/renovate/labels.json5"
   ],
+  "rangeStrategy": "pin",
   "timezone": "Asia/Tokyo",
   "minimumReleaseAge": "7 days",
   "internalChecksFilter": "strict",
