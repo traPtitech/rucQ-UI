@@ -20,6 +20,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :rules="[requiredRule]"
     :disabled="!question.isOpen"
     variant="underlined"
+    :class="$style.wrapText"
   ></v-text-field>
   <v-number-input
     v-if="question.type === 'free_number'"
@@ -30,6 +31,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :disabled="!question.isOpen"
     variant="underlined"
     control-variant="hidden"
+    :class="$style.wrapText"
   ></v-number-input>
   <v-select
     v-if="question.type === 'single'"
@@ -42,7 +44,18 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :items="question.options"
     :item-value="(option) => option.id"
     :item-title="(option) => option.content"
-  ></v-select>
+    :class="$style.wrapText"
+  >
+  <template #item="{ props, item }">
+    <v-list-item v-bind="props">
+      <template #title>
+        <span style="white-space: normal;">
+        {{ item.title }}
+        </span>
+      </template>
+    </v-list-item>
+  </template>
+  </v-select>
   <v-select
     v-if="question.type === 'multiple'"
     v-model="(value as number[])"
@@ -55,5 +68,22 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :items="question.options"
     :item-value="(option) => option.id"
     :item-title="(option) => option.content"
-  ></v-select>
+    :class="$style.wrapText"
+  >
+    <template #item="{ props, item }">
+      <v-list-item v-bind="props">
+        <template #title>
+          <span style="white-space: normal;">
+          {{ item.title }}
+          </span>
+        </template>
+      </v-list-item>
+    </template>
+  </v-select>
 </template>
+
+<style module>
+.wrapText :global(.v-select__selection-text) {
+  white-space: normal !important;
+}
+</style>
