@@ -37,7 +37,7 @@
     "@yeger/vue-masonry-wall": "6.1.4",
     "dompurify": "^3.4.11",
     "localforage": "1.10.0",
-    "markdown-it": "14.3.0",
+    "markdown-it": "15.0.1",
     "msw": "2.14.6",
     "openapi-fetch": "0.17.0",
     "openapi-msw": "2.0.0",
