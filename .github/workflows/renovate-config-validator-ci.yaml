@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Validate Renovate global configuration
-        run: npx --yes --package renovate@43.261.4 -- renovate-config-validator --strict .github/renovate-bot.json5
+        run: npx --yes --package renovate@44.74.0 -- renovate-config-validator --strict .github/renovate-bot.json5
 
       - name: Validate Renovate repository configuration
-        run: npx --yes --package renovate@43.261.4 -- renovate-config-validator --strict --no-global .github/renovate.json .github/renovate/*.json5
+        run: npx --yes --package renovate@44.74.0 -- renovate-config-validator --strict --no-global .github/renovate.json .github/renovate/*.json5
