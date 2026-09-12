@@ -45,7 +45,7 @@
     "vite-plugin-vuetify": "2.1.1",
     "vue": "3.5.39",
     "vue-router": "5.1.0",
-    "vuetify": "3.9.5"
+    "vuetify": "4.2.1"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
