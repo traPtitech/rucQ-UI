@@ -26,7 +26,7 @@ ENV COMMIT_HASH=$COMMIT_HASH
 RUN pnpm run build
 
 # 本番用のCaddyイメージ
-FROM caddy:2-alpine@sha256:86deaf5e3d3408a6ccec08fbb79989783dd26e206ae10bcf78a801dc8c9ab794
+FROM caddy:2-alpine@sha256:d8542f48d34a9cf4e4c11a478865229840e87e4c96ea3f439101f31a5d35f75f
 
 # CaddyfileをコピーしてSPAルーティングを有効化
 COPY Caddyfile /etc/caddy/Caddyfile
