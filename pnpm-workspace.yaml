@@ -19,3 +19,5 @@ allowBuilds:
 minimumReleaseAgeExclude:
   # Renovate security update: markdown-it@14.3.1
   - markdown-it@14.3.1
+  # Renovate security update: dompurify@3.4.16
+  - dompurify@3.4.16
