@@ -69,10 +69,12 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
         size="45"
         elevation="0"
         variant="text"
-        icon="mdi-close"
+        icon
         :class="[$style.closeButton, isSubject ? 'text-white' : 'text-black']"
         @click="router.push(fullPath('activities'))"
-      ></v-btn>
+      >
+        <v-icon size="30" icon="mdi-close" />
+      </v-btn>
       <div :class="$style.headerBg">
         <background-pattern :variant="isSubject ? 'primary' : 'light'" />
       </div>
@@ -151,10 +153,6 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
   position: absolute;
   top: 20px;
   left: 20px;
-}
-
-.closeButton :global(.v-icon) {
-  font-size: 30px !important;
 }
 
 .title {
