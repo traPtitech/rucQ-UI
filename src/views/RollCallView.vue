@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useCampStore, useUserStore } from '@/store'
 import { apiClient } from '@/api/apiClient'
 import type { components } from '@/api/schema'
@@ -10,9 +10,12 @@ import { useRollCallStream } from '@/components/rollcall/rollCallStream'
 
 type RollCall = components['schemas']['RollCallResponse']
 
+const router = useRouter()
 const route = useRoute()
 const campStore = useCampStore()
 const userStore = useUserStore()
+
+const fullPath = (path: string) => `/${route.params.campname as string}${path ? `/${path}` : ''}`
 
 const rollcall = ref<RollCall>()
 const stream = useRollCallStream(rollcall, userStore.user.id)
@@ -62,6 +65,16 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
   <div class="position-relative">
     <background-pattern variant="light" />
     <div :class="[$style.header, `text-${isSubject ? 'white' : 'black'}`]">
+      <v-btn
+        size="45"
+        elevation="0"
+        variant="text"
+        icon
+        :class="[$style.closeButton, isSubject ? 'text-white' : 'text-black']"
+        @click="router.push(fullPath('activities'))"
+      >
+        <v-icon size="30" icon="mdi-close" />
+      </v-btn>
       <div :class="$style.headerBg">
         <background-pattern :variant="isSubject ? 'primary' : 'light'" />
       </div>
@@ -134,6 +147,12 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
   height: calc(100% + 2000px); /* その分戻す */
   z-index: -1;
   clip-path: inset(0 0 20px 0);
+}
+
+.closeButton {
+  position: absolute;
+  top: 20px;
+  left: 20px;
 }
 
 .title {
