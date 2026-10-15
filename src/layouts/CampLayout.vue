@@ -46,6 +46,7 @@ const campName = computed(() => displayCamp.value?.name)
       </div>
       <div
         :style="{
+          height: '100%',
           paddingTop: routerViewPadding,
           '--router-view-top-offset': routerViewPadding,
         }"
