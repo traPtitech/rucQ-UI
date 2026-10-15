@@ -70,10 +70,11 @@ const headings = ref<HeadingInfo[]>([])
 .sidebar {
   width: 280px;
   padding: 40px 16px;
-  height: 100%;
   overflow-y: auto;
   flex-shrink: 0;
   right: 0;
   position: fixed;
+  top: var(--router-view-top-offset, 0px);
+  bottom: 0;
 }
 </style>
