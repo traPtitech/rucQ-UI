@@ -27,7 +27,7 @@ const isArchived = computed(() => {
   return displayCamp.value ? timeStore.isCampEnded(displayCamp.value) : false
 })
 
-const routerViewMargin = computed(() => {
+const routerViewPadding = computed(() => {
   return isArchived.value && !xs.value ? '50px' : '0px'
 })
 
@@ -44,7 +44,15 @@ const campName = computed(() => displayCamp.value?.name)
         <v-icon>mdi-archive</v-icon>
         <span>{{ campName }} はアーカイブ済みです</span>
       </div>
-      <router-view :style="{ marginTop: routerViewMargin }" />
+      <div
+        :style="{
+          height: '100%',
+          paddingTop: routerViewPadding,
+          '--router-view-top-offset': routerViewPadding,
+        }"
+      >
+        <router-view />
+      </div>
     </v-main>
   </template>
   <template v-else>
