@@ -25,10 +25,10 @@ export const questionsHandlers = [
           },
           {
             id: 4,
-            title: 'スキーセット',
+            title: 'スキーセットを借りるか借りないかを教えてください',
             type: 'single',
             options: [
-              { id: 7, content: '借りる' },
+              { id: 7, content: '借りるかもしれないしかりないかもしれない、この文章は長いので折り返される。スキー好き' },
               { id: 8, content: '借りない' },
             ],
             isPublic: false,
