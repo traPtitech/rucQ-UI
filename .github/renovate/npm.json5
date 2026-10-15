@@ -2,6 +2,15 @@
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   packageRules: [
     {
+      description: 'Align npm release age with pnpm supply-chain policy',
+      // config:best-practices が含む npm 向けの 3 日待機ルールを上書きする。
+      // トップレベルの minimumReleaseAge より packageRules が優先されるため、
+      // pnpm-workspace.yaml の 10080 分（7 日）とここを合わせる。
+      matchDatasources: ['npm'],
+      matchUpdateTypes: ['major', 'minor', 'patch'],
+      minimumReleaseAge: '7 days',
+    },
+    {
       description: 'Group npm minor and patch updates',
       matchManagers: ['npm'],
       // Node.js関連パッケージはnode.json5でまとめて管理するため、ここでは除外する。
