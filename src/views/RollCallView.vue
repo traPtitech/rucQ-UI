@@ -27,6 +27,8 @@ const handleRadioChange = (value: string | null) => {
   if (value !== null) void chooseOption(value)
 }
 
+const isLoading = ref(true)
+
 // 点呼情報を取得
 const getRollCall = async () => {
   const camp = campStore.getCampByDisplayId(route.params.campname as string)
@@ -45,12 +47,16 @@ const isSubject = computed(() => {
 })
 
 onMounted(async () => {
-  // 点呼情報取得
-  rollcall.value = await getRollCall()
-  if (!rollcall.value) return
+  try {
+    // 点呼情報取得
+    rollcall.value = await getRollCall()
+    if (!rollcall.value) return
 
-  // stream/composable を初期化
-  await init()
+    // stream/composable を初期化
+    await init()
+  } finally {
+    isLoading.value = false
+  }
 })
 
 onBeforeUnmount(() => {
@@ -62,73 +68,94 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
 </script>
 
 <template>
-  <div class="position-relative">
+  <div :class="$style.container">
     <background-pattern variant="light" />
-    <div :class="[$style.header, `text-${isSubject ? 'white' : 'black'}`]">
-      <v-btn
-        size="45"
-        elevation="0"
-        variant="text"
-        icon
-        :class="[$style.closeButton, isSubject ? 'text-white' : 'text-black']"
-        @click="router.push(fullPath('activities'))"
-      >
-        <v-icon size="30" icon="mdi-close" />
-      </v-btn>
-      <div :class="$style.headerBg">
-        <background-pattern :variant="isSubject ? 'primary' : 'light'" />
-      </div>
-      <div :class="$style.title">{{ rollcall?.name }}</div>
-      <div :class="$style.description">{{ rollcall?.description }}</div>
-      <div :class="$style.unanswered">
-        <user-response
-          v-if="rollcall"
-          title="未回答"
-          :user-ids="grouped.unanswered"
-          :text-color="isSubject ? 'white' : 'black'"
-        />
-      </div>
-      <div class="d-flex justify-center mt-2">
+    <div v-if="isLoading" :class="$style.loading">
+      <v-progress-circular indeterminate size="56" color="primary" class="mb-3" />
+      <h3 class="font-weight-bold">点呼を読み込み中…</h3>
+    </div>
+    <template v-else>
+      <div :class="[$style.header, `text-${isSubject ? 'white' : 'black'}`]">
         <v-btn
-          variant="flat"
-          :class="$style.shadow"
-          :href="channelUrl"
-          target="_blank"
-          rel="noopener noreferrer"
+          size="45"
+          elevation="0"
+          variant="text"
+          icon
+          :class="[$style.closeButton, isSubject ? 'text-white' : 'text-black']"
+          @click="router.push(fullPath('activities'))"
         >
-          <div class="d-flex align-center">
-            <img src="/src/assets/traq.svg" alt="traQ" height="20" class="mr-1" />
-            <div :class="$style.buttonText">traQ で連絡する</div>
-          </div>
+          <v-icon size="30" icon="mdi-close" />
         </v-btn>
+        <div :class="$style.headerBg">
+          <background-pattern :variant="isSubject ? 'primary' : 'light'" />
+        </div>
+        <div :class="$style.title">{{ rollcall?.name }}</div>
+        <div :class="$style.description">{{ rollcall?.description }}</div>
+        <div :class="$style.unanswered">
+          <user-response
+            v-if="rollcall"
+            title="未回答"
+            :user-ids="grouped.unanswered"
+            :text-color="isSubject ? 'white' : 'black'"
+          />
+        </div>
+        <div class="d-flex justify-center mt-2">
+          <v-btn
+            variant="flat"
+            :class="$style.shadow"
+            :href="channelUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div class="d-flex align-center">
+              <img src="/src/assets/traq.svg" alt="traQ" height="20" class="mr-1" />
+              <div :class="$style.buttonText">traQ で連絡する</div>
+            </div>
+          </v-btn>
+        </div>
+        <div v-if="!isSubject" :class="[$style.notSubject, 'text-primary']">点呼の対象外です</div>
       </div>
-      <div v-if="!isSubject" :class="[$style.notSubject, 'text-primary']">点呼の対象外です</div>
-    </div>
-    <div :class="$style.body">
-      <v-radio-group :model-value="myReaction?.content" @update:model-value="handleRadioChange">
-        <v-card
-          v-for="opt in grouped.options"
-          :key="opt.name"
-          variant="flat"
-          :class="$style.shadow"
-          class="mb-5"
-          :color="myReaction?.content === opt.name ? 'primary' : 'white'"
-        >
-          <v-card-text class="d-flex justify-space-between py-3 px-2">
-            <v-radio color="white" :value="opt.name" :disabled="!isSubject" />
-            <user-response
-              :title="opt.name"
-              :user-ids="opt.ids"
-              :text-color="myReaction?.content === opt.name ? 'white' : 'black'"
-            />
-          </v-card-text>
-        </v-card>
-      </v-radio-group>
-    </div>
+      <div :class="$style.body">
+        <v-radio-group :model-value="myReaction?.content" @update:model-value="handleRadioChange">
+          <v-card
+            v-for="opt in grouped.options"
+            :key="opt.name"
+            variant="flat"
+            :class="$style.shadow"
+            class="mb-5"
+            :color="myReaction?.content === opt.name ? 'primary' : 'white'"
+          >
+            <v-card-text class="d-flex justify-space-between py-3 px-2">
+              <v-radio color="white" :value="opt.name" :disabled="!isSubject" />
+              <user-response
+                :title="opt.name"
+                :user-ids="opt.ids"
+                :text-color="myReaction?.content === opt.name ? 'white' : 'black'"
+              />
+            </v-card-text>
+          </v-card>
+        </v-radio-group>
+      </div>
+    </template>
   </div>
 </template>
 
 <style module>
+.container {
+  position: relative;
+  min-height: 100vh;
+}
+
+.loading {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .header {
   width: 100%;
   position: relative;
