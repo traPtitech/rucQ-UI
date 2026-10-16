@@ -74,18 +74,18 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
       <v-progress-circular indeterminate size="56" color="primary" class="mb-3" />
       <h3 class="font-weight-bold">点呼を読み込み中…</h3>
     </div>
-    <template v-else>
-      <div :class="[$style.header, `text-${isSubject ? 'white' : 'black'}`]">
-        <v-btn
-          size="45"
-          elevation="0"
-          variant="text"
-          icon
-          :class="[$style.closeButton, isSubject ? 'text-white' : 'text-black']"
-          @click="router.push(fullPath('activities'))"
-        >
-          <v-icon size="30" icon="mdi-close" />
-        </v-btn>
+    <div :class="[$style.header, `text-${isSubject ? 'white' : 'black'}`]">
+      <v-btn
+        size="45"
+        elevation="0"
+        variant="text"
+        icon
+        :class="[$style.closeButton, !isLoading && isSubject ? 'text-white' : 'text-black']"
+        @click="router.push(fullPath('activities'))"
+      >
+        <v-icon size="30" icon="mdi-close" />
+      </v-btn>
+      <template v-if="!isLoading">
         <div :class="$style.headerBg">
           <background-pattern :variant="isSubject ? 'primary' : 'light'" />
         </div>
@@ -114,29 +114,29 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
           </v-btn>
         </div>
         <div v-if="!isSubject" :class="[$style.notSubject, 'text-primary']">点呼の対象外です</div>
-      </div>
-      <div :class="$style.body">
-        <v-radio-group :model-value="myReaction?.content" @update:model-value="handleRadioChange">
-          <v-card
-            v-for="opt in grouped.options"
-            :key="opt.name"
-            variant="flat"
-            :class="$style.shadow"
-            class="mb-5"
-            :color="myReaction?.content === opt.name ? 'primary' : 'white'"
-          >
-            <v-card-text class="d-flex justify-space-between py-3 px-2">
-              <v-radio color="white" :value="opt.name" :disabled="!isSubject" />
-              <user-response
-                :title="opt.name"
-                :user-ids="opt.ids"
-                :text-color="myReaction?.content === opt.name ? 'white' : 'black'"
-              />
-            </v-card-text>
-          </v-card>
-        </v-radio-group>
-      </div>
-    </template>
+      </template>
+    </div>
+    <div v-if="!isLoading" :class="$style.body">
+      <v-radio-group :model-value="myReaction?.content" @update:model-value="handleRadioChange">
+        <v-card
+          v-for="opt in grouped.options"
+          :key="opt.name"
+          variant="flat"
+          :class="$style.shadow"
+          class="mb-5"
+          :color="myReaction?.content === opt.name ? 'primary' : 'white'"
+        >
+          <v-card-text class="d-flex justify-space-between py-3 px-2">
+            <v-radio color="white" :value="opt.name" :disabled="!isSubject" />
+            <user-response
+              :title="opt.name"
+              :user-ids="opt.ids"
+              :text-color="myReaction?.content === opt.name ? 'white' : 'black'"
+            />
+          </v-card-text>
+        </v-card>
+      </v-radio-group>
+    </div>
   </div>
 </template>
 
@@ -150,6 +150,7 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
   position: fixed;
   inset: 0;
   z-index: 2;
+  pointer-events: none;
   display: flex;
   flex-direction: column;
   align-items: center;
