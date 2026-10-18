@@ -2,6 +2,7 @@
 import ActivityLayout from '@/components/activity/ActivityLayout.vue'
 import RollCallActivity from '@/components/activity/RollCallActivity.vue'
 import QuestionActivity from '@/components/activity/QuestionActivity.vue'
+import LoadingWithText from '@/components/generic/LoadingWithText.vue'
 import { apiClient } from '@/api/apiClient'
 import { qk } from '@/api/queries/keys'
 import type { components } from '@/api/schema'
@@ -61,14 +62,10 @@ const dailyActivities = computed(() => {
 <template>
   <div class="position-relative w-100 h-100">
     <!-- Loading -->
-    <div
+    <loading-with-text
       v-if="!activities || (activities.length === 0 && (isPending || isFetching))"
-      class="d-flex flex-column align-center justify-center w-100 h-100"
-    >
-      <v-progress-circular indeterminate size="56" color="primary" class="mb-3" />
-      <h3 class="font-weight-bold">アクティビティを読み込み中…</h3>
-    </div>
-
+      message="アクティビティを読み込み中…"
+    ></loading-with-text>
     <!-- Empty state -->
     <div
       v-else-if="activities && activities.length === 0"
