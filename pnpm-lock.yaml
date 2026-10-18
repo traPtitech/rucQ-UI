@@ -39,7 +39,7 @@ importers:
         specifier: 6.1.4
         version: 6.1.4(vue@3.5.39(typescript@5.9.3))
       dompurify:
-        specifier: ^3.4.11
+        specifier: 3.4.16
         version: 3.4.16
       localforage:
         specifier: 1.10.0
