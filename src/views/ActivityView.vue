@@ -64,7 +64,6 @@ const dailyActivities = computed(() => {
     <!-- Loading -->
     <loading-with-text
       v-if="!activities || (activities.length === 0 && (isPending || isFetching))"
-      class="d-flex flex-column align-center justify-center w-100 h-100"
       message="アクティビティを読み込み中…"
     ></loading-with-text>
     <!-- Empty state -->

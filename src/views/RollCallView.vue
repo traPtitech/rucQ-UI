@@ -71,11 +71,6 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
 <template>
   <div :class="$style.container">
     <background-pattern variant="light" />
-    <loading-with-text
-      v-if="isLoading"
-      :class="$style.loading"
-      message="点呼を読み込み中…"
-    ></loading-with-text>
     <v-btn
       size="45"
       elevation="0"
@@ -86,7 +81,12 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
     >
       <v-icon size="30" icon="mdi-close" />
     </v-btn>
-    <template v-if="!isLoading">
+    <loading-with-text
+      v-if="isLoading"
+      :class="$style.loading"
+      message="点呼を読み込み中…"
+    ></loading-with-text>
+    <template v-else>
       <div :class="[$style.header, `text-${isSubject ? 'white' : 'black'}`]">
         <div :class="$style.headerBg">
           <background-pattern :variant="isSubject ? 'primary' : 'light'" />
@@ -152,10 +152,6 @@ const channelUrl = computed(() => `https://q.trap.jp/channels/${import.meta.env.
   position: fixed;
   inset: 0;
   z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 
 .header {

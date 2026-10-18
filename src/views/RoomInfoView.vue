@@ -37,7 +37,6 @@ const {
     <!-- Loading -->
     <loading-with-text
       v-if="!roomGroups || (roomGroups.length === 0 && (isPending || isFetching))"
-      class="d-flex flex-column align-center justify-center w-100 h-100"
       message="部屋割を読み込み中…"
     ></loading-with-text>
 
