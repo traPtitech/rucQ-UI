@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import type { components } from '@/api/schema'
+import type { PaymentResponse as Payment } from '@/api/generated/client.schemas'
 
-type Payment = components['schemas']['PaymentResponse']
+import { computed } from 'vue'
 
 const props = defineProps<{ isReady: boolean; payment?: Payment }>()
 

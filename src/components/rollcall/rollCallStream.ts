@@ -1,12 +1,21 @@
+import {
+  RollCallReactionCreatedEventType,
+  RollCallReactionDeletedEventType,
+  RollCallReactionUpdatedEventType,
+} from '@/api/generated/client.schemas'
+import type {
+  RollCallReactionEvent,
+  RollCallReactionResponse as RollCallReaction,
+  RollCallResponse as RollCall,
+} from '@/api/generated/client.schemas'
 import { ref, computed, type Ref } from 'vue'
-import { apiClient } from '@/api/apiClient'
-import type { components } from '@/api/schema'
+import {
+  usePostRollCallReaction,
+  usePutReaction,
+  getRollCallReactions,
+} from '@/api/generated/client'
 
 // 同一ユーザーが複数リアクションを送信していない前提
-
-type RollCallReactionEvent = components['schemas']['RollCallReactionEvent']
-type RollCall = components['schemas']['RollCallResponse']
-type RollCallReaction = components['schemas']['RollCallReactionResponse']
 
 // 点呼リアクションの SSE 購読
 const listenRollCallReactions = (
@@ -37,6 +46,8 @@ const listenRollCallReactions = (
 
 // 点呼リアクションの送受信を行う composable
 export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: string) {
+  const postReaction = usePostRollCallReaction()
+  const updateReaction = usePutReaction()
   const reactions = ref<RollCallReaction[]>([])
   const stopStream = ref<() => void>()
 
@@ -49,17 +60,13 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
   // すでに存在するリアクション一覧を取得
   const fetchReactions = async () => {
     if (!rollcall.value) throw new Error('rollcall is not set')
-    const { data, error } = await apiClient.GET('/api/roll-calls/{rollCallId}/reactions', {
-      params: { path: { rollCallId: rollcall.value.id } },
-    })
-    if (error) throw new Error(`リアクションの取得に失敗しました: ${error.message}`)
-    return data
+    return getRollCallReactions(rollcall.value.id)
   }
 
   // SSE イベントを現在の状態に反映するヘルパー
   const applyEvent = (ev: RollCallReactionEvent) => {
     switch (ev.type) {
-      case 'created': {
+      case RollCallReactionCreatedEventType.created: {
         // 同一ユーザーのリアクションを上書きまたは push
         const idx = reactions.value.findIndex((r) => r.userId === ev.userId)
         const entry = { id: ev.id, userId: ev.userId, content: ev.content }
@@ -67,7 +74,7 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
         else reactions.value.push(entry)
         break
       }
-      case 'updated': {
+      case RollCallReactionUpdatedEventType.updated: {
         const idx = reactions.value.findIndex((r) => r.id === ev.id)
         if (idx >= 0)
           reactions.value[idx] = {
@@ -77,7 +84,7 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
           }
         break
       }
-      case 'deleted': {
+      case RollCallReactionDeletedEventType.deleted: {
         reactions.value = reactions.value.filter((r) => r.id !== ev.id)
         break
       }
@@ -111,19 +118,17 @@ export function useRollCallStream(rollcall: Ref<RollCall | undefined>, userId: s
     try {
       inFlight.value = true
       if (!myReaction.value) {
-        const { data, error } = await apiClient.POST('/api/roll-calls/{rollCallId}/reactions', {
-          params: { path: { rollCallId: rollcall.value.id } },
-          body: { content },
+        const data = await postReaction.mutateAsync({
+          rollCallId: rollcall.value.id,
+          data: { content },
         })
-        if (error) throw new Error(`リアクションの送信に失敗しました: ${error.message}`)
         reactions.value.push(data)
       } else {
         // すでにリアクションがある場合は更新
-        const { data, error } = await apiClient.PUT('/api/reactions/{reactionId}', {
-          params: { path: { reactionId: myReaction.value.id } },
-          body: { content },
+        const data = await updateReaction.mutateAsync({
+          reactionId: myReaction.value.id,
+          data: { content },
         })
-        if (error) throw new Error(`リアクションの更新に失敗しました: ${error.message}`)
         const idx = reactions.value.findIndex((r) => r.id === data.id)
         if (idx >= 0) reactions.value[idx] = data
       }

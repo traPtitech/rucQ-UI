@@ -1,30 +1,30 @@
 <script setup lang="ts">
-import type { components } from '@/api/schema'
+import { RoomStatusType } from '@/api/generated/client.schemas'
+import type { RoomResponse as Room } from '@/api/generated/client.schemas'
+
+import { useCurrentUser } from '@/composables/useCurrentUser'
 import RoomStatusDialog from '@/components/room/RoomStatusDialog.vue'
 import UserIcon from '@/components/generic/UserIcon.vue'
-import { useUserStore } from '@/store'
 import { computed } from 'vue'
-
-type Room = components['schemas']['RoomResponse']
 
 const props = defineProps<{
   room: Room
   campId: number
 }>()
 
-const userStore = useUserStore()
+const { user: currentUser } = useCurrentUser()
 
 const isMyRoom = (room: Room) => {
-  return room.members.some((member) => member.id === userStore.user.id)
+  return room.members.some((member) => member.id === currentUser.value.id)
 }
 
 const lineColor = computed(() => (isMyRoom(props.room) ? 'primaryLight' : 'primary'))
 const lineColorText = computed(() => `rgb(var(--v-theme-${lineColor.value}))`)
 const statusColor = computed(() => {
   switch (props.room.status.type) {
-    case 'active':
+    case RoomStatusType.active:
       return 'green'
-    case 'inactive':
+    case RoomStatusType.inactive:
       return 'red'
     default:
       return 'grey'
@@ -57,7 +57,7 @@ const statusColor = computed(() => {
           >
             <user-icon :size="26" class="ma-1" :class="$style.userIcon" />
             <user-icon
-              v-for="user in room.members.filter((u) => u.id !== userStore.user.id)"
+              v-for="user in room.members.filter((u) => u.id !== currentUser.id)"
               :id="user.id"
               :key="user.id"
               :size="26"

@@ -1,16 +1,18 @@
 <script setup lang="ts">
+import { DurationEventResponseType } from '@/api/generated/client.schemas'
+import type {
+  CampResponse as Camp,
+  DurationEventResponse as DurationEvent,
+  EventResponse as CampEvent,
+} from '@/api/generated/client.schemas'
+
 import { computed, ref } from 'vue'
 import { getDayStringNoPad } from '@/utils/date'
 import { getLayout } from '@/components/event/utils/eventLayout'
 import EventBlock from '@/components/event/EventBlock.vue'
-import type { components } from '@/api/schema'
 import type { EventGroup, DurationEventPos } from '@/components/event/utils/eventGrid'
 import EventEditor from './EventEditor.vue'
 import ScheduleRow from './ScheduleRow.vue'
-
-type CampEvent = components['schemas']['EventResponse']
-type DurationEvent = components['schemas']['DurationEventResponse']
-type Camp = components['schemas']['CampResponse']
 
 const props = defineProps<{
   events: CampEvent[]
@@ -38,7 +40,7 @@ const focusEvent = ref<DurationEvent | null>(null)
 const inEditMode = ref<boolean>(false)
 
 const enterEditMode = (event: CampEvent) => {
-  if (event.type !== 'duration') return
+  if (event.type !== DurationEventResponseType.duration) return
   inEditMode.value = true
   focusEvent.value = event
 }

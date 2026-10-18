@@ -1,33 +1,44 @@
 <script setup lang="ts">
+import {
+  DurationEventRequestType,
+  DurationEventResponseDisplayColor,
+} from '@/api/generated/client.schemas'
+import type {
+  DurationEventRequest,
+  DurationEventResponse as DurationEvent,
+} from '@/api/generated/client.schemas'
+
+import { useCurrentUser } from '@/composables/useCurrentUser'
+import { useCamps } from '@/composables/camps'
 import EventEditorSettings from './EventEditorSettings.vue'
 import MarkdownPlatform from '@/components/markdown/MarkdownPlatform.vue'
 import { ref, onMounted, computed } from 'vue'
 import { useDisplay } from 'vuetify'
 const { smAndDown } = useDisplay()
-import { apiClient } from '@/api/apiClient'
-import { useCampStore, useUserStore } from '@/store'
+import {
+  putEvent,
+  postEvent,
+  getGetEventsQueryKey,
+  deleteEvent as requestDeleteEvent,
+} from '@/api/generated/client'
 import { useRoute } from 'vue-router'
-import type { components } from '@/api/schema'
 import { dateToText, dateDiffInDaysJST, getJSTDate } from '@/utils/date'
 import { EVENT_COLORS } from '@/components/event/utils/eventColors'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 
-import { qk } from '@/api/queries/keys'
-
 const route = useRoute()
-const campStore = useCampStore()
-const userStore = useUserStore()
+const { getCampByDisplayId } = useCamps()
+const { user } = useCurrentUser()
 
 const queryClient = useQueryClient()
 
 const displayCamp = computed(() => {
-  return campStore.getCampByDisplayId(route.params.campname as string)
+  return getCampByDisplayId(route.params.campname as string)
 })
 
 const emit = defineEmits(['close'])
 
 // rucQ-UI で編集可能なのは DurationEvent のみ。他は rucQ-Admin で編集
-type DurationEvent = components['schemas']['DurationEventResponse']
 const props = defineProps<{ event: DurationEvent | null }>()
 
 const isValid = computed(() => {
@@ -47,7 +58,7 @@ const tab = ref<'options' | 'description'>('options')
 // イベントの設定項目
 const name = ref('')
 const location = ref('')
-const color = ref<DurationEvent['displayColor']>('orange')
+const color = ref<DurationEvent['displayColor']>(DurationEventResponseDisplayColor.orange)
 const organizerId = ref<string>('')
 
 const dayNum = ref<number>(0) // 0-indexed
@@ -72,7 +83,7 @@ const saveEvent = async () => {
   endTime.setHours(Math.floor(endMinute.value / 60), endMinute.value % 60, 0, 0)
 
   const buildEventBody = {
-    type: 'duration' as const,
+    type: DurationEventRequestType.duration,
     name: name.value,
     description: description.value,
     location: location.value,
@@ -110,43 +121,33 @@ onMounted(() => {
     startDate.setHours(0, 0, 0, 0)
     dayNum.value = dateDiffInDaysJST(campStartDate, startDate)
   } else {
-    organizerId.value = userStore.user.id
+    organizerId.value = user.value.id
     color.value = EVENT_COLORS[Math.floor(Math.random() * EVENT_COLORS.length)] ?? color.value // 色をランダムで初期化
   }
 })
 
 // Mutations
 const upsertEventMutation = useMutation({
-  mutationFn: async (body: components['schemas']['DurationEventRequest']) => {
-    if (props.event) {
-      const { error } = await apiClient.PUT('/api/events/{eventId}', {
-        params: { path: { eventId: props.event.id } },
-        body,
-      })
-      if (error) throw new Error(`イベントの更新に失敗しました: ${error.message}`)
-    } else {
-      const { error } = await apiClient.POST('/api/camps/{campId}/events', {
-        params: { path: { campId: displayCamp.value.id } },
-        body,
-      })
-      if (error) throw new Error(`イベントの作成に失敗しました: ${error.message}`)
-    }
+  mutationFn: async (body: DurationEventRequest) => {
+    if (props.event) await putEvent(props.event.id, body)
+    else await postEvent(displayCamp.value.id, body)
   },
   onSuccess: async () => {
-    await queryClient.invalidateQueries({ queryKey: qk.camps.events(displayCamp.value.id) })
+    await queryClient.invalidateQueries({
+      queryKey: getGetEventsQueryKey(displayCamp.value.id),
+    })
   },
 })
 
 const deleteEventMutation = useMutation({
   mutationFn: async () => {
     if (!props.event) return
-    const { error } = await apiClient.DELETE('/api/events/{eventId}', {
-      params: { path: { eventId: props.event.id } },
-    })
-    if (error) throw new Error(`イベントの削除に失敗しました: ${error.message}`)
+    await requestDeleteEvent(props.event.id)
   },
   onSuccess: async () => {
-    await queryClient.invalidateQueries({ queryKey: qk.camps.events(displayCamp.value.id) })
+    await queryClient.invalidateQueries({
+      queryKey: getGetEventsQueryKey(displayCamp.value.id),
+    })
   },
 })
 </script>

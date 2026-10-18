@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { MomentEventResponseType } from '@/api/generated/client.schemas'
 import EventDialog from './EventDialog.vue'
 import type { GridRow } from '@/components/event/utils/eventGrid'
 import { getTimeStringNoPad } from '@/utils/date'
@@ -37,7 +38,7 @@ const lineStyle = computed(() => ({ gridRow: props.index + 1, gridColumn: '2 / -
 // 存在すれば、行頭の瞬間イベントを取得
 const momentEvent = computed(() => {
   if (!props.row.events[0]) return null
-  if (props.row.events[0].type !== 'moment') return null
+  if (props.row.events[0].type !== MomentEventResponseType.moment) return null
   return props.row.events[0]
 })
 </script>

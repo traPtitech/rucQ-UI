@@ -18,7 +18,7 @@
     "lint:check": "eslint . --cache --cache-strategy content --cache-location .eslintcache --max-warnings=0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "generate:api": "openapi-typescript https://raw.githubusercontent.com/traPtitech/rucQ/main/openapi.yaml -o src/api/schema.d.ts && pnpm format"
+    "generate:api": "orval && prettier --write src/api/generated"
   },
   "packageManager": "pnpm@11.5.0",
   "engines": {
@@ -39,9 +39,6 @@
     "localforage": "1.10.0",
     "markdown-it": "14.3.1",
     "msw": "2.14.6",
-    "openapi-fetch": "0.17.0",
-    "openapi-msw": "2.0.0",
-    "pinia": "3.0.4",
     "vite-plugin-vuetify": "2.1.1",
     "vue": "3.5.39",
     "vue-router": "5.1.0",
@@ -60,7 +57,7 @@
     "eslint-plugin-security": "4.0.1",
     "eslint-plugin-vue": "10.9.2",
     "npm-run-all2": "9.0.2",
-    "openapi-typescript": "7.13.0",
+    "orval": "8.40.0",
     "prettier": "3.9.4",
     "rollup-plugin-visualizer": "7.0.1",
     "sass": "1.101.0",

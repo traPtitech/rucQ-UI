@@ -1,12 +1,18 @@
-import type { components } from '@/api/schema'
+import {
+  DurationEventResponseType,
+  MomentEventResponseType,
+  OfficialEventResponseType,
+} from '@/api/generated/client.schemas'
+import type {
+  CampResponse as Camp,
+  DurationEventResponse as DurationEvent,
+  MomentEventResponse as MomentEvent,
+  OfficialEventResponse as OfficialEvent,
+} from '@/api/generated/client.schemas'
 import { DayEventGrid, type EventGroup } from '@/components/event/utils/eventGrid'
 import { getStartTime, getEndTime } from '@/components/event/utils/eventLib'
 import { getJSTDate } from '@/utils/date'
 
-type Camp = components['schemas']['CampResponse']
-type MomentEvent = components['schemas']['MomentEventResponse']
-type DurationEvent = components['schemas']['DurationEventResponse']
-type OfficialEvent = components['schemas']['OfficialEventResponse']
 type CampEvent = MomentEvent | DurationEvent | OfficialEvent
 
 export type DayEventGroups = {
@@ -61,7 +67,7 @@ const arrangeEvents = (date: Date, events: CampEvent[], currentTime?: Date) => {
 
   // 瞬間イベントをグリッドに追加
   events
-    .filter((event) => event.type === 'moment')
+    .filter((event) => event.type === MomentEventResponseType.moment)
     .sort((a, b) => getStartTime(a).getTime() - getStartTime(b).getTime())
     .forEach((event) => {
       grid.addMomentEvent(event)
@@ -69,17 +75,21 @@ const arrangeEvents = (date: Date, events: CampEvent[], currentTime?: Date) => {
 
   // 期間イベントの開始 / 終了タイムスタンプの集合を作る
   const durationStartSet = new Set<number>(
-    events.filter((e) => e.type !== 'moment').map((e) => getStartTime(e).getTime()),
+    events
+      .filter((e) => e.type !== MomentEventResponseType.moment)
+      .map((e) => getStartTime(e).getTime()),
   )
   const durationEndSet = new Set<number>(
-    events.filter((e) => e.type !== 'moment').map((e) => getEndTime(e).getTime()),
+    events
+      .filter((e) => e.type !== MomentEventResponseType.moment)
+      .map((e) => getEndTime(e).getTime()),
   )
 
   grid.formatRows(durationStartSet, durationEndSet) // レンダリングの見た目を整える
 
   // 公式イベントをグリッドに追加
   events
-    .filter((event) => event.type === 'official')
+    .filter((event) => event.type === OfficialEventResponseType.official)
     .sort((a, b) => {
       const startDelta = getStartTime(a).getTime() - getStartTime(b).getTime()
       const endDelta = getEndTime(a).getTime() - getEndTime(b).getTime()
@@ -91,7 +101,7 @@ const arrangeEvents = (date: Date, events: CampEvent[], currentTime?: Date) => {
 
   // 一般期間イベントをグリッドに追加
   events
-    .filter((event) => event.type === 'duration')
+    .filter((event) => event.type === DurationEventResponseType.duration)
     .sort((a, b) => {
       const startDelta = getStartTime(a).getTime() - getStartTime(b).getTime()
       const endDelta = getEndTime(a).getTime() - getEndTime(b).getTime()

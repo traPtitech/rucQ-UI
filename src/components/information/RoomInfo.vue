@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import type { components } from '@/api/schema'
+import type { RoomResponse as Room } from '@/api/generated/client.schemas'
+
+import { useCurrentUser } from '@/composables/useCurrentUser'
 import UserIcon from '@/components/generic/UserIcon.vue'
-import { useUserStore } from '@/store'
 
-type Room = components['schemas']['RoomResponse']
-
-const userStore = useUserStore()
+const { user } = useCurrentUser()
 
 defineProps<{ room?: Room }>()
 </script>
@@ -16,7 +15,7 @@ defineProps<{ room?: Room }>()
     <div :class="$style.members">
       <user-icon :size="32" class="mx-1" id-tooltip />
       <user-icon
-        v-for="member in room.members.filter((u) => u.id !== userStore.user.id)"
+        v-for="member in room.members.filter((u) => u.id !== user.id)"
         :id="member.id"
         :key="member.id"
         :size="32"

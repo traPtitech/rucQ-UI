@@ -13,10 +13,10 @@
 </template>
 
 <script setup lang="ts">
+import { useCamps } from '@/composables/camps'
 import { computed, ref } from 'vue'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import TableOfContents from '@/components/markdown/TableOfContents.vue'
-import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
 import { useDisplay } from 'vuetify'
 
@@ -28,11 +28,11 @@ type HeadingInfo = {
   text: string
 }
 
-const campStore = useCampStore()
+const { getCampByDisplayId } = useCamps()
 const route = useRoute()
 
 const displayCamp = computed(() => {
-  return campStore.getCampByDisplayId(route.params.campname as string)
+  return getCampByDisplayId(route.params.campname as string)
 })
 
 const headings = ref<HeadingInfo[]>([])

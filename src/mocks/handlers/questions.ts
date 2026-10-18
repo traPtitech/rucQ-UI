@@ -1,8 +1,17 @@
-import { HttpResponse } from 'msw'
-import { http } from '@/mocks/http'
+import {
+  FreeNumberAnswerResponseType,
+  FreeNumberQuestionResponseType,
+  FreeTextAnswerResponseType,
+  FreeTextQuestionResponseType,
+  MultipleChoiceAnswerResponseType,
+  MultipleChoiceQuestionResponseType,
+  SingleChoiceAnswerResponseType,
+  SingleChoiceQuestionResponseType,
+} from '@/api/generated/client.schemas'
+import { HttpResponse, http } from 'msw'
 
 export const questionsHandlers = [
-  http.get('/api/camps/{campId}/question-groups', () => {
+  http.get('/api/camps/:campId/question-groups', () => {
     return HttpResponse.json([
       {
         id: 1,
@@ -14,7 +23,7 @@ export const questionsHandlers = [
           {
             id: 3,
             title: 'スキーをする？',
-            type: 'single',
+            type: SingleChoiceQuestionResponseType.single,
             options: [
               { id: 5, content: 'する' },
               { id: 6, content: 'しない' },
@@ -26,7 +35,7 @@ export const questionsHandlers = [
           {
             id: 4,
             title: 'スキーセット',
-            type: 'single',
+            type: SingleChoiceQuestionResponseType.single,
             options: [
               { id: 7, content: '借りる' },
               { id: 8, content: '借りない' },
@@ -38,7 +47,7 @@ export const questionsHandlers = [
           {
             id: 5,
             title: '自由選択',
-            type: 'multiple',
+            type: MultipleChoiceQuestionResponseType.multiple,
             options: [
               { id: 18, content: '選択肢1' },
               { id: 19, content: '選択肢2' },
@@ -50,7 +59,7 @@ export const questionsHandlers = [
           {
             id: 6,
             title: 'スノーボードセット',
-            type: 'single',
+            type: SingleChoiceQuestionResponseType.single,
             options: [
               { id: 9, content: '借りる' },
               { id: 10, content: '借りない' },
@@ -62,7 +71,7 @@ export const questionsHandlers = [
           {
             id: 7,
             title: 'スキーウェア',
-            type: 'single',
+            type: SingleChoiceQuestionResponseType.single,
             options: [
               { id: 11, content: 'S' },
               { id: 12, content: 'M' },
@@ -75,7 +84,7 @@ export const questionsHandlers = [
           {
             id: 8,
             title: 'ゴーグル',
-            type: 'single',
+            type: SingleChoiceQuestionResponseType.single,
             options: [
               { id: 14, content: '借りる' },
               { id: 15, content: '借りない' },
@@ -87,7 +96,7 @@ export const questionsHandlers = [
           {
             id: 9,
             title: '自由記述',
-            type: 'free_text',
+            type: FreeTextQuestionResponseType.free_text,
             isPublic: true,
             isOpen: true,
             isRequired: false,
@@ -95,7 +104,7 @@ export const questionsHandlers = [
           {
             id: 10,
             title: 'グローブ',
-            type: 'single',
+            type: SingleChoiceQuestionResponseType.single,
             options: [
               { id: 16, content: '借りる' },
               { id: 17, content: '借りない' },
@@ -108,7 +117,7 @@ export const questionsHandlers = [
             id: 11,
             title: '身長',
             description: '単位はcm',
-            type: 'free_number',
+            type: FreeNumberQuestionResponseType.free_number,
             isPublic: true,
             isOpen: true,
             isRequired: false,
@@ -117,7 +126,7 @@ export const questionsHandlers = [
             id: 12,
             title: '足のサイズ',
             description: '単位はcm',
-            type: 'free_number',
+            type: FreeNumberQuestionResponseType.free_number,
             isPublic: false,
             isOpen: true,
             isRequired: false,
@@ -133,7 +142,7 @@ export const questionsHandlers = [
           {
             id: 1,
             title: '乗るものにチェック',
-            type: 'multiple',
+            type: MultipleChoiceQuestionResponseType.multiple,
             options: [
               { id: 1, content: '行き' },
               { id: 2, content: '帰り' },
@@ -153,7 +162,7 @@ export const questionsHandlers = [
           {
             id: 13,
             title: 'アレルギー',
-            type: 'free_text',
+            type: FreeTextQuestionResponseType.free_text,
             isPublic: false,
             isOpen: true,
             isRequired: false,
@@ -162,75 +171,75 @@ export const questionsHandlers = [
       },
     ])
   }),
-  http.get('/api/me/question-groups/{questionGroupId}/answers', ({ params }) => {
+  http.get('/api/me/question-groups/:questionGroupId/answers', ({ params }) => {
     if (params.questionGroupId === '1') {
       return HttpResponse.json([
         {
           id: 203,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 204,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 4,
           userId: 'traP',
           selectedOption: { id: 7, content: '借りる' },
         },
         {
           id: 205,
-          type: 'multiple',
+          type: MultipleChoiceAnswerResponseType.multiple,
           questionId: 5,
           userId: 'traP',
           selectedOptions: [],
         },
         {
           id: 206,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 6,
           userId: 'traP',
           selectedOption: { id: 10, content: '借りない' },
         },
         {
           id: 207,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 7,
           userId: 'traP',
           selectedOption: { id: 12, content: 'M' },
         },
         {
           id: 208,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 8,
           userId: 'traP',
           selectedOption: { id: 14, content: '借りる' },
         },
         {
           id: 208,
-          type: 'free_text',
+          type: FreeTextAnswerResponseType.free_text,
           questionId: 9,
           userId: 'traP',
           content: 'なにか',
         },
         {
           id: 209,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 10,
           userId: 'traP',
           selectedOption: { id: 16, content: '借りる' },
         },
         {
           id: 210,
-          type: 'free_number',
+          type: FreeNumberAnswerResponseType.free_number,
           questionId: 11,
           userId: 'traP',
           content: 170,
         },
         {
           id: 211,
-          type: 'free_number',
+          type: FreeNumberAnswerResponseType.free_number,
           questionId: 12,
           userId: 'traP',
           content: 26,
@@ -242,7 +251,7 @@ export const questionsHandlers = [
       return HttpResponse.json([
         {
           id: 201,
-          type: 'multiple',
+          type: MultipleChoiceAnswerResponseType.multiple,
           questionId: 1,
           userId: 'traP',
           selectedOptions: [{ id: 1, content: '行き' }],
@@ -259,11 +268,11 @@ export const questionsHandlers = [
 
     return HttpResponse.json([])
   }),
-  http.post('/api/question-groups/{questionGroupId}/answers', () => {
+  http.post('/api/question-groups/:questionGroupId/answers', () => {
     const resp = [
       {
         id: 1,
-        type: 'free_text' as const,
+        type: FreeTextAnswerResponseType.free_text,
         questionId: 301,
         userId: 'traP',
         content: 'はろー',
@@ -271,253 +280,253 @@ export const questionsHandlers = [
     ]
     return HttpResponse.json(resp, { status: 201 })
   }),
-  http.put('/api/answers/{answerId}', () => {
+  http.put('/api/answers/:answerId', () => {
     const resp = {
       id: 1,
-      type: 'free_text' as const,
+      type: FreeTextAnswerResponseType.free_text,
       questionId: 301,
       userId: 'traP',
       content: 'はろー',
     }
     return HttpResponse.json(resp, { status: 200 })
   }),
-  http.get('/api/questions/{questionId}/answers', ({ params }) => {
+  http.get('/api/questions/:questionId/answers', ({ params }) => {
     if (params.questionId === '3') {
       return HttpResponse.json([
         {
           id: 203,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 204,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 205,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 206,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 207,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 208,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 209,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 210,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 211,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 212,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 213,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 214,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 215,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 216,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 217,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 218,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 219,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 220,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 221,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 222,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 223,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 224,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 225,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 226,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 227,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 228,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 229,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 230,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 231,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 232,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 5, content: 'する' },
         },
         {
           id: 263,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 6, content: 'しない' },
         },
         {
           id: 264,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 6, content: 'しない' },
         },
         {
           id: 265,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 6, content: 'しない' },
         },
         {
           id: 266,
-          type: 'single',
+          type: SingleChoiceAnswerResponseType.single,
           questionId: 3,
           userId: 'traP',
           selectedOption: { id: 6, content: 'しない' },
@@ -528,21 +537,21 @@ export const questionsHandlers = [
       return HttpResponse.json([
         {
           id: 205,
-          type: 'multiple',
+          type: MultipleChoiceAnswerResponseType.multiple,
           questionId: 5,
           userId: 'traP',
           selectedOptions: [{ id: 18, content: '選択肢1' }],
         },
         {
           id: 206,
-          type: 'multiple',
+          type: MultipleChoiceAnswerResponseType.multiple,
           questionId: 5,
           userId: 'traP',
           selectedOptions: [{ id: 19, content: '選択肢2' }],
         },
         {
           id: 207,
-          type: 'multiple',
+          type: MultipleChoiceAnswerResponseType.multiple,
           questionId: 5,
           userId: 'traP',
           selectedOptions: [
@@ -556,7 +565,7 @@ export const questionsHandlers = [
       return HttpResponse.json([
         {
           id: 285,
-          type: 'free_text',
+          type: FreeTextAnswerResponseType.free_text,
           questionId: 9,
           userId: 'traP',
           content:
@@ -564,14 +573,14 @@ export const questionsHandlers = [
         },
         {
           id: 286,
-          type: 'free_text',
+          type: FreeTextAnswerResponseType.free_text,
           questionId: 9,
           userId: 'traP',
           content: 'サンプルテキストサンプルテキスト',
         },
         {
           id: 287,
-          type: 'free_text',
+          type: FreeTextAnswerResponseType.free_text,
           questionId: 9,
           userId: 'traP',
           content: 'サンプルテキストサンプルテキスト',
@@ -582,28 +591,28 @@ export const questionsHandlers = [
       return HttpResponse.json([
         {
           id: 326,
-          type: 'free_number',
+          type: FreeNumberAnswerResponseType.free_number,
           questionId: 11,
           userId: 'traP',
           content: 170,
         },
         {
           id: 327,
-          type: 'free_number',
+          type: FreeNumberAnswerResponseType.free_number,
           questionId: 11,
           userId: 'traP',
           content: 170,
         },
         {
           id: 328,
-          type: 'free_number',
+          type: FreeNumberAnswerResponseType.free_number,
           questionId: 11,
           userId: 'traP',
           content: 180,
         },
         {
           id: 329,
-          type: 'free_number',
+          type: FreeNumberAnswerResponseType.free_number,
           questionId: 11,
           userId: 'traP',
           content: 180,

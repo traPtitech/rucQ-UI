@@ -1,16 +1,32 @@
 <script setup lang="ts">
-import type { components } from '@/api/schema'
-import { apiClient } from '@/api/apiClient'
+import {
+  FreeNumberAnswerResponseType,
+  FreeNumberQuestionResponseType,
+  FreeTextAnswerResponseType,
+  FreeTextQuestionResponseType,
+  MultipleChoiceAnswerResponseType,
+  MultipleChoiceQuestionResponseType,
+  SingleChoiceAnswerResponseType,
+  SingleChoiceQuestionResponseType,
+} from '@/api/generated/client.schemas'
+import type {
+  CampResponse as Camp,
+  QuestionGroupResponse as QuestionGroup,
+  QuestionResponse as Question,
+} from '@/api/generated/client.schemas'
+
+import { useCamps } from '@/composables/camps'
+import {
+  getGetMyAnswersQueryOptions,
+  putAnswer,
+  postAnswers,
+  getGetMyAnswersQueryKey,
+  getGetAnswersQueryKey,
+} from '@/api/generated/client'
 import { ref, computed, onMounted, reactive, toRaw } from 'vue'
-import { useCampStore } from '@/store'
 import QuestionGroupEditor from '@/components/information/QuestionGroupEditor.vue'
 import QuestionGroupViewer from '@/components/information/QuestionGroupViewer.vue'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
-import { qk } from '@/api/queries/keys'
-
-type QuestionGroup = components['schemas']['QuestionGroupResponse']
-type Question = components['schemas']['QuestionResponse']
-type Camp = components['schemas']['CampResponse']
 
 const queryClient = useQueryClient()
 
@@ -19,33 +35,17 @@ const props = defineProps<{
   camp: Camp
 }>()
 
-const campStore = useCampStore()
+const { hasRegisteredLatest, isOperable: isCampOperable } = useCamps()
 
 const inEditMode = ref(false) // 編集モードであるか
 const isAnswered = ref(false) // すでに一度回答を送信したことがあるか
 const isReady = ref(false) // 質問のデータが読み込まれたか
 
 // 表示中の合宿が（未来の合宿かつ参加登録済みであるかの意味で）編集可能かどうか
-const isOperable = computed(() => campStore.isOperable(props.camp))
+const isOperable = computed(() => isCampOperable(props.camp))
 
-const getMyAnswers = async () => {
-  // クエリキーを定義し、fetchQuery で取得
-  const key = qk.me.questionGroupAnswers(props.questionGroup.id)
-  const data = await queryClient.fetchQuery({
-    queryKey: key,
-    queryFn: async () => {
-      const { data, error } = await apiClient.GET(
-        '/api/me/question-groups/{questionGroupId}/answers',
-        {
-          params: { path: { questionGroupId: props.questionGroup.id } },
-        },
-      )
-      if (error) throw new Error(`自分の回答の取得に失敗しました: ${error.message}`)
-      return data
-    },
-  })
-  return data
-}
+const getMyAnswers = () =>
+  queryClient.fetchQuery(getGetMyAnswersQueryOptions(props.questionGroup.id))
 
 // Vuetify の v-select に対応した形式で回答を保存する
 type AnswerData = { id?: number; value?: number | string | number[] }
@@ -56,16 +56,16 @@ const originalMap = reactive<Record<number, AnswerData>>({})
 const refreshAnswersMap = async () => {
   for (const question of props.questionGroup.questions) {
     switch (question.type) {
-      case 'free_text':
+      case FreeTextQuestionResponseType.free_text:
         answersMap[question.id] = { value: '' } // 空文字で初期化
         break
-      case 'free_number':
+      case FreeNumberQuestionResponseType.free_number:
         answersMap[question.id] = { value: undefined } // undefined で初期化
         break
-      case 'single':
+      case SingleChoiceQuestionResponseType.single:
         answersMap[question.id] = { value: undefined } // 初期化
         break
-      case 'multiple':
+      case MultipleChoiceQuestionResponseType.multiple:
         answersMap[question.id] = { value: [] } // 空配列で初期化
         break
     }
@@ -75,19 +75,19 @@ const refreshAnswersMap = async () => {
   for (const answer of myAnswers) {
     isAnswered.value = true // すでに回答済み
     switch (answer.type) {
-      case 'free_text': {
+      case FreeTextAnswerResponseType.free_text: {
         answersMap[answer.questionId] = { id: answer.id, value: answer.content }
         break
       }
-      case 'free_number': {
+      case FreeNumberAnswerResponseType.free_number: {
         answersMap[answer.questionId] = { id: answer.id, value: answer.content }
         break
       }
-      case 'single': {
+      case SingleChoiceAnswerResponseType.single: {
         answersMap[answer.questionId] = { id: answer.id, value: answer.selectedOption.id }
         break
       }
-      case 'multiple': {
+      case MultipleChoiceAnswerResponseType.multiple: {
         answersMap[answer.questionId] = {
           id: answer.id,
           value: answer.selectedOptions.map((option) => option.id),
@@ -112,7 +112,10 @@ const refreshAnswersMap = async () => {
 const getQuestionUnits = (questions: Question[]): { size: 1 | 2; questions: Question[] }[] => {
   const units: { size: 1 | 2; questions: Question[] }[] = []
   for (const question of questions) {
-    if (question.type === 'free_text' || question.type === 'multiple') {
+    if (
+      question.type === FreeTextQuestionResponseType.free_text ||
+      question.type === MultipleChoiceQuestionResponseType.multiple
+    ) {
       units.push({ size: 2, questions: [question] })
     } else {
       if (units.length === 0 || units.at(-1)!.size === 2) {
@@ -151,7 +154,7 @@ const allChecked = computed(() => {
 
 // 回答受付中の質問が 1 つ以上存在するか。もし false ならばそもそも編集モードに入れない
 const isEditable = computed(
-  () => campStore.hasRegisteredLatest && props.questionGroup.questions.some((q) => q.isOpen),
+  () => hasRegisteredLatest.value && props.questionGroup.questions.some((q) => q.isOpen),
 )
 
 // 回答が変更されたかどうかを判定
@@ -176,13 +179,13 @@ const quitEditMode = async () => {
 // 回答の更新
 const getAnswerBody = (question: Question, value: string | number | number[]) => {
   switch (question.type) {
-    case 'free_text':
+    case FreeTextQuestionResponseType.free_text:
       return { questionId: question.id, type: question.type, content: value as string } as const
-    case 'free_number':
+    case FreeNumberQuestionResponseType.free_number:
       return { questionId: question.id, type: question.type, content: value as number } as const
-    case 'single':
+    case SingleChoiceQuestionResponseType.single:
       return { questionId: question.id, type: question.type, optionId: value as number } as const
-    case 'multiple':
+    case MultipleChoiceQuestionResponseType.multiple:
       return {
         questionId: question.id,
         type: question.type,
@@ -200,34 +203,28 @@ const saveAnswersMutation = useMutation({
         .filter((question: Question) => isAnswerChanged(question.id))
         .map(async (question) => {
           const answer = answersMap[question.id]!
-          const resp = await apiClient.PUT('/api/answers/{answerId}', {
-            params: { path: { answerId: answer.id! } },
-            body: getAnswerBody(question, answer.value!),
-          })
-          const { error } = resp
-          if (error) throw new Error(`回答の更新に失敗しました: ${error.message}`)
+          await putAnswer(answer.id!, getAnswerBody(question, answer.value!))
         })
       await Promise.all(updatePromises)
     } else {
       // 初回回答: 全回答を POST で送信
-      const { error } = await apiClient.POST('/api/question-groups/{questionGroupId}/answers', {
-        params: { path: { questionGroupId: props.questionGroup.id } },
-        body: props.questionGroup.questions.map((question: Question) =>
+      await postAnswers(
+        props.questionGroup.id,
+        props.questionGroup.questions.map((question: Question) =>
           getAnswerBody(question, answersMap[question.id]!.value!),
         ),
-      })
-      if (error) throw new Error(`回答の送信に失敗しました: ${error.message}`)
+      )
     }
   },
   onSuccess: async () => {
     // 回答を保存した後は必ず最新データを取得するために invalidate
     await queryClient.invalidateQueries({
-      queryKey: qk.me.questionGroupAnswers(props.questionGroup.id),
+      queryKey: getGetMyAnswersQueryKey(props.questionGroup.id),
     })
     // 質問グループに含まれる全質問の回答データも無効化し、AnswersDialog に反映
     for (const question of props.questionGroup.questions) {
       await queryClient.invalidateQueries({
-        queryKey: qk.questions.answers(question.id),
+        queryKey: getGetAnswersQueryKey(question.id),
       })
     }
     await quitEditMode()

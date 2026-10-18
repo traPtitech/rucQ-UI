@@ -75,9 +75,9 @@
 
 バックエンドをローカルに立てると自動で traQ も立ち上がります。@traq はデフォルトで traQ に存在するユーザーアカウントです。
 
-## API スキーマの更新
+## API スキーマ, APIクライアントの更新
 
-API の型定義 [schema.d.ts](./src/api/schema.d.ts) はバックエンド [rucQ](https://github.com/traPtitech/rucQ) の openapi.yaml から自動生成されます。もし openapi.yaml に更新があれば、`pnpm generate:api` を実行して schema.d.ts を再生成してください。
+API クライアントと型定義は、バックエンド [rucQ](https://github.com/traPtitech/rucQ) の `openapi.yaml` から Orval で自動生成されます。API 仕様に更新があれば、`pnpm generate:api` を実行して `src/api/generated/` 以下のファイルを再生成してください。
 
 ## リリース
 

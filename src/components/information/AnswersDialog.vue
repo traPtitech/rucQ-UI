@@ -1,16 +1,26 @@
 <script setup lang="ts">
+import {
+  FreeNumberAnswerResponseType,
+  FreeNumberQuestionResponseType,
+  FreeTextAnswerResponseType,
+  FreeTextQuestionResponseType,
+  MultipleChoiceAnswerResponseType,
+  MultipleChoiceQuestionResponseType,
+  SingleChoiceAnswerResponseType,
+  SingleChoiceQuestionResponseType,
+} from '@/api/generated/client.schemas'
+import type {
+  AnswerResponse,
+  QuestionGroupResponse as QuestionGroup,
+  QuestionResponse as Question,
+} from '@/api/generated/client.schemas'
+
 import { computed, reactive, ref, watchEffect } from 'vue'
 import { useDisplay } from 'vuetify'
-import { apiClient } from '@/api/apiClient'
-import { qk } from '@/api/queries/keys'
+import { getGetAnswersQueryOptions } from '@/api/generated/client'
 import { useQueries } from '@tanstack/vue-query'
 import AnswersDialogContent from './AnswersDialogContent.vue'
-import type { components } from '@/api/schema'
 const { xs } = useDisplay()
-
-type QuestionGroup = components['schemas']['QuestionGroupResponse']
-type Question = components['schemas']['QuestionResponse']
-type AnswerResponse = components['schemas']['AnswerResponse']
 
 const props = defineProps<{
   questionGroup: QuestionGroup
@@ -23,19 +33,19 @@ const mapAnswersByContent = (question: Question, data: AnswerResponse[]) => {
   const byAnswer: Record<string, string[]> = {}
 
   switch (question.type) {
-    case 'single': {
+    case SingleChoiceQuestionResponseType.single: {
       for (const option of question.options) byAnswer[option.content] = []
       for (const answer of data) {
-        if (answer.type !== 'single') continue
+        if (answer.type !== SingleChoiceAnswerResponseType.single) continue
         byAnswer[answer.selectedOption.content] ??= []
         byAnswer[answer.selectedOption.content]!.push(answer.userId)
       }
       break
     }
-    case 'multiple': {
+    case MultipleChoiceQuestionResponseType.multiple: {
       for (const option of question.options) byAnswer[option.content] = []
       for (const answer of data) {
-        if (answer.type !== 'multiple') continue
+        if (answer.type !== MultipleChoiceAnswerResponseType.multiple) continue
         for (const selectedOption of answer.selectedOptions) {
           byAnswer[selectedOption.content] ??= []
           byAnswer[selectedOption.content]!.push(answer.userId)
@@ -43,17 +53,17 @@ const mapAnswersByContent = (question: Question, data: AnswerResponse[]) => {
       }
       break
     }
-    case 'free_text': {
+    case FreeTextQuestionResponseType.free_text: {
       for (const answer of data) {
-        if (answer.type !== 'free_text') continue
+        if (answer.type !== FreeTextAnswerResponseType.free_text) continue
         byAnswer[answer.content] ??= []
         byAnswer[answer.content]!.push(answer.userId)
       }
       break
     }
-    case 'free_number': {
+    case FreeNumberQuestionResponseType.free_number: {
       for (const answer of data) {
-        if (answer.type !== 'free_number') continue
+        if (answer.type !== FreeNumberAnswerResponseType.free_number) continue
         byAnswer[answer.content.toString()] ??= []
         byAnswer[answer.content.toString()]!.push(answer.userId)
       }
@@ -73,16 +83,7 @@ const publicQuestions = computed(() => {
 // publicQuestions の順序に従って回答を取得
 const answerQueries = useQueries({
   queries: computed(() =>
-    publicQuestions.value.map((question) => ({
-      queryKey: qk.questions.answers(question.id),
-      queryFn: async () => {
-        const { data, error } = await apiClient.GET('/api/questions/{questionId}/answers', {
-          params: { path: { questionId: question.id } },
-        })
-        if (error) throw new Error(`質問の回答の取得に失敗しました: ${error.message}`)
-        return data
-      },
-    })),
+    publicQuestions.value.map((question) => getGetAnswersQueryOptions(question.id)),
   ),
 })
 

@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import type { components } from '@/api/schema'
+import type {
+  QuestionGroupResponse as QuestionGroup,
+  QuestionResponse as Question,
+} from '@/api/generated/client.schemas'
+
 import QuestionShowField from '@/components/information/QuestionShowField.vue'
 import { computed } from 'vue'
 import AnswersDialog from '@/components/information/AnswersDialog.vue'
-
-type QuestionGroup = components['schemas']['QuestionGroupResponse']
-type Question = components['schemas']['QuestionResponse']
 
 type AnswerData = { id?: number; value?: number | string | number[] }
 

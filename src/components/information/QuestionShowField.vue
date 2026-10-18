@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import type { components } from '@/api/schema'
-import { computed } from 'vue'
+import {
+  FreeNumberQuestionResponseType,
+  FreeTextQuestionResponseType,
+  MultipleChoiceQuestionResponseType,
+  SingleChoiceQuestionResponseType,
+} from '@/api/generated/client.schemas'
+import type { QuestionResponse as Question } from '@/api/generated/client.schemas'
 
-type Question = components['schemas']['QuestionResponse']
+import { computed } from 'vue'
 
 const props = defineProps<{
   question: Question
@@ -15,13 +20,13 @@ const props = defineProps<{
 
 const displayValue = computed(() => {
   switch (props.question.type) {
-    case 'free_text':
+    case FreeTextQuestionResponseType.free_text:
       return props.value as string
-    case 'free_number':
+    case FreeNumberQuestionResponseType.free_number:
       return String(props.value)
-    case 'single':
+    case SingleChoiceQuestionResponseType.single:
       return props.question.options.find((option) => option.id === props.value)?.content ?? ''
-    case 'multiple':
+    case MultipleChoiceQuestionResponseType.multiple:
       return props.question.options
         .filter((option) => Array.isArray(props.value) && props.value.includes(option.id))
         .map((option) => option.content)

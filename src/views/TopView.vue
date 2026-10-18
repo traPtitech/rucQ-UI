@@ -1,31 +1,27 @@
 <script setup lang="ts">
-import { useCampStore } from '@/store'
-import { storeToRefs } from 'pinia'
+import type { CampResponse as Camp } from '@/api/generated/client.schemas'
+
+import { useCamps } from '@/composables/camps'
 import { computed } from 'vue'
 import { getDayStringNoPad } from '@/utils/date'
 import { useRouter } from 'vue-router'
-import type { components } from '@/api/schema'
 import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
 
 const version = __APP_VERSION__
 
-type Camp = components['schemas']['CampResponse']
-
 const router = useRouter()
-const campStore = useCampStore()
-
-const { allCamps } = storeToRefs(campStore)
+const camps = useCamps()
+const { allCamps } = camps
 
 // TopViewではlatestCampが存在しない可能性があるため、ラップする
 const latestCamp = computed(() => {
   try {
-    return campStore.latestCamp
+    return camps.latestCamp.value
   } catch (error) {
     console.error(error)
     return undefined
   }
 })
-
 const openCamp = async (camp: Camp) => {
   await router.push(`/${camp.displayId}/info`)
 }

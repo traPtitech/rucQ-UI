@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useCampStore, useTimeStore } from '@/store'
+import { getCachedLatestCamp, isCampEnded } from '@/composables/camps'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -58,9 +58,6 @@ const router = createRouter({
 // ナビゲーションガード
 router.beforeEach((to, from, next) => {
   try {
-    const campStore = useCampStore()
-    const timeStore = useTimeStore()
-
     // トップページの場合
     if (to.path === '/') {
       if (to.query.back === 'true') {
@@ -68,12 +65,11 @@ router.beforeEach((to, from, next) => {
         return
       }
 
+      const latestCamp = getCachedLatestCamp()
+
       // 公開済みの最新合宿は、参加登録の有無に関わらず終了までは直接開く
-      if (!timeStore.isCampEnded(campStore.latestCamp)) {
-        next(`/${campStore.latestCamp.displayId}`)
-        // latestCamp が存在しない場合、campStore.latestCamp の呼び出し時点でエラーが生じ、
-        // 外側の try-catch によってトップページに導かれる
-        // 各コンポーネントにおける latestCamp の存在が保証され、エラーハンドリングを書く必要がなくて嬉しい
+      if (latestCamp && !isCampEnded(latestCamp)) {
+        next(`/${latestCamp.displayId}`)
         return
       }
       next()
@@ -85,6 +81,7 @@ router.beforeEach((to, from, next) => {
   } catch (error) {
     console.error(error)
     if (to.path !== '/') next('/')
+    else next()
     return
   }
 })

@@ -1,27 +1,25 @@
 <script setup lang="ts">
+import { useCamps } from '@/composables/camps'
 import { useRoute } from 'vue-router'
 import { useDisplay } from 'vuetify'
 import HeaderButtonList from './HeaderButtonList.vue'
-import { useTimeStore } from '@/store'
 import { computed } from 'vue'
-import { useCampStore } from '@/store'
 const route = useRoute()
 const { xs } = useDisplay()
-const timeStore = useTimeStore()
-const campStore = useCampStore()
+const { getCampByDisplayId, isCampEnded } = useCamps()
 
 const displayCamp = computed(() => {
   const campname = route.params.campname as string | undefined
   if (!campname) return null
   try {
-    return campStore.getCampByDisplayId(campname)
+    return getCampByDisplayId(campname)
   } catch {
     return null
   }
 })
 
 const isArchived = computed(() => {
-  return displayCamp.value ? timeStore.isCampEnded(displayCamp.value) : false
+  return displayCamp.value ? isCampEnded(displayCamp.value) : false
 })
 
 const campIconUrl = computed(() => {

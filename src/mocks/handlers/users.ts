@@ -1,15 +1,14 @@
-import { HttpResponse } from 'msw'
-import { http } from '@/mocks/http'
+import { HttpResponse, http } from 'msw'
 
 export const usersHandlers = [
   http.get('/api/me', () => {
     return HttpResponse.json({ id: 'traP', isStaff: true })
   }),
-  http.get('/api/camps/{campId}/participants', () => {
+  http.get('/api/camps/:campId/participants', () => {
     // return HttpResponse.json([{ id: 'traP', isStaff: true }])
     return HttpResponse.json([])
   }),
-  http.put('/api/admin/users/{userId}', ({ params }) => {
+  http.put('/api/admin/users/:userId', ({ params }) => {
     return HttpResponse.json({
       id: params.userId,
       isStaff: true,

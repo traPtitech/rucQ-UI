@@ -1,15 +1,23 @@
 <script setup lang="ts">
+import {
+  PaymentAmountChangedActivityType,
+  PaymentCreatedActivityType,
+  PaymentPaidChangedActivityType,
+  QuestionCreatedActivityType,
+  RollCallCreatedActivityType,
+  RoomCreatedActivityType,
+} from '@/api/generated/client.schemas'
 import { computed } from 'vue'
 import { getTimeStringNoPad } from '@/utils/date'
 
 // prettier-ignore
 const activityTypes = {
-  'room_created'            : { color: 'pink', pale: undefined, icon: 'mdi-view-grid' },
-  'payment_created'         : { color: 'green', pale: undefined, icon: 'mdi-currency-jpy' },
-  'payment_amount_changed'  : { color: 'green', pale: undefined, icon: 'mdi-currency-jpy' },
-  'payment_paid_changed'    : { color: 'green', pale: undefined, icon: 'mdi-currency-jpy' },
-  'roll_call_created'       : { color: 'primary', pale: 'primaryLight', icon: 'mdi-hand-back-left-outline' },
-  'question_created'        : { color: 'blue', pale: 'blue-lighten-4', icon: 'mdi-format-list-checks' },
+  [RoomCreatedActivityType.room_created]                    : { color: 'pink', pale: undefined, icon: 'mdi-view-grid' },
+  [PaymentCreatedActivityType.payment_created]              : { color: 'green', pale: undefined, icon: 'mdi-currency-jpy' },
+  [PaymentAmountChangedActivityType.payment_amount_changed] : { color: 'green', pale: undefined, icon: 'mdi-currency-jpy' },
+  [PaymentPaidChangedActivityType.payment_paid_changed]     : { color: 'green', pale: undefined, icon: 'mdi-currency-jpy' },
+  [RollCallCreatedActivityType.roll_call_created]           : { color: 'primary', pale: 'primaryLight', icon: 'mdi-hand-back-left-outline' },
+  [QuestionCreatedActivityType.question_created]            : { color: 'blue', pale: 'blue-lighten-4', icon: 'mdi-format-list-checks' },
 } as const
 
 const props = withDefaults(

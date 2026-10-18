@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { components } from '@/api/schema'
+import type { DurationEventResponse as DurationEvent } from '@/api/generated/client.schemas'
+
 import { nextTick, ref, watch, onMounted } from 'vue'
 
-type DurationEvent = components['schemas']['DurationEventResponse']
 type EventColor = DurationEvent['displayColor']
 
 defineProps<{

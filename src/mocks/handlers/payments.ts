@@ -1,8 +1,8 @@
-import { HttpResponse } from 'msw'
-import { http } from '@/mocks/http'
+import { RoomStatusType } from '@/api/generated/client.schemas'
+import { HttpResponse, http } from 'msw'
 
 export const paymentsHandlers = [
-  http.get('/api/camps/{campId}/me', ({ params }) => {
+  http.get('/api/camps/:campId/me', ({ params }) => {
     return HttpResponse.json({
       id: 'traP',
       payment: {
@@ -20,7 +20,7 @@ export const paymentsHandlers = [
           { id: 'kitsne', isStaff: true },
           { id: 'traP', isStaff: true },
         ],
-        status: { type: 'active', topic: '点呼実施中' },
+        status: { type: RoomStatusType.active, topic: '点呼実施中' },
       },
     })
   }),

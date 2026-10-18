@@ -1,15 +1,16 @@
 <script setup lang="ts">
+import type {
+  CampResponse as Camp,
+  DurationEventResponse as DurationEvent,
+} from '@/api/generated/client.schemas'
+
 import { ref, computed, watch, onMounted } from 'vue'
 import { getDayStringNoPad } from '@/utils/date'
 import EventTimePick from './EventTimePick.vue'
 import EventDeleteDialog from './EventDeleteDialog.vue'
-import type { components } from '@/api/schema'
-import { apiClient } from '@/api/apiClient'
+import { getCampParticipants } from '@/api/generated/client'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { EVENT_COLORS } from '@/components/event/utils/eventColors'
-
-type DurationEvent = components['schemas']['DurationEventResponse']
-type Camp = components['schemas']['CampResponse']
 
 const props = defineProps<{ event: DurationEvent | null; camp: Camp }>()
 const emit = defineEmits(['delete'])
@@ -40,16 +41,6 @@ const days = computed(() => {
 // 合宿参加者の ID の配列
 const participantIds = ref<string[]>([])
 
-const getParticipants = async (camp: Camp) => {
-  const participants = await apiClient.GET('/api/camps/{campId}/participants', {
-    params: { path: { campId: camp.id } },
-  })
-  if (participants.error) {
-    throw new Error(`参加者情報の取得に失敗しました: ${participants.error.message}`)
-  }
-  return participants.data
-}
-
 // 開始時刻のバリデーションルール
 const startTimeRule = (time: number | undefined) => {
   if (time === undefined) return '開始時刻は必須です'
@@ -79,7 +70,7 @@ watch(
 )
 
 onMounted(async () => {
-  participantIds.value = (await getParticipants(props.camp)).map((p) => p.id)
+  participantIds.value = (await getCampParticipants(props.camp.id)).map((p) => p.id)
 })
 
 const getListItemProps = (props: Record<string, unknown>) => {
