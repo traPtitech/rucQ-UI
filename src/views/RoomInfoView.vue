@@ -6,6 +6,7 @@ import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
 import { useQuery } from '@tanstack/vue-query'
 import { qk } from '@/api/queries/keys'
+import LoadingWithText from '@/components/generic/LoadingWithText.vue'
 
 const route = useRoute()
 const campStore = useCampStore()
@@ -34,13 +35,11 @@ const {
 <template>
   <div class="position-relative w-100 h-100">
     <!-- Loading -->
-    <div
+    <loading-with-text
       v-if="!roomGroups || (roomGroups.length === 0 && (isPending || isFetching))"
       class="d-flex flex-column align-center justify-center w-100 h-100"
-    >
-      <v-progress-circular indeterminate size="56" color="primary" class="mb-3" />
-      <h3 class="font-weight-bold">部屋割を読み込み中…</h3>
-    </div>
+      message="部屋割を読み込み中…"
+    ></loading-with-text>
 
     <!-- Empty state -->
     <div
