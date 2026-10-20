@@ -1,55 +1,41 @@
 <script setup lang="ts">
+import { useCamps } from '@/composables/camps'
 import { MasonryWall } from '@yeger/vue-masonry-wall'
 import PaymentInfo from '@/components/information/PaymentInfo.vue'
 import RoomInfo from '@/components/information/RoomInfo.vue'
-import { apiClient } from '@/api/apiClient'
+import { useGetQuestionGroups, getDashboard, getGetDashboardQueryKey } from '@/api/generated/client'
+import { useQuery } from '@tanstack/vue-query'
 import { computed } from 'vue'
-import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
-import type { components } from '@/api/schema'
 import QuestionGroupPanel from '@/components/information/QuestionGroupPanel.vue'
 import RegisterCampButton from '@/components/information/RegisterCampButton.vue'
 import UnregisterCampButton from '@/components/information/UnregisterCampButton.vue'
-import { useQuery } from '@tanstack/vue-query'
-import { qk } from '@/api/queries/keys'
 
-type QuestionGroup = components['schemas']['QuestionGroupResponse'][]
-type Dashboard = components['schemas']['DashboardResponse']
-
-const campStore = useCampStore()
+const { getCampByDisplayId, hasRegisteredLatest } = useCamps()
 const route = useRoute()
 
-const displayCamp = campStore.getCampByDisplayId(route.params.campname as string)
+const displayCamp = getCampByDisplayId(route.params.campname as string)
 
-const isRegistered = computed(() => campStore.hasRegisteredLatest)
+const isRegistered = computed(() => hasRegisteredLatest.value)
 
 // 質問グループ一覧
-const { data: questionGroups } = useQuery<QuestionGroup, Error>({
-  queryKey: qk.camps.questionGroups(displayCamp.id),
-  queryFn: async () => {
-    const { data, error } = await apiClient.GET('/api/camps/{campId}/question-groups', {
-      params: { path: { campId: displayCamp.id } },
-    })
-    if (error) throw new Error(`質問グループ情報の取得に失敗しました: ${error.message}`)
-    return data
-  },
-})
+const { data: questionGroups } = useGetQuestionGroups(() => displayCamp.id)
 
 // ダッシュボード（支払い/部屋情報）
 const {
   data: dashboard,
   isPending: isPendingDashboard,
   isFetching: isFetchingDashboard,
-} = useQuery<Dashboard | null, Error>({
-  queryKey: qk.camps.dashboard(displayCamp.id),
-  queryFn: async () => {
-    const { data, error, response } = await apiClient.GET('/api/camps/{campId}/me', {
-      params: { path: { campId: displayCamp.id } },
-    })
-    // 404 は未参加を表すため、成功扱いで空のダッシュボードを返す。
-    if (response.status === 404) return null
-    if (error) throw new Error(`ダッシュボード情報の取得に失敗しました: ${error.message}`)
-    return data
+} = useQuery({
+  queryKey: getGetDashboardQueryKey(displayCamp.id),
+  queryFn: async ({ signal }) => {
+    try {
+      return await getDashboard(displayCamp.id, { signal })
+    } catch (error) {
+      // 404 は未参加を表すため、成功扱いで空のダッシュボードを返す。
+      if (error instanceof Error && 'status' in error && error.status === 404) return null
+      throw error
+    }
   },
 })
 
@@ -66,7 +52,7 @@ const isRegisteredOpen = displayCamp.isRegistrationOpen
       <unregister-camp-button v-if="isRegistered" />
       <register-camp-button v-else />
     </div>
-    <room-info v-if="dashboard?.room" :room="dashboard?.room" />
+    <room-info v-if="dashboard?.room" :room="dashboard.room" />
     <payment-info v-else :is-ready="isReady" :payment="dashboard?.payment" />
     <div :class="$style.heading">合宿オプション</div>
     <div :class="$style.questionGroups">

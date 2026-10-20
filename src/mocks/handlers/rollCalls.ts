@@ -1,8 +1,7 @@
-import { HttpResponse } from 'msw'
-import { http } from '@/mocks/http'
+import { HttpResponse, http } from 'msw'
 
 export const rollCallsHandlers = [
-  http.get('/api/camps/{campId}/roll-calls', () => {
+  http.get('/api/camps/:campId/roll-calls', () => {
     return HttpResponse.json([
       {
         id: 1,

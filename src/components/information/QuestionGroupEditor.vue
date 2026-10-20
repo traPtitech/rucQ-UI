@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import type { components } from '@/api/schema'
+import type {
+  QuestionGroupResponse as QuestionGroup,
+  QuestionResponse as Question,
+} from '@/api/generated/client.schemas'
+
 import QuestionEditField from '@/components/information/QuestionEditField.vue'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import AnswersDialog from '@/components/information/AnswersDialog.vue'
 import { computed } from 'vue'
 import { getDayString } from '@/utils/date'
-
-type QuestionGroup = components['schemas']['QuestionGroupResponse']
-type Question = components['schemas']['QuestionResponse']
 
 type AnswerData = { id?: number; value?: number | string | number[] }
 

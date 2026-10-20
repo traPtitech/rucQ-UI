@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import type { components } from '@/api/schema'
-import { apiClient } from '@/api/apiClient'
-import UserIcon from '@/components/generic/UserIcon.vue'
-import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import { qk } from '@/api/queries/keys'
-import { getDisplayDate } from '@/utils/date'
+import { RoomStatusType } from '@/api/generated/client.schemas'
+import type { RoomResponse as Room, RoomStatus } from '@/api/generated/client.schemas'
 
-type Room = components['schemas']['RoomResponse']
-type RoomStatus = components['schemas']['RoomStatus']
-type RoomStatusLog = components['schemas']['RoomStatusLog']
+import { computed, ref, watch } from 'vue'
+import {
+  useGetRoomStatusLogs,
+  usePutRoomStatus,
+  getGetRoomStatusLogsQueryKey,
+  getGetRoomGroupsQueryKey,
+} from '@/api/generated/client'
+import UserIcon from '@/components/generic/UserIcon.vue'
+import { useQueryClient } from '@tanstack/vue-query'
+import { getDisplayDate } from '@/utils/date'
 
 const props = defineProps<{
   room: Room
@@ -36,26 +38,16 @@ const showHistory = ref(false)
 
 const queryClient = useQueryClient()
 
-const { data: statusHistory } = useQuery<RoomStatusLog[], Error>({
-  queryKey: computed(() => qk.rooms.statusLogs(props.room.id)),
-  enabled: computed(() => Boolean(props.room.id)),
-  staleTime: 0,
-  queryFn: async () => {
-    const { data, error } = await apiClient.GET('/api/rooms/{roomId}/status-logs', {
-      params: { path: { roomId: props.room.id } },
-    })
-    if (error) throw new Error(`部屋ステータス履歴の取得に失敗しました: ${error.message}`)
-    return data
-  },
-})
+const { data: statusHistory } = useGetRoomStatusLogs(() => props.room.id)
+const updateRoomStatus = usePutRoomStatus()
 
 const formatStatusTime = (updatedAt: string) => getDisplayDate(new Date(updatedAt))
 
 const getStatusColor = (type: RoomStatus['type']) => {
   switch (type) {
-    case 'active':
+    case RoomStatusType.active:
       return 'green'
-    case 'inactive':
+    case RoomStatusType.inactive:
       return 'red'
     default:
       return 'grey'
@@ -72,17 +64,13 @@ const isDisabled = computed(() => {
 })
 
 const updateStatus = async () => {
-  const { error } = await apiClient.PUT('/api/rooms/{roomId}/status', {
-    params: { path: { roomId: props.room.id } },
-    body: {
-      type: status.value,
-      topic: word.value,
-    },
+  await updateRoomStatus.mutateAsync({
+    roomId: props.room.id,
+    data: { type: status.value, topic: word.value },
   })
-  if (error) throw new Error(`部屋ステータスの更新に失敗しました: ${error.message}`)
 
-  await queryClient.invalidateQueries({ queryKey: qk.rooms.statusLogs(props.room.id) })
-  await queryClient.invalidateQueries({ queryKey: qk.camps.roomGroups(props.campId) })
+  await queryClient.invalidateQueries({ queryKey: getGetRoomStatusLogsQueryKey(props.room.id) })
+  await queryClient.invalidateQueries({ queryKey: getGetRoomGroupsQueryKey(props.campId) })
   emit('close') // 更新後すぐダイアログを閉じる
 }
 </script>
@@ -103,8 +91,8 @@ const updateStatus = async () => {
     </div>
     <v-radio-group v-model="status" hide-details class="my-2">
       <div class="d-flex">
-        <v-radio label="アクティブ" value="active" color="green" />
-        <v-radio label="休憩中" value="inactive" color="red" />
+        <v-radio label="アクティブ" :value="RoomStatusType.active" color="green" />
+        <v-radio label="休憩中" :value="RoomStatusType.inactive" color="red" />
       </div>
     </v-radio-group>
     <v-textarea

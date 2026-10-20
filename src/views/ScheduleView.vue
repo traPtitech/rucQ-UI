@@ -1,39 +1,23 @@
 <script setup lang="ts">
+import { useCamps } from '@/composables/camps'
 import ScheduleContent from '@/components/event/ScheduleContent.vue'
-import type { components } from '@/api/schema'
 import { computed } from 'vue'
-import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
-import { apiClient } from '@/api/apiClient'
+import { useGetEvents } from '@/api/generated/client'
 import EventEditor from '@/components/event/EventEditor.vue'
-import { useQuery } from '@tanstack/vue-query'
-import { qk } from '@/api/queries/keys'
 
-type CampEvent = components['schemas']['EventResponse']
-
-const campStore = useCampStore()
+const { getCampByDisplayId, isOperable: isCampOperable } = useCamps()
 const route = useRoute()
 
 const displayCamp = computed(() => {
-  return campStore.getCampByDisplayId(route.params.campname as string)
+  return getCampByDisplayId(route.params.campname as string)
 })
 
 const isOperable = computed(() => {
-  return campStore.isOperable(displayCamp.value)
+  return isCampOperable(displayCamp.value)
 })
 
-const { data: events } = useQuery<CampEvent[], Error>({
-  queryKey: computed(() => qk.camps.events(displayCamp.value.id)),
-  enabled: computed(() => Boolean(displayCamp.value)),
-  staleTime: 10 * 60 * 1000, // 10m
-  queryFn: async () => {
-    const { data, error } = await apiClient.GET('/api/camps/{campId}/events', {
-      params: { path: { campId: displayCamp.value.id } },
-    })
-    if (error) throw new Error(`イベント情報の取得に失敗しました: ${error.message}`)
-    return data
-  },
-})
+const { data: events } = useGetEvents(() => displayCamp.value.id)
 </script>
 
 <template>

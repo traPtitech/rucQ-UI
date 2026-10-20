@@ -1,15 +1,14 @@
 <script setup lang="ts">
+import { useCamps } from '@/composables/camps'
 import HeaderButton from '@/components/layout/HeaderButton.vue'
 import PageNavigation from '@/components/layout/PageNavigation.vue'
 import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
-import { useCampStore, useTimeStore } from '@/store'
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
 import { useDisplay } from 'vuetify'
 import NotFoundView from '@/views/NotFoundView.vue'
 
-const campStore = useCampStore()
-const timeStore = useTimeStore()
+const { getCampByDisplayId, isCampEnded } = useCamps()
 const route = useRoute()
 const { xs } = useDisplay()
 
@@ -17,14 +16,14 @@ const displayCamp = computed(() => {
   const campname = route.params.campname as string | undefined
   if (!campname) return null
   try {
-    return campStore.getCampByDisplayId(campname)
+    return getCampByDisplayId(campname)
   } catch {
     return null
   }
 })
 
 const isArchived = computed(() => {
-  return displayCamp.value ? timeStore.isCampEnded(displayCamp.value) : false
+  return displayCamp.value ? isCampEnded(displayCamp.value) : false
 })
 
 const routerViewPadding = computed(() => {

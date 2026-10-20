@@ -10,7 +10,7 @@ const withFiles = (files, ...configs) => {
 }
 
 export default defineConfig([
-  { ignores: ['dist', 'dev-dist', 'public/mockServiceWorker.js', 'src/api/schema.d.ts'] },
+  { ignores: ['dist', 'dev-dist', 'public/mockServiceWorker.js', 'src/api/generated/**'] },
 
   js.configs.recommended,
 

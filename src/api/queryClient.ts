@@ -2,14 +2,12 @@ import { QueryClient } from '@tanstack/vue-query'
 import { persistQueryClient } from '@tanstack/query-persist-client-core'
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import localforage from 'localforage'
+import { queryDefaults } from './queryOptions'
 
 // キャッシュの設定
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: {
-      gcTime: 7 * 24 * 60 * 60 * 1000, // 1週間
-      staleTime: 60 * 60 * 1000, // 1h
-    },
+    queries: queryDefaults,
   },
 })
 

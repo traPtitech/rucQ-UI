@@ -1,44 +1,27 @@
 <script setup lang="ts">
-import { apiClient } from '@/api/apiClient'
-import type { components } from '@/api/schema'
+import { useCamps } from '@/composables/camps'
+import { useGetRoomGroups } from '@/api/generated/client'
 import RoomCard from '@/components/room/RoomCard.vue'
-import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
-import { useQuery } from '@tanstack/vue-query'
-import { qk } from '@/api/queries/keys'
-import LoadingWithText from '@/components/generic/LoadingWithText.vue'
 
 const route = useRoute()
-const campStore = useCampStore()
+const { getCampByDisplayId } = useCamps()
 
-const displayCamp = campStore.getCampByDisplayId(route.params.campname as string)
+const displayCamp = getCampByDisplayId(route.params.campname as string)
 
-type RoomGroup = components['schemas']['RoomGroupResponse']
-
-const {
-  data: roomGroups,
-  isPending,
-  isFetching,
-} = useQuery<RoomGroup[], Error>({
-  queryKey: qk.camps.roomGroups(displayCamp.id),
-  queryFn: async () => {
-    const { data, error } = await apiClient.GET('/api/camps/{campId}/room-groups', {
-      params: { path: { campId: displayCamp.id } },
-    })
-    if (error) throw new Error(`部屋割情報の取得に失敗しました: ${error.message}`)
-    return data
-  },
-  staleTime: 0, // ステータスの変更を即座に反映
-})
+const { data: roomGroups, isPending, isFetching } = useGetRoomGroups(() => displayCamp.id)
 </script>
 
 <template>
   <div class="position-relative w-100 h-100">
     <!-- Loading -->
-    <loading-with-text
+    <div
       v-if="!roomGroups || (roomGroups.length === 0 && (isPending || isFetching))"
-      message="部屋割を読み込み中…"
-    ></loading-with-text>
+      class="d-flex flex-column align-center justify-center w-100 h-100"
+    >
+      <v-progress-circular indeterminate size="56" color="primary" class="mb-3" />
+      <h3 class="font-weight-bold">部屋割を読み込み中…</h3>
+    </div>
 
     <!-- Empty state -->
     <div

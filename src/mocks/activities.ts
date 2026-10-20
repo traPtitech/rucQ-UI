@@ -1,22 +1,26 @@
-import type { components } from '@/api/schema'
-
-type ActivityResponse = components['schemas']['ActivityResponse']
+import {
+  PaymentPaidChangedActivityType,
+  QuestionCreatedActivityType,
+  RollCallCreatedActivityType,
+  RoomCreatedActivityType,
+} from '@/api/generated/client.schemas'
+import type { ActivityResponse } from '@/api/generated/client.schemas'
 
 export const activities: ActivityResponse[] = [
   {
     id: 1,
-    type: 'room_created',
+    type: RoomCreatedActivityType.room_created,
     time: '2024-07-01T10:00:00+09:00',
   },
   {
     id: 2,
-    type: 'payment_paid_changed',
+    type: PaymentPaidChangedActivityType.payment_paid_changed,
     time: '2024-07-01T12:30:00+09:00',
     amount: 15000,
   },
   {
     id: 3,
-    type: 'roll_call_created',
+    type: RollCallCreatedActivityType.roll_call_created,
     time: '2024-07-02T14:00:00+09:00',
     rollCallId: 2,
     name: '大学出発時点呼',
@@ -25,7 +29,7 @@ export const activities: ActivityResponse[] = [
   },
   {
     id: 4,
-    type: 'roll_call_created',
+    type: RollCallCreatedActivityType.roll_call_created,
     time: '2024-07-02T14:00:00+09:00',
     rollCallId: 3,
     name: '宿到着時点呼',
@@ -34,7 +38,7 @@ export const activities: ActivityResponse[] = [
   },
   {
     id: 5,
-    type: 'roll_call_created',
+    type: RollCallCreatedActivityType.roll_call_created,
     time: '2024-07-02T14:00:00+09:00',
     rollCallId: 4,
     name: 'バスを使わなかった人の点呼',
@@ -43,7 +47,7 @@ export const activities: ActivityResponse[] = [
   },
   {
     id: 6,
-    type: 'question_created',
+    type: QuestionCreatedActivityType.question_created,
     time: '2024-07-01T15:30:00+09:00',
     questionGroupId: 1,
     name: 'バス',
@@ -52,7 +56,7 @@ export const activities: ActivityResponse[] = [
   },
   {
     id: 7,
-    type: 'question_created',
+    type: QuestionCreatedActivityType.question_created,
     time: '2024-07-01T15:31:00+09:00',
     questionGroupId: 2,
     name: 'スキー',
@@ -61,7 +65,7 @@ export const activities: ActivityResponse[] = [
   },
   {
     id: 8,
-    type: 'question_created',
+    type: QuestionCreatedActivityType.question_created,
     time: '2024-07-01T15:32:00+09:00',
     questionGroupId: 3,
     name: '2日目に行きたい場所',

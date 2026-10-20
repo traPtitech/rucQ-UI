@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { useCampRegistration, useCamps } from '@/composables/camps'
 import { ref } from 'vue'
 import UserIcon from '@/components/generic/UserIcon.vue'
-import { useCampStore } from '@/store'
 
-const campStore = useCampStore()
+const { latestCamp } = useCamps()
+
+const { mutateAsync } = useCampRegistration()
 
 const dialog = ref(false)
 const shouldUnregister = ref(false)
@@ -18,7 +20,7 @@ const executeUnregistration = async () => {
   shouldUnregister.value = false
 
   try {
-    await campStore.unregister(campStore.latestCamp.id)
+    await mutateAsync({ campId: latestCamp.value.id, register: false })
   } catch (error) {
     console.error('参加取り消しの処理でエラーが発生しました:', error)
   }

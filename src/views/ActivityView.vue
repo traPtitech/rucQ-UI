@@ -1,40 +1,29 @@
 <script setup lang="ts">
+import {
+  PaymentAmountChangedActivityType,
+  PaymentCreatedActivityType,
+  PaymentPaidChangedActivityType,
+  QuestionCreatedActivityType,
+  RollCallCreatedActivityType,
+  RoomCreatedActivityType,
+} from '@/api/generated/client.schemas'
+import type { ActivityResponse as Activity } from '@/api/generated/client.schemas'
+
+import { useCamps } from '@/composables/camps'
 import ActivityLayout from '@/components/activity/ActivityLayout.vue'
 import RollCallActivity from '@/components/activity/RollCallActivity.vue'
 import QuestionActivity from '@/components/activity/QuestionActivity.vue'
-import LoadingWithText from '@/components/generic/LoadingWithText.vue'
-import { apiClient } from '@/api/apiClient'
-import { qk } from '@/api/queries/keys'
-import type { components } from '@/api/schema'
+import { useGetActivities } from '@/api/generated/client'
 import { getDayStringNoPad } from '@/utils/date'
 import { computed } from 'vue'
-import { useQuery } from '@tanstack/vue-query'
-import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
 
-type Activity = components['schemas']['ActivityResponse']
-
-const campStore = useCampStore()
+const { getCampByDisplayId } = useCamps()
 const route = useRoute()
 
-const displayCamp = computed(() => campStore.getCampByDisplayId(route.params.campname as string))
+const displayCamp = computed(() => getCampByDisplayId(route.params.campname as string))
 
-const {
-  data: activities,
-  isPending,
-  isFetching,
-} = useQuery<Activity[], Error>({
-  queryKey: computed(() => qk.camps.activities(displayCamp.value.id)),
-  enabled: computed(() => Boolean(displayCamp.value.id)),
-  staleTime: 0,
-  queryFn: async () => {
-    const { data, error } = await apiClient.GET('/api/camps/{campId}/activities', {
-      params: { path: { campId: displayCamp.value.id } },
-    })
-    if (error) throw new Error(`アクティビティの取得に失敗しました: ${error.message}`)
-    return data
-  },
-})
+const { data: activities, isPending, isFetching } = useGetActivities(() => displayCamp.value.id)
 
 const dailyActivities = computed(() => {
   if (!activities.value) return []
@@ -62,10 +51,14 @@ const dailyActivities = computed(() => {
 <template>
   <div class="position-relative w-100 h-100">
     <!-- Loading -->
-    <loading-with-text
+    <div
       v-if="!activities || (activities.length === 0 && (isPending || isFetching))"
-      message="アクティビティを読み込み中…"
-    ></loading-with-text>
+      class="d-flex flex-column align-center justify-center w-100 h-100"
+    >
+      <v-progress-circular indeterminate size="56" color="primary" class="mb-3" />
+      <h3 class="font-weight-bold">アクティビティを読み込み中…</h3>
+    </div>
+
     <!-- Empty state -->
     <div
       v-else-if="activities && activities.length === 0"
@@ -84,7 +77,7 @@ const dailyActivities = computed(() => {
         <div class="d-flex flex-column ga-3">
           <template v-for="activity in day.activities" :key="`${activity.id}-${activity.time}`">
             <activity-layout
-              v-if="activity.type === 'room_created'"
+              v-if="activity.type === RoomCreatedActivityType.room_created"
               :type="activity.type"
               :date="new Date(activity.time)"
             >
@@ -93,7 +86,7 @@ const dailyActivities = computed(() => {
               </template>
             </activity-layout>
             <activity-layout
-              v-if="activity.type === 'payment_created'"
+              v-if="activity.type === PaymentCreatedActivityType.payment_created"
               :type="activity.type"
               :date="new Date(activity.time)"
             >
@@ -104,7 +97,7 @@ const dailyActivities = computed(() => {
               </template>
             </activity-layout>
             <activity-layout
-              v-if="activity.type === 'payment_amount_changed'"
+              v-if="activity.type === PaymentAmountChangedActivityType.payment_amount_changed"
               :type="activity.type"
               :date="new Date(activity.time)"
             >
@@ -115,7 +108,7 @@ const dailyActivities = computed(() => {
               </template>
             </activity-layout>
             <activity-layout
-              v-if="activity.type === 'payment_paid_changed'"
+              v-if="activity.type === PaymentPaidChangedActivityType.payment_paid_changed"
               :type="activity.type"
               :date="new Date(activity.time)"
             >
@@ -125,8 +118,14 @@ const dailyActivities = computed(() => {
                 </span>
               </template>
             </activity-layout>
-            <roll-call-activity v-if="activity.type === 'roll_call_created'" :activity="activity" />
-            <question-activity v-if="activity.type === 'question_created'" :activity="activity" />
+            <roll-call-activity
+              v-if="activity.type === RollCallCreatedActivityType.roll_call_created"
+              :activity="activity"
+            />
+            <question-activity
+              v-if="activity.type === QuestionCreatedActivityType.question_created"
+              :activity="activity"
+            />
           </template>
         </div>
       </template>

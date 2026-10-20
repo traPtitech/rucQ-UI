@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { useCurrentUser } from '@/composables/useCurrentUser'
 import { computed, ref, useAttrs } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
-import { qk } from '@/api/queries/keys'
-import { useUserStore } from '@/store'
+import { iconQueryOptions } from '@/api/queryOptions'
 
 const props = defineProps<{ id?: string; size: number; idTooltip?: boolean }>()
 // idTooltip ... クリック時に Tooltip で ID を表示するかどうか
-const userId = props.id ?? useUserStore().user.id // id が指定されていない場合は自分のアイコンを表示
+const userId = props.id ?? useCurrentUser().user.value.id // id が指定されていない場合は自分のアイコンを表示
 
 const attrs = useAttrs()
 const iconRef = ref<HTMLElement | undefined>()
@@ -31,25 +31,25 @@ const {
   isLoading,
   isFetching,
   isError,
-} = useQuery<string, Error>({
-  queryKey: qk.icons.user(userId, props.size),
-  staleTime: 24 * 60 * 60_000, // 24h
-  gcTime: 24 * 60 * 60_000, // 24h
-  retry: 0,
-  // データURLで保存する
-  queryFn: async () => {
-    const res = await fetch(proxyUrl)
-    if (!res.ok) throw new Error(`アイコンを取得できませんでした: ${res.status}`)
+} = useQuery<string, Error>(
+  iconQueryOptions({
+    queryKey: ['icons', 'user', userId, props.size],
+    retry: 0,
+    // データURLで保存する
+    queryFn: async () => {
+      const res = await fetch(proxyUrl)
+      if (!res.ok) throw new Error(`アイコンを取得できませんでした: ${res.status}`)
 
-    const blob = await res.blob()
-    return new Promise<string>((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onloadend = () => resolve(reader.result as string)
-      reader.onerror = () => reject(new Error('アイコンの変換に失敗しました'))
-      reader.readAsDataURL(blob)
-    })
-  },
-})
+      const blob = await res.blob()
+      return new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onloadend = () => resolve(reader.result as string)
+        reader.onerror = () => reject(new Error('アイコンの変換に失敗しました'))
+        reader.readAsDataURL(blob)
+      })
+    },
+  }),
+)
 
 const showSkeleton = computed(
   () => !cachedIconUrl.value || isLoading.value || isFetching.value || isError.value,

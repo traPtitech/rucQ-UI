@@ -14,6 +14,7 @@ blockExoticSubdeps: true
 allowBuilds:
   '@parcel/watcher': false
   msw: true
+  esbuild: true # Orval が queryOptions のカスタム関数を解析する際に使用
   sharp: false
   vue-demi: false
 minimumReleaseAgeExclude:

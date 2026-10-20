@@ -1,8 +1,8 @@
-import { HttpResponse } from 'msw'
-import { http } from '@/mocks/http'
+import { RoomStatusType } from '@/api/generated/client.schemas'
+import { HttpResponse, http } from 'msw'
 
 export const roomsHandlers = [
-  http.get('/api/camps/{campId}/room-groups', () => {
+  http.get('/api/camps/:campId/room-groups', () => {
     return HttpResponse.json([
       {
         id: 1,
@@ -19,7 +19,7 @@ export const roomsHandlers = [
               { id: 'kitsne', isStaff: true },
               { id: 'kitsne', isStaff: true },
             ],
-            status: { type: 'active', topic: '点呼実施中' },
+            status: { type: RoomStatusType.active, topic: '点呼実施中' },
           },
           {
             id: 2,
@@ -31,7 +31,7 @@ export const roomsHandlers = [
             id: 3,
             name: '103',
             members: [{ id: 'kitsne', isStaff: true }],
-            status: { type: 'inactive', topic: '応答待ち' },
+            status: { type: RoomStatusType.inactive, topic: '応答待ち' },
           },
           {
             id: 4,
@@ -54,7 +54,7 @@ export const roomsHandlers = [
               { id: 'kitsne', isStaff: true },
               { id: 'kitsne', isStaff: true },
             ],
-            status: { type: 'active', topic: '荷物受け取り' },
+            status: { type: RoomStatusType.active, topic: '荷物受け取り' },
           },
           {
             id: 6,
@@ -79,7 +79,7 @@ export const roomsHandlers = [
               { id: 'kitsne', isStaff: true },
               { id: 'kitsne', isStaff: true },
             ],
-            status: { type: 'inactive', topic: '外出中' },
+            status: { type: RoomStatusType.inactive, topic: '外出中' },
           },
           {
             id: 8,
@@ -97,7 +97,7 @@ export const roomsHandlers = [
             id: 10,
             name: '304',
             members: [{ id: 'kitsne', isStaff: true }],
-            status: { type: 'active', topic: 'チェックイン済み' },
+            status: { type: RoomStatusType.active, topic: 'チェックイン済み' },
           },
           {
             id: 11,
@@ -115,7 +115,7 @@ export const roomsHandlers = [
             id: 13,
             name: '307',
             members: [{ id: 'kitsne', isStaff: true }],
-            status: { type: 'inactive', topic: '移動中' },
+            status: { type: RoomStatusType.inactive, topic: '移動中' },
           },
           {
             id: 14,
@@ -143,7 +143,7 @@ export const roomsHandlers = [
               { id: 'kitsne', isStaff: true },
               { id: 'kitsne', isStaff: true },
             ],
-            status: { type: 'active', topic: '体調確認' },
+            status: { type: RoomStatusType.active, topic: '体調確認' },
           },
           {
             id: 17,
@@ -168,7 +168,7 @@ export const roomsHandlers = [
               { id: 'kitsne', isStaff: true },
               { id: 'kitsne', isStaff: true },
             ],
-            status: { type: 'inactive', topic: '消灯後' },
+            status: { type: RoomStatusType.inactive, topic: '消灯後' },
           },
         ],
       },

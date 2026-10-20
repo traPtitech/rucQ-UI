@@ -1,14 +1,19 @@
 <script setup lang="ts">
+import { DurationEventResponseType } from '@/api/generated/client.schemas'
+import type {
+  DurationEventResponse as DurationEvent,
+  OfficialEventResponse as OfficialEvent,
+} from '@/api/generated/client.schemas'
+
 import { computed } from 'vue'
-import type { components } from '@/api/schema'
 import EventDialog from './EventDialog.vue'
 
-type DurationEvent = components['schemas']['DurationEventResponse']
-type OfficialEvent = components['schemas']['OfficialEventResponse']
 const props = defineProps<{ event: DurationEvent | OfficialEvent }>()
 
 const eventColor = computed(() => {
-  return props.event.type === 'duration' ? props.event.displayColor : 'indigo'
+  return props.event.type === DurationEventResponseType.duration
+    ? props.event.displayColor
+    : 'indigo'
 })
 
 const emit = defineEmits(['edit'])

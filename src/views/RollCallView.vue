@@ -1,25 +1,25 @@
 <script setup lang="ts">
+import type { RollCallResponse as RollCall } from '@/api/generated/client.schemas'
+
+import { useCurrentUser } from '@/composables/useCurrentUser'
+import { useCamps } from '@/composables/camps'
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useCampStore, useUserStore } from '@/store'
-import { apiClient } from '@/api/apiClient'
-import type { components } from '@/api/schema'
+import { getRollCalls } from '@/api/generated/client'
 import BackgroundPattern from '@/components/generic/BackgroundPattern.vue'
 import UserResponse from '@/components/rollcall/UserResponse.vue'
 import { useRollCallStream } from '@/components/rollcall/rollCallStream'
 import LoadingWithText from '@/components/generic/LoadingWithText.vue'
 
-type RollCall = components['schemas']['RollCallResponse']
-
 const router = useRouter()
 const route = useRoute()
-const campStore = useCampStore()
-const userStore = useUserStore()
+const { getCampByDisplayId } = useCamps()
+const { user } = useCurrentUser()
 
 const fullPath = (path: string) => `/${route.params.campname as string}${path ? `/${path}` : ''}`
 
 const rollcall = ref<RollCall>()
-const stream = useRollCallStream(rollcall, userStore.user.id)
+const stream = useRollCallStream(rollcall, user.value.id)
 const { grouped, myReaction, chooseOption, init, stop } = stream
 // grouped: 点呼の選択肢ごとにユーザー ID をまとめたオブジェクト
 
@@ -32,19 +32,16 @@ const isLoading = ref(true)
 
 // 点呼情報を取得
 const getRollCall = async () => {
-  const camp = campStore.getCampByDisplayId(route.params.campname as string)
+  const camp = getCampByDisplayId(route.params.campname as string)
 
-  const { data, error } = await apiClient.GET('/api/camps/{campId}/roll-calls', {
-    params: { path: { campId: camp.id } },
-  })
-  if (error) throw new Error(`点呼情報の取得に失敗しました: ${error.message}`)
+  const data = await getRollCalls(camp.id)
   return data.find((r) => r.id.toString() === route.params.rollcallId)
 }
 
 // ユーザーが点呼の対象かどうか
 const isSubject = computed(() => {
   if (!rollcall.value) return false
-  return rollcall.value.subjects.includes(userStore.user.id)
+  return rollcall.value.subjects.includes(user.value.id)
 })
 
 onMounted(async () => {

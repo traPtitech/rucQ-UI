@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import ActivityLayout from '@/components/activity/ActivityLayout.vue'
-import type { components } from '@/api/schema'
-import { getJSTDate, getMonthDayStringNoPad } from '@/utils/date'
+import type { QuestionCreatedActivity } from '@/api/generated/client.schemas'
 
-type QuestionCreatedActivity = components['schemas']['QuestionCreatedActivity']
+import ActivityLayout from '@/components/activity/ActivityLayout.vue'
+import { getJSTDate, getMonthDayStringNoPad } from '@/utils/date'
 
 defineProps<{
   activity: QuestionCreatedActivity

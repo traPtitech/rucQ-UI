@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { useCurrentUser } from '@/composables/useCurrentUser'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { computed } from 'vue'
-import { useUserStore } from '@/store'
 
-const userStore = useUserStore()
+const { user } = useCurrentUser()
 
 const props = defineProps<{
   title: string
@@ -14,12 +14,12 @@ const props = defineProps<{
 const MAX_VISIBLE_USER_COUNT = 6
 
 // userIds に自分の ID が含まれているかどうか
-const isMyReaction = computed(() => props.userIds.includes(userStore.user.id))
+const isMyReaction = computed(() => props.userIds.includes(user.value.id))
 
 // 自分が含まれている場合は自分を先頭、その後に他のユーザー
 const orderedUserIds = computed(() => {
   return isMyReaction.value
-    ? [userStore.user.id, ...props.userIds.filter((id) => id !== userStore.user.id)]
+    ? [user.value.id, ...props.userIds.filter((id) => id !== user.value.id)]
     : props.userIds
 })
 </script>
@@ -34,7 +34,7 @@ const orderedUserIds = computed(() => {
         :key="id"
         id-tooltip
         :size="28"
-        :class="[id === userStore.user.id ? $style.myIcon : '', 'ml-1 mr-1']"
+        :class="[id === user.id ? $style.myIcon : '', 'ml-1 mr-1']"
       />
       <v-dialog max-width="800">
         <template #activator="{ props: activatorProps }">
@@ -67,7 +67,7 @@ const orderedUserIds = computed(() => {
                 :key="id"
                 id-tooltip
                 :size="28"
-                :class="[id === userStore.user.id ? $style.myIcon : '', 'ma-1']"
+                :class="[id === user.id ? $style.myIcon : '', 'ma-1']"
               />
             </div>
           </v-card>

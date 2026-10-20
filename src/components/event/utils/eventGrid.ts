@@ -1,9 +1,11 @@
-import type { components } from '@/api/schema'
+import { MomentEventResponseType } from '@/api/generated/client.schemas'
+import type {
+  DurationEventResponse as DurationEvent,
+  MomentEventResponse as MomentEvent,
+  OfficialEventResponse as OfficialEvent,
+} from '@/api/generated/client.schemas'
 import { getStartTime, getEndTime } from '@/components/event/utils/eventLib'
 
-type MomentEvent = components['schemas']['MomentEventResponse']
-type DurationEvent = components['schemas']['DurationEventResponse']
-type OfficialEvent = components['schemas']['OfficialEventResponse']
 type CampEvent = MomentEvent | DurationEvent | OfficialEvent
 
 export type GridRow = {
@@ -192,7 +194,7 @@ export class DayEventGrid {
         const event = row.events[colIndex]
 
         if (event && !processedEvents.has(event)) {
-          if (event.type === 'moment') {
+          if (event.type === MomentEventResponseType.moment) {
             // 瞬間イベントの場合、行を特定
             momentEvents.push({ row: rowIndex, event: event })
           } else {

@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import type { components } from '@/api/schema'
-
-type Question = components['schemas']['QuestionResponse']
+import {
+  FreeNumberQuestionResponseType,
+  FreeTextQuestionResponseType,
+  MultipleChoiceQuestionResponseType,
+  SingleChoiceQuestionResponseType,
+} from '@/api/generated/client.schemas'
+import type { QuestionResponse as Question } from '@/api/generated/client.schemas'
 
 defineProps<{ question: Question }>()
 const value = defineModel<string | number | number[]>('value')
@@ -13,7 +17,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
 <!-- prettier-ignore -->
 <template>
   <v-text-field
-    v-if="question.type === 'free_text'"
+    v-if="question.type === FreeTextQuestionResponseType.free_text"
     v-model="(value as string)"
     :label="question.title"
     :messages="[question.description ?? '']"
@@ -22,7 +26,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     variant="underlined"
   ></v-text-field>
   <v-number-input
-    v-if="question.type === 'free_number'"
+    v-if="question.type === FreeNumberQuestionResponseType.free_number"
     v-model="(value as number)"
     :label="question.title"
     :messages="[question.description ?? '']"
@@ -32,7 +36,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     control-variant="hidden"
   ></v-number-input>
   <v-select
-    v-if="question.type === 'single'"
+    v-if="question.type === SingleChoiceQuestionResponseType.single"
     v-model="(value as number)"
     :label="question.title"
     :messages="[question.description ?? '']"
@@ -44,7 +48,7 @@ const requiredRule = (v: unknown) => (v === undefined || v === null ? '必須項
     :item-title="(option) => option.content"
   ></v-select>
   <v-select
-    v-if="question.type === 'multiple'"
+    v-if="question.type === MultipleChoiceQuestionResponseType.multiple"
     v-model="(value as number[])"
     :label="question.title"
     :messages="[question.description ?? '']"

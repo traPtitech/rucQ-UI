@@ -1,31 +1,32 @@
 <script setup lang="ts">
+import { DurationEventResponseType, MomentEventResponseType } from '@/api/generated/client.schemas'
+import type { EventResponse as CampEvent } from '@/api/generated/client.schemas'
+
+import { useCamps } from '@/composables/camps'
 import { computed } from 'vue'
 import MarkdownPreview from '@/components/markdown/MarkdownPreview.vue'
 import UserIcon from '@/components/generic/UserIcon.vue'
 import { getTimeStringNoPad } from '@/utils/date'
-import type { components } from '@/api/schema'
-import { useCampStore } from '@/store'
 import { useRoute } from 'vue-router'
 
 const emit = defineEmits(['edit', 'close'])
 
-const campStore = useCampStore()
+const { getCampByDisplayId, isOperable: isCampOperable } = useCamps()
 const route = useRoute()
 
 const displayCamp = computed(() => {
-  return campStore.getCampByDisplayId(route.params.campname as string)
+  return getCampByDisplayId(route.params.campname as string)
 })
 
 const isOperable = computed(() => {
-  return campStore.isOperable(displayCamp.value)
+  return isCampOperable(displayCamp.value)
 })
 
-type CampEvent = components['schemas']['EventResponse']
 const props = defineProps<{ event: CampEvent; color: string }>()
 
 // イベントの時刻に関する文字列
 const timeInfo = computed(() => {
-  if (props.event.type === 'moment') {
+  if (props.event.type === MomentEventResponseType.moment) {
     return getTimeStringNoPad(new Date(props.event.time))
   } else {
     const startTime = getTimeStringNoPad(new Date(props.event.timeStart))
@@ -36,7 +37,7 @@ const timeInfo = computed(() => {
 
 // イベントの企画者。自主企画期間イベント（= duration）以外は traP とする
 const planner = computed(() => {
-  return props.event.type === 'duration' ? props.event.organizerId : 'traP'
+  return props.event.type === DurationEventResponseType.duration ? props.event.organizerId : 'traP'
 })
 </script>
 
@@ -64,7 +65,7 @@ const planner = computed(() => {
           @click="emit('close')"
         ></v-btn>
         <v-btn
-          v-if="isOperable && event.type === 'duration'"
+          v-if="isOperable && event.type === DurationEventResponseType.duration"
           density="comfortable"
           elevation="0"
           icon="mdi-square-edit-outline"
