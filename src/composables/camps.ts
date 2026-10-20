@@ -13,7 +13,7 @@ import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { useCurrentUser } from './useCurrentUser'
 import { useTime } from './useTime'
 
-const registrationOverride = ref<boolean>() // 最新の合宿に参加登録済みかどうか
+const hasRegisteredLatest = ref<boolean>() // 最新の合宿に参加登録済みかどうか
 
 /** 公開済みの合宿を時刻でソートして返す */
 export const publishedCamps = (camps: Camp[]) =>
@@ -50,9 +50,9 @@ export const useCamps = () => {
   const { data: participants } = useGetCampParticipants(latestCampId, {
     query: { enabled: computed(() => allCamps.value.length > 0) },
   })
-  const hasRegisteredLatest = computed(
+  const isRegistered = computed(
     () =>
-      registrationOverride.value ??
+      hasRegisteredLatest.value ??
       participants.value?.some((participant) => participant.id === user.value.id) ??
       false,
   )
@@ -67,12 +67,12 @@ export const useCamps = () => {
   // ・合宿が終了していない
   const isOperable = (camp: Camp) =>
     // 最新の合宿かつ登録済みで、かつ終了していない場合のみ操作可能
-    latestPublishedCamp.value?.id === camp.id && hasRegisteredLatest.value && !isCampEndedNow(camp)
+    latestPublishedCamp.value?.id === camp.id && isRegistered.value && !isCampEndedNow(camp)
 
   return {
     allCamps,
     latestCamp,
-    hasRegisteredLatest,
+    hasRegisteredLatest: isRegistered,
     getCampByDisplayId,
     isCampEnded: isCampEndedNow,
     isOperable,
@@ -88,7 +88,7 @@ export const useCampRegistration = () => {
       else await deleteCampRegister(campId)
     },
     onSuccess: (_, { campId, register }) => {
-      registrationOverride.value = register
+      hasRegisteredLatest.value = register
       const queryKey = getGetCampParticipantsQueryKey(campId)
       queryClient.setQueryData<User[]>(queryKey, (participants) => {
         if (!participants) return participants
