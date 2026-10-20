@@ -3,7 +3,8 @@ import { useCamps } from '@/composables/camps'
 import { MasonryWall } from '@yeger/vue-masonry-wall'
 import PaymentInfo from '@/components/information/PaymentInfo.vue'
 import RoomInfo from '@/components/information/RoomInfo.vue'
-import { useGetQuestionGroups, useGetDashboard } from '@/api/generated/client'
+import { useGetQuestionGroups, getDashboard, getGetDashboardQueryKey } from '@/api/generated/client'
+import { useQuery } from '@tanstack/vue-query'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import QuestionGroupPanel from '@/components/information/QuestionGroupPanel.vue'
@@ -23,17 +24,20 @@ const { data: questionGroups } = useGetQuestionGroups(() => displayCamp.id)
 // ダッシュボード（支払い/部屋情報）
 const {
   data: dashboard,
-  error: dashboardError,
   isPending: isPendingDashboard,
   isFetching: isFetchingDashboard,
-} = useGetDashboard(() => displayCamp.id, {
-  query: {
-    // 未参加の404は再試行しない。それ以外は通常どおり最大3回再試行する。
-    retry: (failureCount, error) => error.status !== 404 && failureCount < 3,
+} = useQuery({
+  queryKey: getGetDashboardQueryKey(displayCamp.id),
+  queryFn: async ({ signal }) => {
+    try {
+      return await getDashboard(displayCamp.id, { signal })
+    } catch (error) {
+      // 404 は未参加を表すため、成功扱いで空のダッシュボードを返す。
+      if (error instanceof Error && 'status' in error && error.status === 404) return null
+      throw error
+    }
   },
 })
-
-const isNotRegistered = computed(() => dashboardError.value?.status === 404)
 
 // PaymentInfoに読み込み状態を渡す
 const isReady = computed(() => !(isPendingDashboard.value || isFetchingDashboard.value))
@@ -48,12 +52,8 @@ const isRegisteredOpen = displayCamp.isRegistrationOpen
       <unregister-camp-button v-if="isRegistered" />
       <register-camp-button v-else />
     </div>
-    <room-info v-if="!isNotRegistered && dashboard?.room" :room="dashboard.room" />
-    <payment-info
-      v-else
-      :is-ready="isReady"
-      :payment="isNotRegistered ? undefined : dashboard?.payment"
-    />
+    <room-info v-if="dashboard?.room" :room="dashboard.room" />
+    <payment-info v-else :is-ready="isReady" :payment="dashboard?.payment" />
     <div :class="$style.heading">合宿オプション</div>
     <div :class="$style.questionGroups">
       <masonry-wall :items="questionGroups" :column-width="300" :gap="16">
