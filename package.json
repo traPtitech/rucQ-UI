@@ -20,7 +20,7 @@
     "format:check": "prettier --check .",
     "generate:api": "openapi-typescript https://raw.githubusercontent.com/traPtitech/rucQ/main/openapi.yaml -o src/api/schema.d.ts && pnpm format"
   },
-  "packageManager": "pnpm@11.28.5",
+  "packageManager": "pnpm@12.13.0",
   "engines": {
     "node": "v24.22.0"
   },
