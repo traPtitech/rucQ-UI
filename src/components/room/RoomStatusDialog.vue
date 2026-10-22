@@ -93,8 +93,7 @@ const updateStatus = async () => {
       density="comfortable"
       elevation="0"
       icon="mdi-close"
-      class="text-black ma-2"
-      :class="$style.closeButton"
+      :class="[$style.closeButton, 'text-black', 'ma-2']"
       @click="emit('close')"
     ></v-btn>
     <div class="d-flex flex-column align-center mb-2">
