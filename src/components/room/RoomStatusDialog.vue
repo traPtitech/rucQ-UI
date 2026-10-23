@@ -88,7 +88,14 @@ const updateStatus = async () => {
 </script>
 
 <template>
-  <v-card class="pa-4">
+  <v-card class="pa-4 position-relative">
+    <v-btn
+      density="comfortable"
+      elevation="0"
+      icon="mdi-close"
+      :class="[$style.closeButton, 'text-black', 'ma-2']"
+      @click="emit('close')"
+    ></v-btn>
     <div class="d-flex flex-column align-center mb-2">
       <div :class="[$style.room, 'text-primary']">{{ room.name }}</div>
     </div>
@@ -158,6 +165,13 @@ const updateStatus = async () => {
 </template>
 
 <style module>
+.closeButton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
 .room {
   font-family: 'Reddit Sans Variable', 'M PLUS 2 Variable', sans-serif;
   font-size: 24px;
