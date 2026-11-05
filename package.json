@@ -38,7 +38,7 @@
     "dompurify": "3.4.17",
     "localforage": "1.10.0",
     "markdown-it": "14.3.3",
-    "msw": "2.15.0",
+    "msw": "3.0.3",
     "openapi-fetch": "0.17.0",
     "openapi-msw": "2.1.0",
     "pinia": "3.0.4",
